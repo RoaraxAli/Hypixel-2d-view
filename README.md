@@ -41,8 +41,10 @@ npm start
 
 ---
 
-## 🔑 Configured API Key
-- **API Key**: `0334c50b-56dc-4cf6-ae8f-3c443413901b`
+## 🔑 Environment Variables & API Key
+- **Environment Variable**: `HYPIXEL_API_KEY`
+- Configured in [`.env.local`](file:///c:/Users/Muhammad%20Ali/Downloads/Hypixel-by-ali/.env.local) for local development (and added to your hosting provider like Vercel for production).
+- See [`.env.example`](file:///c:/Users/Muhammad%20Ali/Downloads/Hypixel-by-ali/.env.example) for the template.
 - **Rate Limit**: Monitored dynamically with real-time remaining quota indicators and caching layers to guarantee zero 429 throttling.
 
 ---
