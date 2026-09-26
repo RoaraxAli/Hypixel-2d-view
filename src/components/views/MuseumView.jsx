@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import ItemSlot from '@/components/ItemSlot';
 
 export default function MuseumView({ playerData, onSwitchUser }) {
   const [museumData, setMuseumData] = useState(null);
@@ -191,15 +192,6 @@ export default function MuseumView({ playerData, onSwitchUser }) {
                 })
               : null;
 
-            let textureUrl = null;
-            if (item.skullTexture) {
-              try {
-                const parsed = JSON.parse(atob(item.skullTexture));
-                const u = parsed?.textures?.SKIN?.url;
-                if (u) textureUrl = u.replace('http://', 'https://');
-              } catch {}
-            }
-
             return (
               <div
                 key={idx}
@@ -207,23 +199,7 @@ export default function MuseumView({ playerData, onSwitchUser }) {
                 style={{ borderLeft: `3px solid ${rarityColor}` }}
               >
                 <div className="flex items-start gap-3">
-                  <div
-                    className="mc-slot w-10 h-10 shrink-0 bg-[#090c10] border border-[#30363d] rounded-lg flex items-center justify-center cursor-pointer relative"
-                    data-item={dataAttr}
-                  >
-                    {textureUrl ? (
-                      <img src={textureUrl} className="w-8 h-8 object-contain pointer-events-none" alt="" />
-                    ) : (
-                      <span className="text-xs font-black font-mono" style={{ color: rarityColor }}>
-                        {(item.cleanName || '?').charAt(0)}
-                      </span>
-                    )}
-                    {item.count && item.count > 1 && (
-                      <span className="absolute bottom-0.5 right-1 text-[10px] font-mono font-bold text-white pointer-events-none">
-                        {item.count}
-                      </span>
-                    )}
-                  </div>
+                  <ItemSlot item={item} customClass="w-10 h-10 shrink-0" />
 
                   <div className="flex-1 min-w-0">
                     <h4

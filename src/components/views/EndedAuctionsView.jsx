@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ItemSlot from '@/components/ItemSlot';
 
 export default function EndedAuctionsView() {
   const [auctions, setAuctions] = useState([]);
@@ -65,10 +66,11 @@ export default function EndedAuctionsView() {
                 className="glass-panel rounded-xl p-4 border border-[#30363d] space-y-3 hover:border-amber-400/50 transition cursor-pointer"
                 data-item={dataAttr}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
+                <div className="flex items-start gap-3">
+                  {item && <ItemSlot item={item} customClass="w-10 h-10 shrink-0" />}
+                  <div className="min-w-0 flex-1">
                     <h4
-                      className="font-bold text-sm"
+                      className="font-bold text-sm truncate"
                       dangerouslySetInnerHTML={{
                         __html: item?.formattedName || item?.cleanName || 'Sold Item'
                       }}

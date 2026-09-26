@@ -1,33 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import ItemSlot from '@/components/ItemSlot';
 
 function renderSlot(item, customClass = '') {
-  if (!item || item.empty) {
-    return <div className={`mc-slot empty ${customClass}`} />;
-  }
-
-  const encodedData = encodeURIComponent(JSON.stringify(item));
-  const countDisplay = item.count > 1 ? (
-    <span className="mc-slot-count">{item.count}</span>
-  ) : null;
-  const rarityBorder = item.rarityColor || '#ffffff';
-
-  return (
-    <div
-      className={`mc-slot ${customClass}`}
-      data-item={encodedData}
-      style={{ borderColor: rarityBorder }}
-    >
-      <div
-        className="text-xs font-bold text-center px-1 truncate pointer-events-none select-none"
-        style={{ color: item.rarityColor || '#fff' }}
-      >
-        {item.cleanName ? item.cleanName.slice(0, 5) : 'item'}
-      </div>
-      {countDisplay}
-    </div>
-  );
+  return <ItemSlot item={item} customClass={customClass} />;
 }
 
 export default function PlayerView({ playerData, activeSubtab = 'inventory', onSelectProfile, onSwitchUser }) {

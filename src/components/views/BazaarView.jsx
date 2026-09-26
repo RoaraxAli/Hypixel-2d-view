@@ -7,6 +7,7 @@ import {
   getGroupProducts,
   createProductSlotData
 } from '@/lib/bazaarConstants';
+import { getItemTexture } from '@/lib/itemTextures';
 
 export default function BazaarView({ bazaarData, playerData }) {
   const [category, setCategory] = useState('farming');
@@ -261,15 +262,33 @@ export default function BazaarView({ bazaarData, playerData }) {
             {Array.from({ length: 27 }).map((_, idx) => {
               const item = invRows[idx];
               const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
               return (
                 <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
                   {item && !item.empty && (
-                    <span
-                      className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
-                      style={{ color: item.rarityColor || '#fff' }}
-                    >
-                      {item.cleanName?.slice(0, 4)}
-                    </span>
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
                   )}
                 </div>
               );
@@ -281,15 +300,33 @@ export default function BazaarView({ bazaarData, playerData }) {
             {Array.from({ length: 9 }).map((_, idx) => {
               const item = hotbarRow[idx];
               const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
               return (
                 <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
                   {item && !item.empty && (
-                    <span
-                      className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
-                      style={{ color: item.rarityColor || '#fff' }}
-                    >
-                      {item.cleanName?.slice(0, 4)}
-                    </span>
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
                   )}
                 </div>
               );

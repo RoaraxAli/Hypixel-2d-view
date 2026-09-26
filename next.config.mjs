@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'textures.minecraft.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
     ],
   },
 };
