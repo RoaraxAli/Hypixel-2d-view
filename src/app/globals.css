@@ -1,5 +1,8 @@
-/* Minecraft & SkyBlock Portal Custom Styling */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=VT323&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --bg-primary: #090c10;
@@ -106,7 +109,6 @@ code, .font-mono {
   max-width: 380px;
   font-size: 14px;
   line-height: 1.45;
-  display: none;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -413,5 +415,3 @@ code, .font-mono {
   border-bottom: 2px solid #ffffff;
   border-right: 2px solid #ffffff;
 }
-
-

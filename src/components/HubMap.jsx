@@ -1,0 +1,125 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+const HUB_PINS = [
+  { id: 'election', name: 'Community Center', left: '49.5%', top: '11.5%' },
+  { id: 'auctions', name: 'Auction House', left: '70.0%', top: '37.0%' },
+  { id: 'bazaar', name: 'Bazaar', left: '63.5%', top: '48.5%' },
+  { id: 'economy', name: 'The Bank', left: '67.0%', top: '63.5%' },
+  { id: 'player', name: 'Player Profile', left: '50.0%', top: '52.0%' },
+  { id: 'mining', name: 'Deep Caverns', left: '53.5%', top: '82.0%' },
+  { id: 'garden', name: 'The Garden', left: '21.0%', top: '88.0%' },
+  { id: 'museum', name: 'Museum', left: '33.5%', top: '26.5%' },
+  { id: 'bingo', name: 'Bingo Hub', left: '33.0%', top: '64.5%' },
+  { id: 'dungeons', name: 'Dungeons & Slayers', left: '67.0%', top: '6.5%' },
+  { id: 'news', name: 'Update Board', left: '49.5%', top: '34.0%' },
+];
+
+export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPrompt }) {
+  const containerRef = useRef(null);
+  const [wrapperStyle, setWrapperStyle] = useState({
+    width: '100%',
+    height: '100%',
+    left: '0px',
+    top: '0px',
+    position: 'absolute'
+  });
+  const [searchInput, setSearchInput] = useState('');
+
+  useEffect(() => {
+    function updateDimensions() {
+      if (!containerRef.current) return;
+      const W = containerRef.current.clientWidth;
+      const H = containerRef.current.clientHeight;
+      if (!W || !H) return;
+
+      const imgRatio = 2048 / 1152;
+      const winRatio = W / H;
+
+      let renderW, renderH, offsetL, offsetT;
+      if (winRatio >= imgRatio) {
+        renderW = W;
+        renderH = W / imgRatio;
+        offsetL = 0;
+        offsetT = (H - renderH) / 2;
+      } else {
+        renderH = H;
+        renderW = H * imgRatio;
+        offsetL = (W - renderW) / 2;
+        offsetT = 0;
+      }
+
+      setWrapperStyle({
+        width: `${renderW}px`,
+        height: `${renderH}px`,
+        left: `${offsetL}px`,
+        top: `${offsetT}px`,
+        position: 'absolute'
+      });
+    }
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!searchInput.trim()) return;
+    onSearchPlayer(searchInput.trim());
+  };
+
+  return (
+    <div className="relative w-screen h-screen overflow-hidden bg-black select-none">
+      {/* Map Viewport */}
+      <div ref={containerRef} className="relative w-full h-full overflow-hidden flex items-center justify-center">
+        <div style={wrapperStyle} className="overflow-hidden">
+          <img
+            src="/weennzgg5xngrdj9k0tj.jpeg"
+            alt="Hypixel SkyBlock Hub"
+            className="w-full h-full object-cover pointer-events-none select-none filter contrast-105 brightness-95"
+          />
+
+          {/* Floating House Pins */}
+          {HUB_PINS.map((pin) => (
+            <div
+              key={pin.id}
+              className="hub-pin"
+              style={{ left: pin.left, top: pin.top }}
+              onClick={() => onOpenDestination(pin.id)}
+            >
+              {pin.name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Top-Left Search & Switch User Bar */}
+      <div className="absolute top-4 left-4 z-40 flex items-center gap-2">
+        <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search Player (IGN)..."
+            className="px-3 py-1.5 bg-black/80 border border-white/20 rounded-lg text-xs text-white placeholder-gray-400 backdrop-blur-md focus:outline-none focus:border-amber-400 transition w-48 sm:w-56"
+          />
+          <button
+            type="submit"
+            className="ml-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold rounded-lg transition"
+          >
+            Search
+          </button>
+        </form>
+
+        <button
+          onClick={onShowUserPrompt}
+          className="px-3 py-1.5 rounded-lg bg-black/80 hover:bg-black/95 border border-white/20 text-gray-300 hover:text-amber-400 text-xs font-semibold transition backdrop-blur-md"
+        >
+          Switch User
+        </button>
+      </div>
+    </div>
+  );
+}

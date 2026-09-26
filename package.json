@@ -1,19 +1,23 @@
 {
   "name": "hypixel-by-ali",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Hypixel SkyBlock Intelligence Platform",
+  "private": true,
   "scripts": {
-    "start": "node server.mjs"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "p-limit": "^7.3.3",
-    "prismarine-nbt": "^2.8.0"
+    "lucide-react": "^0.453.0",
+    "next": "^14.2.15",
+    "prismarine-nbt": "^2.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
   }
 }

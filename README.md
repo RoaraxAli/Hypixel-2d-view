@@ -9,11 +9,15 @@ A real-time, comprehensive intelligence and analytics platform for **Hypixel Sky
 The server is currently running locally on:
 👉 **[http://localhost:3000](http://localhost:3000)**
 
-To run or restart manually at any time:
+To run locally in development mode:
 ```bash
+npm run dev
+```
+
+To build and run in production:
+```bash
+npm run build
 npm start
-# or
-node server.mjs
 ```
 
 ### 🗺️ Official Hub Village Map Navigation (No Traditional Navbar)

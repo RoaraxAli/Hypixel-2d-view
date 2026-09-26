@@ -1,5 +1,5 @@
 // Hypixel API Manager with Caching and Rate Limit Protection
-const API_KEY = "3f57f6d0-6dbc-472d-b36c-6dee0b804523";
+const API_KEY = process.env.HYPIXEL_API_KEY || "3f57f6d0-6dbc-472d-b36c-6dee0b804523";
 const HYPIXEL_BASE = "https://api.hypixel.net/v2";
 
 // In-memory Cache Store
