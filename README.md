@@ -42,7 +42,7 @@ npm start
 ---
 
 ## 🔑 Configured API Key
-- **API Key**: `3f57f6d0-6dbc-472d-b36c-6dee0b804523`
+- **API Key**: `0334c50b-56dc-4cf6-ae8f-3c443413901b`
 - **Rate Limit**: Monitored dynamically with real-time remaining quota indicators and caching layers to guarantee zero 429 throttling.
 
 ---
