@@ -3934,11 +3934,11 @@ export default function PlayerView({
   }, [wardrobePage, selectedLoadout, inventories.armor, inventories.equipment, activePet]);
 
   // -------------------------------------------------------------
-  // BANK MENU SLOTS (Matches in-game screenshot media_1790527579316.png)
+  // BANK MENU SLOTS (Matches in-game screenshot media_1790527579316.png - 36 slots)
   // -------------------------------------------------------------
   const bankMenuSlots = useMemo(() => {
-    const slots = new Array(54).fill(null);
-    for (let i = 0; i < 54; i++) {
+    const slots = new Array(36).fill(null);
+    for (let i = 0; i < 36; i++) {
       slots[i] = {
         type: 'glass',
         icon: '/textures/minecraft/gray_stained_glass_pane.png',
@@ -3987,7 +3987,7 @@ export default function PlayerView({
       },
     };
 
-    slots[48] = {
+    slots[30] = {
       id: 'back',
       name: 'Go Back',
       icon: '/textures/minecraft/arrow.png',
@@ -3995,7 +3995,7 @@ export default function PlayerView({
       rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
     };
 
-    slots[49] = {
+    slots[31] = {
       id: 'close',
       name: 'Close',
       icon: '/textures/minecraft/barrier.png',
@@ -4003,28 +4003,28 @@ export default function PlayerView({
       rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
     };
 
-    slots[50] = {
+    slots[32] = {
       id: 'bank_settings',
       name: 'Bank Settings',
       icon: '/textures/minecraft/redstone_torch.png',
       rawItem: { cleanName: 'Bank Settings', formattedName: '<span style="color: #55FF55; font-weight: bold">Bank Settings</span>', loreHtml: [] },
     };
 
-    slots[51] = {
+    slots[33] = {
       id: 'coop_bank',
       name: 'Co-op Bank',
       icon: '/textures/minecraft/iron_door.png',
       rawItem: { cleanName: 'Co-op Bank', formattedName: '<span style="color: #55FF55; font-weight: bold">Co-op Bank</span>', loreHtml: [] },
     };
 
-    slots[52] = {
+    slots[34] = {
       id: 'custom_amount',
       name: 'Custom Amount',
       icon: '/textures/minecraft/storage.png',
       rawItem: { cleanName: 'Custom Amount', formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Amount</span>', loreHtml: [] },
     };
 
-    slots[53] = {
+    slots[35] = {
       id: 'upgrades',
       name: 'Bank Upgrades',
       icon: '/textures/minecraft/gold_block.png',
@@ -4035,7 +4035,7 @@ export default function PlayerView({
   }, [economy]);
 
   // -------------------------------------------------------------
-  // FAST TRAVEL MENU SLOTS (Matches in-game screenshot media_1790527598937.png)
+  // FAST TRAVEL MENU SLOTS (Matches in-game screenshot media_1790527598937.png - 54 slots)
   // -------------------------------------------------------------
   const fastTravelMenuSlots = useMemo(() => {
     const slots = new Array(54).fill(null);
@@ -4052,13 +4052,9 @@ export default function PlayerView({
       { slot: 11, name: 'Hub', icon: '/textures/minecraft/fast_travel.png' },
       { slot: 12, name: 'The Farming Islands', icon: '/textures/minecraft/skymart_vacuum.png' },
       { slot: 14, name: 'Spider\'s Den', icon: '/textures/minecraft/web.png' },
-      { slot: 15, name: 'Crimson Isle', icon: '/textures/minecraft/nether_sack.png' },
-      { slot: 20, name: 'The Park', icon: '/textures/minecraft/foraging_sack.png' },
-      { slot: 21, name: 'Deep Caverns', icon: '/textures/minecraft/mining_sack.png' },
-      { slot: 22, name: 'Dwarven Mines', icon: '/textures/minecraft/stonk.png' },
-      { slot: 23, name: 'Crystal Hollows', icon: '/textures/minecraft/gemstone_sack.png' },
-      { slot: 29, name: 'Dungeon Hub', icon: '/textures/minecraft/dungeon_sack.png' },
-      { slot: 33, name: 'Jerry\'s Workshop', icon: '/textures/minecraft/ice.png' },
+      { slot: 15, name: 'The Park', icon: '/textures/minecraft/foraging_sack.png' },
+      { slot: 29, name: 'Jerry\'s Workshop', icon: '/textures/minecraft/ice.png' },
+      { slot: 33, name: 'Winter Island', icon: '/textures/minecraft/ice.png' },
     ];
 
     for (const d of destinations) {
@@ -4070,6 +4066,21 @@ export default function PlayerView({
           cleanName: d.name,
           formattedName: `<span style="color: #55FF55; font-weight: bold">${d.name}</span>`,
           loreHtml: ['<span style="color: #AAAAAA">Click to warp instantly!</span>'],
+        },
+      };
+    }
+
+    // Locked warps matching the question mark skulls in screenshot
+    const lockedSlots = [13, 16, 19, 20, 21, 22, 23, 24, 25, 30, 31, 32];
+    for (const s of lockedSlots) {
+      slots[s] = {
+        id: `warp_locked_${s}`,
+        name: 'Locked Warp',
+        icon: '/textures/minecraft/fast_travel_locked.png',
+        rawItem: {
+          cleanName: 'Locked Warp',
+          formattedName: '<span style="color: #FF5555; font-weight: bold">???</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Discover this location to unlock warp!</span>'],
         },
       };
     }
@@ -4097,15 +4108,22 @@ export default function PlayerView({
       rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
     };
 
+    slots[50] = {
+      id: 'custom_spawn',
+      name: 'Custom Island Spawn',
+      icon: '/textures/minecraft/loadout_empty.png',
+      rawItem: { cleanName: 'Custom Island Spawn', formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Island Spawn</span>', loreHtml: ['<span style="color: #AAAAAA">Set or warp to your custom location.</span>'] },
+    };
+
     return slots;
   }, []);
 
   // -------------------------------------------------------------
-  // PROFILE MANAGEMENT MENU SLOTS (Matches screenshot media_1790527618082.png)
+  // PROFILE MANAGEMENT MENU SLOTS (Matches screenshot media_1790527618082.png - 36 slots)
   // -------------------------------------------------------------
   const profileMenuSlots = useMemo(() => {
-    const slots = new Array(54).fill(null);
-    for (let i = 0; i < 54; i++) {
+    const slots = new Array(36).fill(null);
+    for (let i = 0; i < 36; i++) {
       slots[i] = {
         type: 'glass',
         icon: '/textures/minecraft/gray_stained_glass_pane.png',
@@ -4162,7 +4180,7 @@ export default function PlayerView({
       rawItem: { cleanName: 'Locked Slot', formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Slot</span>', loreHtml: [] },
     };
 
-    slots[48] = {
+    slots[30] = {
       id: 'back',
       name: 'Go Back',
       icon: '/textures/minecraft/arrow.png',
@@ -4170,7 +4188,7 @@ export default function PlayerView({
       rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
     };
 
-    slots[49] = {
+    slots[31] = {
       id: 'close',
       name: 'Close',
       icon: '/textures/minecraft/barrier.png',
@@ -4232,12 +4250,12 @@ export default function PlayerView({
       },
     };
 
-    slots[20] = { icon: '/textures/minecraft/ender_chest.png', cleanName: 'Remote Ender Chest', rawItem: { cleanName: 'Remote Ender Chest', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Ender Chest</span>' } };
-    slots[21] = { icon: '/textures/minecraft/enchanting_table.png', cleanName: 'Remote Enchanting Table', rawItem: { cleanName: 'Remote Enchanting Table', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Enchanting Table</span>' } };
-    slots[22] = { icon: '/textures/minecraft/anvil.png', cleanName: 'Remote Anvil', rawItem: { cleanName: 'Remote Anvil', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Anvil</span>' } };
-    slots[24] = { icon: '/textures/minecraft/potion_bag_icon.png', cleanName: 'God Potions', rawItem: { cleanName: 'God Potions', formattedName: '<span style="color: #FF55FF; font-weight: bold">Active God Potion</span>' } };
-    slots[25] = { icon: '/textures/minecraft/gold_horse_armor.png', cleanName: 'Mounts & Pets', rawItem: { cleanName: 'Mounts & Pets', formattedName: '<span style="color: #FFAA00; font-weight: bold">Mounts & Pets</span>' } };
-    slots[26] = { icon: '/textures/minecraft/storage.png', cleanName: 'Community Shop', rawItem: { cleanName: 'Community Shop', formattedName: '<span style="color: #55FF55; font-weight: bold">Community Shop</span>' } };
+    slots[28] = { icon: '/textures/minecraft/ender_chest.png', cleanName: 'Remote Ender Chest', rawItem: { cleanName: 'Remote Ender Chest', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Ender Chest</span>' } };
+    slots[29] = { icon: '/textures/minecraft/enchanting_table.png', cleanName: 'Remote Enchanting Table', rawItem: { cleanName: 'Remote Enchanting Table', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Enchanting Table</span>' } };
+    slots[30] = { icon: '/textures/minecraft/anvil.png', cleanName: 'Remote Anvil', rawItem: { cleanName: 'Remote Anvil', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Anvil</span>' } };
+    slots[32] = { icon: '/textures/minecraft/potion_bag_icon.png', cleanName: 'God Potions', rawItem: { cleanName: 'God Potions', formattedName: '<span style="color: #FF55FF; font-weight: bold">Active God Potion</span>' } };
+    slots[33] = { icon: '/textures/minecraft/gold_horse_armor.png', cleanName: 'Mounts & Pets', rawItem: { cleanName: 'Mounts & Pets', formattedName: '<span style="color: #FFAA00; font-weight: bold">Mounts & Pets</span>' } };
+    slots[34] = { icon: '/textures/minecraft/storage.png', cleanName: 'Community Shop', rawItem: { cleanName: 'Community Shop', formattedName: '<span style="color: #55FF55; font-weight: bold">Community Shop</span>' } };
 
     slots[48] = {
       id: 'back',
