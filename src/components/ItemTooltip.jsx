@@ -98,16 +98,16 @@ export default function ItemTooltip() {
       }}
     >
       <div
-        className="font-bold text-base mb-1"
+        className="font-bold text-lg mb-0.5"
         dangerouslySetInnerHTML={{
           __html: item.formattedName || item.cleanName || item.rawName || 'Item'
         }}
       />
       {item.starsDisplay && (
-        <div className="text-amber-400 text-xs mb-1 font-bold">{item.starsDisplay}</div>
+        <div className="text-amber-400 mb-0.5 font-bold">{item.starsDisplay}</div>
       )}
       {item.loreHtml && item.loreHtml.length > 0 && (
-        <div className="text-xs space-y-0.5">
+        <div className="space-y-0.5">
           {item.loreHtml.map((line, idx) => (
             <div
               key={idx}

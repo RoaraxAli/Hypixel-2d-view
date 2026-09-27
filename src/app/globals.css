@@ -96,21 +96,24 @@ code, .font-mono {
   pointer-events: none;
 }
 
-/* Minecraft Lore Tooltip */
+/* Minecraft Lore Tooltip - Pixel-Perfect Matching In-Game Screenshots */
 .mc-tooltip {
   position: fixed;
   z-index: 99999;
   pointer-events: none;
-  background: #100010;
-  border: 2px solid #280070;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.9);
-  border-radius: 6px;
-  padding: 10px 14px;
-  max-width: 380px;
-  font-size: 14px;
-  line-height: 1.45;
+  background: rgba(10, 14, 23, 0.96);
+  border: 2px solid #23354d;
+  box-shadow: inset 1px 1px 0px #385175, inset -1px -1px 0px #385175, 0 4px 20px rgba(0, 0, 0, 0.9);
+  border-radius: 2px;
+  padding: 8px 12px;
+  max-width: 400px;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  line-height: 1.25;
+  color: #ffffff;
   white-space: pre-wrap;
   word-break: break-word;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.85);
 }
 
 /* Rarity Color Accents */

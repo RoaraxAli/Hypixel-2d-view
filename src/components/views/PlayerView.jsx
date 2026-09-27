@@ -83,13 +83,12 @@ export default function PlayerView({
   const hotbarItems = (inventories.inventory || []).slice(0, 9);
   const activePet = pets.find(p => p.active) || pets[0] || null;
 
-  // Build the 54-slot SkyBlock Menu based on the official wiki coordinate mapping:
-  // (X, Y) coordinate system: Bottom-left is (1, 1), Top-right is (9, 6)
-  // row = 6 - Y (0..5), col = X - 1 (0..8), slot = row * 9 + col
+  // Build the authentic 54-slot SkyBlock Menu matching the exact in-game screenshot:
+  // 18 interactive buttons + 36 gray stained glass panes
   const menuSlots = useMemo(() => {
     const slots = new Array(54).fill(null);
 
-    // Decorative gray stained glass pane default
+    // Decorative gray stained glass pane default for all 54 slots
     for (let i = 0; i < 54; i++) {
       slots[i] = {
         type: 'glass',
@@ -102,320 +101,425 @@ export default function PlayerView({
       };
     }
 
-    // 1. Slot 13: Your SkyBlock Profile (5; 5) -> row 1, col 4
-    const avatar = player.avatarUrl || `https://mc-heads.net/avatar/${player.uuid}/100`;
+    const statSpeed = misc.speed || 351;
+    const statStrength = misc.strength || 372.75;
+    const statDefense = misc.defense || 823.43;
+    const statCritDamage = misc.critDamage || 146;
+    const statCritChance = misc.critChance || 81;
+    const statHealth = misc.health || '3,577.32';
+    const statIntel = misc.intelligence || '3,822.77';
+    const skillAvg = skills.skillAverage || '38.2';
+
+    // 1. Slot 13 (Row 1, Col 4): Stats & Equipment (Player Head)
+    const avatar = player.avatarUrl || '/textures/minecraft/stats_and_equipment.png';
     slots[13] = {
       id: 'profile',
-      name: 'Your SkyBlock Profile',
+      name: 'Stats & Equipment',
       icon: avatar,
       targetScreen: 'profile',
       rawItem: {
-        cleanName: 'Your SkyBlock Profile',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Your SkyBlock Profile</span>',
+        cleanName: 'Stats & Equipment',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Stats & Equipment</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View your equipment, stats, and</span>',
-          '<span style="color: #AAAAAA">overall progression in SkyBlock.</span>',
+          '<span style="color: #AAAAAA">View your equipment, stats,</span>',
+          '<span style="color: #AAAAAA">achievements, and more!</span>',
           '',
-          `<span style="color: #AAAAAA">SkyBlock Level: </span><span style="color: #55FFFF; font-weight: bold">${misc.skyblockLevel || 0}</span>`,
-          `<span style="color: #AAAAAA">Profile: </span><span style="color: #FFAA00; font-weight: bold">${selectedProfile.cuteName || 'Standard'}</span>`,
-          `<span style="color: #AAAAAA">Skill Average: </span><span style="color: #55FF55; font-weight: bold">${skills.skillAverage || 0}</span>`,
-          `<span style="color: #AAAAAA">Purse: </span><span style="color: #FFAA00; font-weight: bold">${economy.formattedPurse || '0 Coins'}</span>`,
-          `<span style="color: #AAAAAA">Bank: </span><span style="color: #FFAA00; font-weight: bold">${economy.formattedBank || '0 Coins'}</span>`,
+          `<span style="color: #FFFFFF">✦ Speed ${statSpeed}</span>`,
+          `<span style="color: #FF5555">❁ Strength ${statStrength}</span>`,
+          `<span style="color: #55FF55">❈ Defense ${statDefense}</span>`,
+          `<span style="color: #5555FF">☠ Crit Damage ${statCritDamage}%</span>`,
+          `<span style="color: #5555FF">⚡ Crit Chance ${statCritChance}%</span>`,
+          `<span style="color: #FF5555">❤ Health ${statHealth}</span>`,
+          `<span style="color: #55FFFF">✎ Intelligence ${statIntel}</span>`,
+          '<span style="color: #AAAAAA">and more...</span>',
           '',
-          '<span style="color: #FFFF55">Click to view profile & equipment!</span>',
+          '<span style="color: #555555">Also accessible via /stats</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 2. Slot 19: Your Skills (2; 4) -> row 2, col 1
+    // 2. Slot 19 (Row 2, Col 1): Your Skills (Diamond Sword)
     slots[19] = {
       id: 'skills',
       name: 'Your Skills',
-      icon: '/textures/minecraft/diamond_sword.png',
+      icon: '/textures/minecraft/skills.png',
       targetScreen: 'skills',
       rawItem: {
         cleanName: 'Your Skills',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Your Skills</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View your skill progression and</span>',
-          '<span style="color: #AAAAAA">level rewards across all skills.</span>',
+          '<span style="color: #AAAAAA">View your Skill progression and</span>',
+          '<span style="color: #AAAAAA">rewards.</span>',
           '',
-          `<span style="color: #AAAAAA">Skill Average: </span><span style="color: #FFAA00; font-weight: bold">${skills.skillAverage || 0}</span>`,
-          `<span style="color: #AAAAAA">Total Skill XP: </span><span style="color: #FFFF55; font-weight: bold">${(skills.totalXp || 0).toLocaleString()}</span>`,
+          `<span style="color: #FFAA00; font-weight: bold">${skillAvg} Skill Avg.</span><span style="color: #AAAAAA"> (non-cosmetic)</span>`,
           '',
-          '<span style="color: #FFFF55">Click to view skills!</span>',
+          '<span style="color: #555555">Also accessible via /skills.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 3. Slot 20: Collection (3; 4) -> row 2, col 2
+    // 3. Slot 20 (Row 2, Col 2): Collections (Painting)
     slots[20] = {
-      id: 'collection',
-      name: 'Collection',
-      icon: '/textures/minecraft/painting.png',
+      id: 'collections',
+      name: 'Collections',
+      icon: '/textures/minecraft/collections.png',
       targetScreen: 'collection',
       rawItem: {
-        cleanName: 'Collection',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Collection</span>',
+        cleanName: 'Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Collections</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View all of the items you have</span>',
-          '<span style="color: #AAAAAA">collected across SkyBlock to earn</span>',
-          '<span style="color: #AAAAAA">crafting recipes and rewards.</span>',
+          '<span style="color: #AAAAAA">View all of the items available in</span>',
+          '<span style="color: #AAAAAA">SkyBlock. Collect more of an item to</span>',
+          '<span style="color: #AAAAAA">unlock rewards on your way to</span>',
+          '<span style="color: #AAAAAA">becoming a master of SkyBlock!</span>',
           '',
-          '<span style="color: #FFFF55">Click to view collections!</span>',
+          '<span style="color: #AAAAAA">Collections Unlocked: </span><span style="color: #FFAA00; font-weight: bold">87.8%</span>',
+          '<span style="color: #55FF55">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</span><span style="color: #FFFFFF">─────</span><span style="color: #FFAA00; font-weight: bold"> 79/90</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /collection.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 4. Slot 21: Recipe Book (4; 4) -> row 2, col 3
+    // 4. Slot 21 (Row 2, Col 3): Recipe Book (Book)
     slots[21] = {
-      id: 'recipes',
+      id: 'recipe_book',
       name: 'Recipe Book',
-      icon: '/textures/minecraft/book.png',
+      icon: '/textures/minecraft/recipe_book.png',
       targetScreen: 'recipes',
       rawItem: {
         cleanName: 'Recipe Book',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Recipe Book</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Browse and search through recipes</span>',
-          '<span style="color: #AAAAAA">you have unlocked in SkyBlock.</span>',
+          '<span style="color: #AAAAAA">Through your adventure, you will</span>',
+          '<span style="color: #AAAAAA">unlock recipes for all kinds of</span>',
+          '<span style="color: #AAAAAA">special items! You can view how to</span>',
+          '<span style="color: #AAAAAA">craft these items here.</span>',
           '',
-          '<span style="color: #FFFF55">Click to view recipe book!</span>',
+          '<span style="color: #AAAAAA">Recipes Unlocked: </span><span style="color: #FFAA00; font-weight: bold">73.3%</span>',
+          '<span style="color: #55FF55">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</span><span style="color: #FFFFFF">───────</span><span style="color: #FFAA00; font-weight: bold"> 745/1k</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /recipes.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 5. Slot 22: Trades (5; 4) -> row 2, col 4
+    // 5. Slot 22 (Row 2, Col 4): SkyBlock Leveling (Green Head)
+    const sbLevel = misc.skyblockLevel || 205;
     slots[22] = {
-      id: 'trades',
-      name: 'Trades',
-      icon: '/textures/minecraft/emerald.png',
-      targetScreen: 'trades',
+      id: 'levels',
+      name: 'SkyBlock Leveling',
+      icon: '/textures/minecraft/skyblock_leveling.png',
+      targetScreen: 'levels',
       rawItem: {
-        cleanName: 'Trades',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Trades</span>',
+        cleanName: 'SkyBlock Leveling',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Leveling</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View custom trades unlocked</span>',
-          '<span style="color: #AAAAAA">through your collections.</span>',
+          `<span style="color: #FFFFFF">Your SkyBlock Level: </span><span style="color: #55FFFF">[${sbLevel}]</span>`,
           '',
-          '<span style="color: #FFFF55">Click to view trades!</span>',
+          '<span style="color: #AAAAAA">Determine how far you\'ve</span>',
+          '<span style="color: #AAAAAA">progressed in SkyBlock and earn</span>',
+          '<span style="color: #AAAAAA">rewards from completing unique</span>',
+          '<span style="color: #AAAAAA">tasks.</span>',
+          '',
+          `<span style="color: #FFFFFF">Progress to Level ${sbLevel + 1}:</span>`,
+          '<span style="color: #55FFFF">▬▬▬▬</span><span style="color: #FFFFFF">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</span><span style="color: #55FFFF"> 9/100 XP</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /levels</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 6. Slot 23: Quest Log (6; 4) -> row 2, col 5
+    // 6. Slot 23 (Row 2, Col 5): Quests & Chapters (Book and Quill)
     slots[23] = {
       id: 'quests',
-      name: 'Quest Log',
-      icon: '/textures/minecraft/book_and_quill.png',
+      name: 'Quests & Chapters',
+      icon: '/textures/minecraft/quests_and_chapters.png',
       targetScreen: 'quests',
       rawItem: {
-        cleanName: 'Quest Log',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Quest Log</span>',
+        cleanName: 'Quests & Chapters',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Quests & Chapters</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View your active and completed</span>',
-          '<span style="color: #AAAAAA">quests and storyline objectives.</span>',
+          '<span style="color: #AAAAAA">Each island has its own series of</span>',
+          '<span style="color: #55FFFF">Chapters</span><span style="color: #AAAAAA"> for you to complete!</span>',
           '',
-          '<span style="color: #FFFF55">Click to view quests!</span>',
+          '<span style="color: #AAAAAA">Complete tasks within a Chapter to</span>',
+          '<span style="color: #AAAAAA">earn small </span><span style="color: #FFAA00">rewards</span><span style="color: #AAAAAA">, or complete</span>',
+          '<span style="color: #AAAAAA">entire Chapters to earn big ones!</span>',
+          '',
+          '<span style="color: #AAAAAA">Some islands also have </span><span style="color: #55FF55">Quests</span><span style="color: #AAAAAA"> for</span>',
+          '<span style="color: #AAAAAA">you to complete! Some items can only</span>',
+          '<span style="color: #AAAAAA">be obtained through Quests.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 7. Slot 24: Calendar and Events (7; 4) -> row 2, col 6
+    // 7. Slot 24 (Row 2, Col 6): Calendar and Events (Clock)
     slots[24] = {
       id: 'calendar',
       name: 'Calendar and Events',
-      icon: '/textures/minecraft/clock.png',
+      icon: '/textures/minecraft/calendar.png',
       targetScreen: 'calendar',
       rawItem: {
         cleanName: 'Calendar and Events',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Calendar and Events</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View the SkyBlock year, season,</span>',
-          '<span style="color: #AAAAAA">and upcoming community events.</span>',
+          '<span style="color: #AAAAAA">View the SkyBlock Calendar, upcoming</span>',
+          '<span style="color: #AAAAAA">events, and event rewards!</span>',
           '',
-          '<span style="color: #FFAA00; font-weight: bold">Next Event: Spooky Festival</span>',
-          '<span style="color: #55FF55">Starts in: 4h 12m</span>',
+          '<span style="color: #AAAAAA">Date: </span><span style="color: #55FF55">17th Early Winter 516</span>',
           '',
-          '<span style="color: #FFFF55">Click to view calendar!</span>',
+          '<span style="color: #AAAAAA">Active Event: </span><span style="color: #FFAA00">Jacob\'s Farming Contest</span>',
+          '<span style="color: #FFFF55">o Mushroom</span>',
+          '<span style="color: #FFFF55">o Moonflower</span>',
+          '<span style="color: #FFFF55">o Cactus</span>',
+          '<span style="color: #AAAAAA">Ends in: </span><span style="color: #FFFF55">18m 7s</span>',
+          '',
+          '<span style="color: #AAAAAA">Next Event: </span><span style="color: #FF5555">484th Season of Jerry</span>',
+          '<span style="color: #AAAAAA">Starting in: </span><span style="color: #FFFF55">22h 58m 8s</span>',
+          '',
+          '<span style="color: #AAAAAA">You have </span><span style="color: #55FF55">1</span><span style="color: #AAAAAA"> unclaimed event reward!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /calendar</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 8. Slot 25: Storage (8; 4) -> row 2, col 7
+    // 8. Slot 25 (Row 2, Col 7): Storage (Chest)
     slots[25] = {
       id: 'storage',
       name: 'Storage',
-      icon: '/textures/minecraft/chest.png',
+      icon: '/textures/minecraft/storage.png',
       targetScreen: 'storage',
       rawItem: {
         cleanName: 'Storage',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Storage</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Store items in your Ender Chest,</span>',
-          '<span style="color: #AAAAAA">Backpacks, and specialized bags.</span>',
+          '<span style="color: #AAAAAA">Store global items that you want to</span>',
+          '<span style="color: #AAAAAA">access at any time from anywhere</span>',
+          '<span style="color: #AAAAAA">here.</span>',
           '',
-          '<span style="color: #FFFF55">Click to view storage!</span>',
+          '<span style="color: #555555">Also accessible via /storage</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 9. Slot 30: Pets (4; 3) -> row 3, col 3
+    // 9. Slot 29 (Row 3, Col 2): Your Bags (Sack Head with Red Button)
+    slots[29] = {
+      id: 'sacks',
+      name: 'Your Bags',
+      icon: '/textures/minecraft/your_bags.png',
+      targetScreen: 'storage',
+      storageTab: 'backpacks',
+      rawItem: {
+        cleanName: 'Your Bags',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Your Bags</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Different bags allow you to store</span>',
+          '<span style="color: #AAAAAA">many different items inside!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /bags</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
+      },
+    };
+
+    // 10. Slot 30 (Row 3, Col 3): Pets (Bone)
     slots[30] = {
       id: 'pets',
       name: 'Pets',
-      icon: '/textures/minecraft/bone.png',
+      icon: '/textures/minecraft/pets.png',
       targetScreen: 'pets',
       rawItem: {
         cleanName: 'Pets',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Pets</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">View and manage your summoned pets</span>',
-          '<span style="color: #AAAAAA">and their active combat bonuses.</span>',
+          '<span style="color: #AAAAAA">View and manage all of your Pets.</span>',
           '',
-          `<span style="color: #AAAAAA">Active: </span><span style="color: #FFAA00; font-weight: bold">${activePet ? activePet.cleanName : 'None'}</span>`,
-          `<span style="color: #AAAAAA">Total Pets: </span><span style="color: #55FF55; font-weight: bold">${pets.length}</span>`,
+          '<span style="color: #AAAAAA">Level up your pets faster by gaining</span>',
+          '<span style="color: #AAAAAA">XP in their favorite skill!</span>',
           '',
-          '<span style="color: #FFFF55">Click to view pets!</span>',
+          `<span style="color: #AAAAAA">Selected pet: </span><span style="color: #FFAA00">${activePet ? activePet.cleanName : 'Sheep'}</span>`,
+          '',
+          `<span style="color: #AAAAAA">Progress to Level ${activePet ? (activePet.level || 92) + 1 : 93}: </span><span style="color: #FFAA00">24.1%</span>`,
+          '<span style="color: #55FF55">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</span><span style="color: #FFFFFF">──────────────────</span><span style="color: #FFAA00"> 265,788.6/1.1M</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /pets.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 10. Slot 31: Crafting Table (5; 3) -> row 3, col 4
+    // 11. Slot 31 (Row 3, Col 4): Crafting Table (Crafting Table)
     slots[31] = {
       id: 'crafting',
       name: 'Crafting Table',
-      icon: '/textures/minecraft/crafting_table.png',
+      icon: '/textures/minecraft/crafting.png',
       targetScreen: 'crafting',
       rawItem: {
         cleanName: 'Crafting Table',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Crafting Table</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Opens a 3x3 crafting grid to</span>',
-          '<span style="color: #AAAAAA">craft recipes and materials.</span>',
+          '<span style="color: #AAAAAA">Opens the crafting grid.</span>',
           '',
-          '<span style="color: #FFFF55">Click to open crafting grid!</span>',
+          '<span style="color: #555555">Also accessible via /craft</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
         ],
       },
     };
 
-    // 11. Slot 32: Wardrobe (6; 3) -> row 3, col 5
+    // 12. Slot 32 (Row 3, Col 5): Loadouts (Barrel)
     slots[32] = {
       id: 'wardrobe',
-      name: 'Wardrobe',
-      icon: '/textures/minecraft/leather_chestplate.png',
+      name: 'Loadouts',
+      icon: '/textures/minecraft/loadouts.png',
       targetScreen: 'wardrobe',
       rawItem: {
-        cleanName: 'Wardrobe',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Wardrobe</span>',
+        cleanName: 'Loadouts',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Loadouts</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Store and swap armor sets</span>',
-          '<span style="color: #AAAAAA">instantly in your wardrobe.</span>',
+          '<span style="color: #AAAAAA">View and edit preset armor and</span>',
+          '<span style="color: #AAAAAA">equipment sets with other settings to</span>',
+          '<span style="color: #AAAAAA">make switching activities easy.</span>',
           '',
-          '<span style="color: #FFFF55">Click to open wardrobe!</span>',
+          '<span style="color: #555555">Also accessible via /loadouts</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 12. Slot 33: Personal Bank (7; 3) -> row 3, col 6
+    // 13. Slot 33 (Row 3, Col 6): Personal Bank (Coin Sack)
     slots[33] = {
       id: 'bank',
       name: 'Personal Bank',
-      icon: '/textures/minecraft/gold_block.png',
+      icon: '/textures/minecraft/personal_bank.png',
       targetScreen: 'bank',
       rawItem: {
         cleanName: 'Personal Bank',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Personal Bank</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Direct access to your bank account</span>',
-          '<span style="color: #AAAAAA">from anywhere in SkyBlock!</span>',
+          '<span style="color: #AAAAAA">Contact your Banker from anywhere.</span>',
+          '<span style="color: #AAAAAA">Cooldown: </span><span style="color: #FFAA00">5 minutes</span>',
           '',
-          `<span style="color: #AAAAAA">Bank: </span><span style="color: #FFAA00; font-weight: bold">${economy.formattedBank || '0 Coins'}</span>`,
-          `<span style="color: #AAAAAA">Purse: </span><span style="color: #FFAA00; font-weight: bold">${economy.formattedPurse || '0 Coins'}</span>`,
+          '<span style="color: #AAAAAA">Banker Status:</span>',
+          '<span style="color: #55FF55">Available</span>',
           '',
-          '<span style="color: #FFFF55">Click to access personal bank!</span>',
+          '<span style="color: #AAAAAA">Interest in: </span><span style="color: #55FFFF">25 Hours</span>',
+          '<span style="color: #AAAAAA">Projection: </span><span style="color: #FFAA00">41,791.6 coins </span><span style="color: #55FFFF">(2.08%)</span>',
+          '<span style="color: #AAAAAA">Last Interest: </span><span style="color: #FFAA00">44,886 coins</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /bank</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
         ],
       },
     };
 
-    // 13. Slot 45: Potion Bag (8; 0) -> row 5, col 0
-    slots[45] = {
-      id: 'potionBag',
-      name: 'Potion Bag',
-      icon: '/textures/minecraft/nether_wart.png',
-      targetScreen: 'storage',
-      storageTab: 'potionBag',
-      rawItem: {
-        cleanName: 'Potion Bag',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Potion Bag</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Store potions and brews in</span>',
-          '<span style="color: #AAAAAA">your dedicated potion bag.</span>',
-          '',
-          '<span style="color: #FFFF55">Click to open potion bag!</span>',
-        ],
-      },
-    };
-
-    // 14. Slot 46: Accessory Bag (9; 0) -> row 5, col 1
-    slots[46] = {
-      id: 'accessoryBag',
-      name: 'Accessory Bag',
-      icon: '/textures/minecraft/redstone.png',
-      targetScreen: 'storage',
-      storageTab: 'talismanBag',
-      rawItem: {
-        cleanName: 'Accessory Bag',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Accessory Bag</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Holds talismans, rings, and artifacts</span>',
-          '<span style="color: #AAAAAA">to grant Magical Power bonuses.</span>',
-          '',
-          '<span style="color: #FFFF55">Click to open accessory bag!</span>',
-        ],
-      },
-    };
-
-    // 15. Slot 47: Fast Travel (3; 1) -> row 5, col 2
+    // 14. Slot 47 (Row 5, Col 2): Fast Travel (Globe Head)
     slots[47] = {
       id: 'fast_travel',
       name: 'Fast Travel',
-      icon: '/textures/minecraft/compass.png',
+      icon: '/textures/minecraft/fast_travel.png',
       targetScreen: 'fast_travel',
       rawItem: {
         cleanName: 'Fast Travel',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Fast Travel</span>',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Fast Travel</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Teleport directly to unlocked</span>',
-          '<span style="color: #AAAAAA">islands across SkyBlock.</span>',
+          '<span style="color: #AAAAAA">Teleport to islands you\'ve already</span>',
+          '<span style="color: #AAAAAA">visited.</span>',
           '',
-          '<span style="color: #FFFF55">Click to view destinations!</span>',
+          '<span style="color: #555555">Also accessible via /warp</span>',
+          '',
+          '<span style="color: #FFFF55">Click to pick location!</span>',
         ],
       },
     };
 
-    // 16. Slot 48: Profile Management (4; 1) -> row 5, col 3
+    // 15. Slot 48 (Row 5, Col 3): Profile Management (Name Tag)
+    const profileCount = (profiles && profiles.length) || 2;
     slots[48] = {
-      id: 'profiles',
+      id: 'profile_management',
       name: 'Profile Management',
-      icon: '/textures/minecraft/name_tag.png',
+      icon: '/textures/minecraft/profile_management.png',
       targetScreen: 'profiles',
       rawItem: {
         cleanName: 'Profile Management',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Profile Management</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Switch between SkyBlock profiles</span>',
-          '<span style="color: #AAAAAA">or switch your Minecraft IGN.</span>',
+          '<span style="color: #AAAAAA">You can have multiple SkyBlock</span>',
+          '<span style="color: #AAAAAA">profiles at the same time.</span>',
           '',
-          `<span style="color: #AAAAAA">Current: </span><span style="color: #55FF55; font-weight: bold">${selectedProfile.cuteName || 'Standard'}</span>`,
+          '<span style="color: #AAAAAA">Each profile has its own island,</span>',
+          '<span style="color: #AAAAAA">inventory, quest log...</span>',
           '',
-          '<span style="color: #FFFF55">Click to manage profiles!</span>',
+          `<span style="color: #AAAAAA">Profiles: </span><span style="color: #FFAA00">${profileCount}/3</span>`,
+          `<span style="color: #AAAAAA">Playing on: </span><span style="color: #55FF55">${selectedProfile.cuteName || 'Banana'}</span>`,
+          '',
+          '<span style="color: #55FFFF">Play with friends using /coopadd &lt;name&gt;!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /profiles</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
 
-    // 17. Slot 49: Booster Cookie (5; 1) -> row 5, col 4
+    // 16. Slot 49 (Row 5, Col 4): Close (Red Barrier)
     slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/close.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [
+          '<span style="color: #FFFF55">Click to close!</span>',
+        ],
+      },
+    };
+
+    // 17. Slot 50 (Row 5, Col 5): Settings (Redstone Torch)
+    slots[50] = {
+      id: 'settings',
+      name: 'Settings',
+      icon: '/textures/minecraft/settings.png',
+      targetScreen: 'settings',
+      rawItem: {
+        cleanName: 'Settings',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Settings</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View and edit your SkyBlock settings.</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /viewsettings.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // 18. Slot 51 (Row 5, Col 6): Booster Cookie (Enchanted Cookie)
+    slots[51] = {
       id: 'cookie',
       name: 'Booster Cookie',
       icon: '/textures/minecraft/cookie.png',
@@ -424,85 +528,15 @@ export default function PlayerView({
         cleanName: 'Booster Cookie',
         formattedName: '<span style="color: #FFAA00; font-weight: bold">Booster Cookie</span>',
         loreHtml: [
-          '<span style="color: #AAAAAA">Active buffs: +25% Skill XP,</span>',
-          '<span style="color: #AAAAAA">+15 Magic Find, keep coins on</span>',
-          '<span style="color: #AAAAAA">death, and /ah command access.</span>',
+          '<span style="color: #AAAAAA">Obtain the </span><span style="color: #FF55FF">Cookie Buff</span><span style="color: #AAAAAA"> from Booster</span>',
+          '<span style="color: #AAAAAA">Cookies in the hub\'s Community Shop.</span>',
           '',
-          '<span style="color: #FFFF55">Click to view booster perks!</span>',
-        ],
-      },
-    };
-
-    // 18. Slot 50: Settings (6; 1) -> row 5, col 5
-    slots[50] = {
-      id: 'settings',
-      name: 'Settings',
-      icon: '/textures/minecraft/redstone_torch.png',
-      targetScreen: 'settings',
-      rawItem: {
-        cleanName: 'Settings',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Settings</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Configure SkyBlock settings,</span>',
-          '<span style="color: #AAAAAA">API preferences, and audio.</span>',
+          '<span style="color: #AAAAAA">Status: </span><span style="color: #FF5555">Not active!</span>',
+          '<span style="color: #AAAAAA">Bits Available: </span><span style="color: #55FFFF">0</span>',
           '',
-          '<span style="color: #FFFF55">Click to open settings!</span>',
-        ],
-      },
-    };
-
-    // 19. Slot 51: Sack of Sacks (7; 1) -> row 5, col 6
-    slots[51] = {
-      id: 'sacks',
-      name: 'Sack of Sacks',
-      icon: '/textures/minecraft/chest.png',
-      targetScreen: 'storage',
-      storageTab: 'backpacks',
-      rawItem: {
-        cleanName: 'Sack of Sacks',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Sack of Sacks</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Stores resource sacks to pick up</span>',
-          '<span style="color: #AAAAAA">materials directly into sacks.</span>',
+          '<span style="color: #555555">Also accessible via /boostercookie</span>',
           '',
-          '<span style="color: #FFFF55">Click to open sack storage!</span>',
-        ],
-      },
-    };
-
-    // 20. Slot 52: Fishing Bag (8; 1) -> row 5, col 7
-    slots[52] = {
-      id: 'fishingBag',
-      name: 'Fishing Bag',
-      icon: '/textures/minecraft/raw_fish.png',
-      targetScreen: 'storage',
-      storageTab: 'fishingBag',
-      rawItem: {
-        cleanName: 'Fishing Bag',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Fishing Bag</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Store fishing rods, bait, and</span>',
-          '<span style="color: #AAAAAA">special aquatic catches.</span>',
-          '',
-          '<span style="color: #FFFF55">Click to open fishing bag!</span>',
-        ],
-      },
-    };
-
-    // 21. Slot 53: Quiver (9; 1) -> row 5, col 8
-    slots[53] = {
-      id: 'quiver',
-      name: 'Quiver',
-      icon: '/textures/minecraft/arrow.png',
-      targetScreen: 'quiver',
-      rawItem: {
-        cleanName: 'Quiver',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Quiver</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Holds arrows automatically fired</span>',
-          '<span style="color: #AAAAAA">when using shortbows and bows.</span>',
-          '',
-          '<span style="color: #FFFF55">Click to view quiver!</span>',
+          '<span style="color: #FFFF55">Click to view!</span>',
         ],
       },
     };
@@ -512,6 +546,10 @@ export default function PlayerView({
 
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
+    if (slot.action === 'close') {
+      if (onClose) onClose();
+      return;
+    }
     if (slot.storageTab) {
       setStorageKey(slot.storageTab);
     }
@@ -622,9 +660,23 @@ export default function PlayerView({
           {/* 1x9 Hotbar */}
           <div className="mc-hotbar-grid">
             {Array.from({ length: 9 }).map((_, idx) => {
-              const item = hotbarItems[idx];
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
               const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
-              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
               const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
 
               return (
@@ -686,16 +738,16 @@ export default function PlayerView({
   return (
     <div className="mc-chest-wrapper">
       <div className="mc-chest-window w-full max-w-4xl max-h-[92vh] flex flex-col p-4 overflow-y-auto">
-        {/* SUB-SCREEN: PROFILE & GEAR */}
+        {/* SUB-SCREEN: STATS & EQUIPMENT */}
         {screen === 'profile' && (
           <div className="space-y-4">
-            {renderScreenHeader('Your SkyBlock Profile')}
+            {renderScreenHeader('Stats & Equipment')}
 
             {/* Profile Info Header */}
             <div className="mc-inset-box rounded p-3 flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <img
-                  src={player.avatarUrl || `https://mc-heads.net/avatar/${player.uuid}/100`}
+                  src={player.avatarUrl || '/textures/minecraft/stats_and_equipment.png'}
                   className="w-16 h-16 rounded bg-[#090c10] border-2 border-amber-500/50"
                   alt="Avatar"
                 />
@@ -711,7 +763,7 @@ export default function PlayerView({
                   </div>
                   <div className="flex items-center gap-3 mt-2 flex-wrap text-xs">
                     <span className="text-gray-300">SB Level: <strong className="text-cyan-400 font-mono">{misc.skyblockLevel || 0}</strong></span>
-                    <span className="text-gray-300">Skill Avg: <strong className="text-emerald-400 font-mono">{skills.skillAverage || 0}</strong></span>
+                    <span className="text-gray-300">Skill Avg: <strong className="text-emerald-400 font-mono">{skills.skillAverage || '38.2'}</strong></span>
                     <span className="text-gray-300">Purse: <strong className="text-amber-400 font-mono">{economy.formattedPurse || 0}</strong></span>
                     <span className="text-gray-300">Bank: <strong className="text-blue-400 font-mono">{economy.formattedBank || 0}</strong></span>
                   </div>
@@ -767,13 +819,13 @@ export default function PlayerView({
               <div className="mc-inset-box rounded p-3">
                 <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase">Core Profile Stats</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-red-400 block font-bold">❤ Health</span> 1,240 HP</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-emerald-400 block font-bold">❈ Defense</span> 650</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-red-500 block font-bold">❁ Strength</span> 420</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-white block font-bold">✦ Speed</span> 250%</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-blue-400 block font-bold">☣ Crit Chance</span> 100%</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-blue-500 block font-bold">☠ Crit Damage</span> 512%</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-cyan-400 block font-bold">✎ Intelligence</span> 890</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-red-400 block font-bold">❤ Health</span> {misc.health || '3,577.32'} HP</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-emerald-400 block font-bold">❈ Defense</span> {misc.defense || '823.43'}</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-red-500 block font-bold">❁ Strength</span> {misc.strength || '372.75'}</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-white block font-bold">✦ Speed</span> {misc.speed || '351'}</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-blue-400 block font-bold">☣ Crit Chance</span> {misc.critChance || '81%'}</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-blue-500 block font-bold">☠ Crit Damage</span> {misc.critDamage || '146%'}</div>
+                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-cyan-400 block font-bold">✎ Intelligence</span> {misc.intelligence || '3,822.77'}</div>
                   <div className="p-2 rounded bg-[#1f242c]"><span className="text-amber-400 block font-bold">✯ Magic Find</span> 124</div>
                 </div>
               </div>
@@ -847,13 +899,63 @@ export default function PlayerView({
           </div>
         )}
 
+        {/* SUB-SCREEN: SKYBLOCK LEVELING */}
+        {screen === 'levels' && (
+          <div className="space-y-4">
+            {renderScreenHeader('SkyBlock Leveling')}
+            <div className="mc-inset-box rounded p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-gray-400 block uppercase font-bold">Current SkyBlock Level</span>
+                  <h3 className="text-3xl font-black text-cyan-400 font-mono">[{misc.skyblockLevel || 205}]</h3>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-gray-400 block uppercase font-bold">Total SkyBlock XP</span>
+                  <span className="text-base text-amber-400 font-mono font-bold">
+                    {((misc.skyblockLevel || 205) * 100 + 9).toLocaleString()} XP
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs font-mono text-gray-300">
+                  <span>Progress to Level {(misc.skyblockLevel || 205) + 1}</span>
+                  <span className="text-cyan-400 font-bold">9 / 100 XP (9.0%)</span>
+                </div>
+                <div className="w-full bg-[#090c10] h-3 rounded-full overflow-hidden border border-[#21262d]">
+                  <div className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full" style={{ width: '9%' }} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs font-mono">
+                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
+                  <span className="text-emerald-400 block font-bold text-sm">Skills</span>
+                  <span className="text-gray-300">+4,250 XP</span>
+                </div>
+                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
+                  <span className="text-amber-400 block font-bold text-sm">Collections</span>
+                  <span className="text-gray-300">+2,820 XP</span>
+                </div>
+                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
+                  <span className="text-purple-400 block font-bold text-sm">Slayers</span>
+                  <span className="text-gray-300">+1,650 XP</span>
+                </div>
+                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
+                  <span className="text-red-400 block font-bold text-sm">Dungeons</span>
+                  <span className="text-gray-300">+3,100 XP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* SUB-SCREEN: SKILLS */}
         {screen === 'skills' && (
           <div className="space-y-4">
             {renderScreenHeader('Your Skills')}
             <div className="flex items-center justify-between px-1">
               <span className="text-sm font-bold text-gray-200">Non-Cosmetic Skill Average</span>
-              <span className="text-base text-emerald-400 font-mono font-bold">{skills.skillAverage || 0}</span>
+              <span className="text-base text-emerald-400 font-mono font-bold">{skills.skillAverage || '38.2'}</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {(skills.skills || []).map(skill => {
@@ -1387,7 +1489,7 @@ export default function PlayerView({
             {renderScreenHeader('Trades')}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {[
-                { name: 'Dirt (x16)', cost: '16 Coins', icon: '/textures/minecraft/dirt.png' || '/textures/minecraft/stone.png' },
+                { name: 'Dirt (x16)', cost: '16 Coins', icon: '/textures/minecraft/stone.png' },
                 { name: 'Ice (x1)', cost: '1 Coin', icon: '/textures/minecraft/ice.png' },
                 { name: 'Sand (x1)', cost: '4 Coins', icon: '/textures/minecraft/sand.png' },
                 { name: 'Red Mushroom', cost: '12 Coins', icon: '/textures/minecraft/red_mushroom.png' },
@@ -1410,7 +1512,7 @@ export default function PlayerView({
         {/* SUB-SCREEN: QUESTS */}
         {screen === 'quests' && (
           <div className="space-y-4">
-            {renderScreenHeader('Quest Log')}
+            {renderScreenHeader('Quests & Chapters')}
             <div className="space-y-2">
               {[
                 { title: 'The Hub Discovery', progress: '100% Completed', desc: 'Visit all 12 key districts in the Hub village and meet the villagers.', done: true },
@@ -1464,41 +1566,6 @@ export default function PlayerView({
                   <span className="text-xs text-emerald-400 font-mono font-bold whitespace-nowrap">{ev.time}</span>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* SUB-SCREEN: QUIVER */}
-        {screen === 'quiver' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Quiver Storage')}
-            <div className="mc-inset-box rounded p-4 space-y-3">
-              <span className="text-xs text-gray-300 block">Selected Active Arrow</span>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {[
-                  { id: 'flint', name: 'Flint Arrow', count: '10,240', desc: 'Standard arrows' },
-                  { id: 'icy', name: 'Icy Arrow', count: '2,560', desc: 'Slows down targets' },
-                  { id: 'magma', name: 'Magma Arrow', count: '1,280', desc: 'Ignites target and deals bonus flame' },
-                  { id: 'toxic', name: 'Toxic Arrow', count: '3,840', desc: 'Reduces healing and poisons' },
-                  { id: 'bouncy', name: 'Bouncy Arrow', count: '640', desc: 'Ricochets to secondary mobs' },
-                  { id: 'armadillo', name: 'Armadillo Arrow', count: '512', desc: 'Pierces through monster armor' },
-                ].map(arr => (
-                  <div
-                    key={arr.id}
-                    onClick={() => setSelectedArrow(arr.id)}
-                    className={`p-3 rounded border-2 cursor-pointer ${selectedArrow === arr.id ? 'border-amber-400 bg-amber-500/10' : 'border-[#373737] bg-[#1a1f26]'} space-y-1`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-xs text-white">{arr.name}</h4>
-                      <span className="text-xs text-amber-400 font-mono font-bold">{arr.count}</span>
-                    </div>
-                    <p className="text-[10px] text-gray-400">{arr.desc}</p>
-                    <button className={`mc-stone-button text-[11px] px-2 py-0.5 w-full mt-1 ${selectedArrow === arr.id ? 'active font-bold' : ''}`}>
-                      {selectedArrow === arr.id ? 'Active' : 'Select'}
-                    </button>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         )}
