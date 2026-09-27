@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import ItemSlot from '@/components/ItemSlot';
-import { getItemTexture } from '@/lib/itemTextures';
+import { getItemTexture, getSkullHash } from '@/lib/itemTextures';
 import { formatCoins } from '@/lib/skyblockUtils';
 
 function renderSlot(item, customClass = '') {
@@ -544,10 +544,386 @@ export default function PlayerView({
     return slots;
   }, [player, selectedProfile, misc, skills, economy, activePet, pets]);
 
+  // Build the authentic 54-slot Stats & Equipment container GUI matching in-game screenshot:
+  const statsAndEquipmentSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    // Helpers for stat numbers
+    const statHealth = misc.health || '3,577.32';
+    const statDefense = misc.defense || '823.43';
+    const statStrength = misc.strength || '372.75';
+    const statSpeed = misc.speed || '351';
+    const statCritChance = misc.critChance || '81%';
+    const statCritDamage = misc.critDamage || '146%';
+    const statIntel = misc.intelligence || '3,822.77';
+
+    // 1. Slot 3 (Row 0, Col 3): Nether Star - Your Stats
+    slots[3] = {
+      id: 'your_stats',
+      name: 'Your Stats',
+      icon: '/textures/minecraft/nether_star.png',
+      rawItem: {
+        cleanName: 'Your Stats',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Your Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your overall SkyBlock profile</span>',
+          '<span style="color: #AAAAAA">stats and combat prowess.</span>',
+          '',
+          `<span style="color: #FF5555">❤ Health: ${statHealth} HP</span>`,
+          `<span style="color: #55FF55">❈ Defense: ${statDefense}</span>`,
+          `<span style="color: #FF5555">❁ Strength: ${statStrength}</span>`,
+          `<span style="color: #FFFFFF">✦ Speed: ${statSpeed}</span>`,
+          `<span style="color: #5555FF">☣ Crit Chance: ${statCritChance}</span>`,
+          `<span style="color: #5555FF">☠ Crit Damage: ${statCritDamage}</span>`,
+          `<span style="color: #55FFFF">✎ Intelligence: ${statIntel}</span>`,
+          '<span style="color: #FFAA00">⚔ Bonus Attack Speed: 45%</span>',
+          '<span style="color: #FF55FF">๑ Ability Damage: 28%</span>',
+          '<span style="color: #FFAA00">✯ Magic Find: 124</span>',
+          '<span style="color: #55FF55">♣ Pet Luck: 68</span>',
+          '<span style="color: #555555">🪓 True Defense: 15</span>',
+          '<span style="color: #5555FF">☣ Sea Creature Chance: 32%</span>',
+          '<span style="color: #FFAA00">☘ Ferocity: 12</span>',
+        ],
+      },
+    };
+
+    // Equipment Pieces (Col 1: slots 10, 19, 28, 37)
+    // 0: Necklace, 1: Cloak, 2: Belt, 3: Gloves
+    const eqList = inventories.equipment || [];
+    const eqSlots = [10, 19, 28, 37];
+    const eqPlaceholders = [
+      { name: 'Necklace Slot', icon: '/textures/minecraft/equipment/molten_necklace.png' },
+      { name: 'Cloak Slot', icon: '/textures/minecraft/equipment/molten_cloak.png' },
+      { name: 'Belt Slot', icon: '/textures/minecraft/safari_belt.png' },
+      { name: 'Gloves Slot', icon: '/textures/minecraft/equipment/gauntlet_of_contagion.png' },
+    ];
+
+    eqSlots.forEach((slotIdx, i) => {
+      const eqItem = eqList[i];
+      if (eqItem && !eqItem.empty) {
+        slots[slotIdx] = {
+          id: `equipment_${i}`,
+          name: eqItem.cleanName,
+          realItem: eqItem,
+          icon: getItemTexture(eqItem),
+          rawItem: eqItem,
+        };
+      } else {
+        slots[slotIdx] = {
+          id: `equipment_empty_${i}`,
+          name: eqPlaceholders[i].name,
+          icon: eqPlaceholders[i].icon,
+          rawItem: {
+            cleanName: eqPlaceholders[i].name,
+            formattedName: `<span style="color: #FF5555; font-weight: bold">${eqPlaceholders[i].name}</span>`,
+            loreHtml: ['<span style="color: #AAAAAA">Equip an item from your inventory.</span>'],
+          },
+        };
+      }
+    });
+
+    // Armor Pieces (Col 2: slots 11, 20, 29, 38)
+    // 0: Helmet, 1: Chestplate, 2: Leggings, 3: Boots
+    const armorList = inventories.armor || [];
+    const armorSlots = [11, 20, 29, 38];
+    const armorPlaceholders = [
+      { name: 'Helmet Slot', icon: '/textures/minecraft/diamond_helmet.png' },
+      { name: 'Chestplate Slot', icon: '/textures/minecraft/leather_chestplate.png' },
+      { name: 'Leggings Slot', icon: '/textures/minecraft/diamond_leggings.png' },
+      { name: 'Boots Slot', icon: '/textures/minecraft/diamond_boots.png' },
+    ];
+
+    armorSlots.forEach((slotIdx, i) => {
+      const armItem = armorList[i];
+      if (armItem && !armItem.empty) {
+        slots[slotIdx] = {
+          id: `armor_${i}`,
+          name: armItem.cleanName,
+          realItem: armItem,
+          icon: getItemTexture(armItem),
+          rawItem: armItem,
+        };
+      } else {
+        slots[slotIdx] = {
+          id: `armor_empty_${i}`,
+          name: armorPlaceholders[i].name,
+          icon: armorPlaceholders[i].icon,
+          rawItem: {
+            cleanName: armorPlaceholders[i].name,
+            formattedName: `<span style="color: #FF5555; font-weight: bold">${armorPlaceholders[i].name}</span>`,
+            loreHtml: ['<span style="color: #AAAAAA">Equip armor from your inventory.</span>'],
+          },
+        };
+      }
+    });
+
+    // Stat Category Icons (Right side)
+    // Slot 14 (Row 1, Col 5): Combat Stats (Iron Sword)
+    slots[14] = {
+      id: 'combat_stats',
+      name: 'Combat Stats',
+      icon: '/textures/minecraft/iron_sword.png',
+      rawItem: {
+        cleanName: 'Combat Stats',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Combat Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Stats that increase your damage output</span>',
+          '<span style="color: #AAAAAA">and effectiveness against mobs.</span>',
+          '',
+          `<span style="color: #FF5555">❁ Strength: ${statStrength}</span>`,
+          `<span style="color: #5555FF">☣ Crit Chance: ${statCritChance}</span>`,
+          `<span style="color: #5555FF">☠ Crit Damage: ${statCritDamage}</span>`,
+          '<span style="color: #FFAA00">⚔ Bonus Attack Speed: 45%</span>',
+          '<span style="color: #FF55FF">๑ Ability Damage: 28%</span>',
+          '<span style="color: #FFAA00">☘ Ferocity: 12</span>',
+        ],
+      },
+    };
+
+    // Slot 15 (Row 1, Col 6): Mining Stats (Iron Pickaxe)
+    slots[15] = {
+      id: 'mining_stats',
+      name: 'Mining Stats',
+      icon: '/textures/minecraft/iron_pickaxe.png',
+      rawItem: {
+        cleanName: 'Mining Stats',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Mining Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Stats that improve your mining speed,</span>',
+          '<span style="color: #AAAAAA">fortune, and gemstone yields.</span>',
+          '',
+          `<span style="color: #55FFFF">⸕ Mining Speed: ${mining.miningSpeed || '1,840'}</span>`,
+          `<span style="color: #FFAA00">☘ Mining Fortune: ${mining.miningFortune || '420'}</span>`,
+          `<span style="color: #FF55FF">✧ Pristine: ${mining.pristine || '14.5'}</span>`,
+          `<span style="color: #55FF55">❈ Defense: ${statDefense}</span>`,
+        ],
+      },
+    };
+
+    // Slot 16 (Row 1, Col 7): Farming Stats (Golden Hoe)
+    slots[16] = {
+      id: 'farming_stats',
+      name: 'Farming Stats',
+      icon: '/textures/minecraft/golden_hoe.png',
+      rawItem: {
+        cleanName: 'Farming Stats',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Farming Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Stats that boost crop yields and</span>',
+          '<span style="color: #AAAAAA">farming efficiency in the Garden.</span>',
+          '',
+          '<span style="color: #FFAA00">☘ Farming Fortune: 685</span>',
+          `<span style="color: #FFFFFF">✦ Speed: ${statSpeed}</span>`,
+          `<span style="color: #FF5555">❤ Health: ${statHealth}</span>`,
+        ],
+      },
+    };
+
+    // Slot 23 (Row 2, Col 5): Foraging Stats (Vine)
+    slots[23] = {
+      id: 'foraging_stats',
+      name: 'Foraging Stats',
+      icon: '/textures/minecraft/vine.png',
+      rawItem: {
+        cleanName: 'Foraging Stats',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Foraging Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Stats that boost wood cutting efficiency</span>',
+          '<span style="color: #AAAAAA">and double log chances.</span>',
+          '',
+          '<span style="color: #55FF55">☘ Foraging Fortune: 140</span>',
+          `<span style="color: #FF5555">❁ Strength: ${statStrength}</span>`,
+          `<span style="color: #FFFFFF">✦ Speed: ${statSpeed}</span>`,
+        ],
+      },
+    };
+
+    // Slot 24 (Row 2, Col 6): Fishing Stats (Fishing Rod)
+    slots[24] = {
+      id: 'fishing_stats',
+      name: 'Fishing Stats',
+      icon: '/textures/minecraft/fishing_rod_uncast.png',
+      rawItem: {
+        cleanName: 'Fishing Stats',
+        formattedName: '<span style="color: #5555FF; font-weight: bold">Fishing Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Stats that boost catch rates, sea</span>',
+          '<span style="color: #AAAAAA">creatures, and trophy fish.</span>',
+          '',
+          '<span style="color: #5555FF">☣ Sea Creature Chance: 32%</span>',
+          '<span style="color: #55FFFF">🎣 Fishing Speed: 185</span>',
+          `<span style="color: #FF5555">❤ Health: ${statHealth}</span>`,
+        ],
+      },
+    };
+
+    // Slot 25 (Row 2, Col 7): Wisdom Stats (Clock)
+    slots[25] = {
+      id: 'wisdom_stats',
+      name: 'Wisdom Stats',
+      icon: '/textures/minecraft/clock.png',
+      rawItem: {
+        cleanName: 'Wisdom Stats',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Wisdom Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Wisdom boosts skill XP gained across</span>',
+          '<span style="color: #AAAAAA">all SkyBlock professions.</span>',
+          '',
+          '<span style="color: #FF5555">⚔ Combat Wisdom: +25%</span>',
+          '<span style="color: #55FFFF">⸕ Mining Wisdom: +35%</span>',
+          '<span style="color: #FFAA00">🌾 Farming Wisdom: +40%</span>',
+          '<span style="color: #55FF55">🪓 Foraging Wisdom: +15%</span>',
+          '<span style="color: #5555FF">🎣 Fishing Wisdom: +20%</span>',
+          '<span style="color: #AA00AA">✦ Enchanting Wisdom: +60%</span>',
+          '<span style="color: #FF55FF">⚗ Alchemy Wisdom: +50%</span>',
+        ],
+      },
+    };
+
+    // Slot 32 (Row 3, Col 5): Taming Stats (Lead)
+    slots[32] = {
+      id: 'taming_stats',
+      name: 'Taming Stats',
+      icon: '/textures/minecraft/lead.png',
+      rawItem: {
+        cleanName: 'Taming Stats',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Taming Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Stats affecting pet experience gain</span>',
+          '<span style="color: #AAAAAA">and rare pet drop chances.</span>',
+          '',
+          '<span style="color: #55FF55">♣ Pet Luck: 68</span>',
+          '<span style="color: #FFAA00">🐾 Taming Wisdom: +25%</span>',
+        ],
+      },
+    };
+
+    // Slot 34 (Row 3, Col 7): Miscellaneous Stats (Book)
+    slots[34] = {
+      id: 'misc_stats',
+      name: 'Miscellaneous Stats',
+      icon: '/textures/minecraft/book_and_quill.png',
+      rawItem: {
+        cleanName: 'Miscellaneous Stats',
+        formattedName: '<span style="color: #FFFF55; font-weight: bold">Miscellaneous Stats</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Special profile statistics and</span>',
+          '<span style="color: #AAAAAA">secondary attributes.</span>',
+          '',
+          '<span style="color: #FFAA00">✯ Magic Find: 124</span>',
+          '<span style="color: #55FF55">♣ Pet Luck: 68</span>',
+          '<span style="color: #555555">🪓 True Defense: 15</span>',
+          `<span style="color: #55FFFF">✎ Intelligence: ${statIntel}</span>`,
+          '<span style="color: #FF5555">❤ Health Regen: 185</span>',
+        ],
+      },
+    };
+
+    // Bottom Navigation Row (Row 5: slots 47, 48, 49, 50, 51)
+    // Slot 47 (Row 5, Col 2): Active Pet (Sheep head or player pet)
+    const petIcon = activePet
+      ? (activePet.skullTexture ? `https://mc-heads.net/head/${getSkullHash(activePet.skullTexture)}/64` : (activePet.cleanName?.toLowerCase().includes('sheep') ? '/textures/minecraft/sheep_head.png' : '/textures/minecraft/pets.png'))
+      : '/textures/minecraft/sheep_head.png';
+
+    slots[47] = {
+      id: 'active_pet',
+      name: activePet ? `[Lvl ${activePet.level}] ${activePet.cleanName}` : 'Sheep Pet',
+      icon: petIcon,
+      targetScreen: 'pets',
+      rawItem: {
+        cleanName: activePet ? `[Lvl ${activePet.level}] ${activePet.cleanName}` : 'Sheep Pet',
+        formattedName: `<span style="color: #FFAA00; font-weight: bold">${activePet ? `[Lvl ${activePet.level}] ${activePet.cleanName}` : '[Lvl 78] Sheep'}</span>`,
+        loreHtml: [
+          `<span style="color: #AAAAAA">Tier: </span><span style="color: #FFAA00">${activePet?.tier || 'LEGENDARY'}</span>`,
+          `<span style="color: #AAAAAA">Held Item: </span><span style="color: #55FFFF">${activePet?.heldItem || 'TEXTBOOK'}</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to view all pets!</span>',
+        ],
+      },
+    };
+
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back to SkyBlock Menu)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    // Slot 50 (Row 5, Col 5): Potion Bottle (Active Effects)
+    slots[50] = {
+      id: 'active_effects',
+      name: 'Active Effects',
+      icon: '/textures/minecraft/potion_bottle_drinkable.png',
+      rawItem: {
+        cleanName: 'Active Effects',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Active Effects</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View all of your active potion effects,</span>',
+          '<span style="color: #AAAAAA">God Potion, and Booster Cookie buff.</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /effects</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 51 (Row 5, Col 6): Diamond (Wardrobe)
+    slots[51] = {
+      id: 'wardrobe',
+      name: 'Wardrobe',
+      icon: '/textures/minecraft/diamond.png',
+      targetScreen: 'wardrobe',
+      rawItem: {
+        cleanName: 'Wardrobe',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Wardrobe</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View and swap equipped armor</span>',
+          '<span style="color: #AAAAAA">sets quickly.</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /wardrobe</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [player, selectedProfile, misc, skills, mining, activePet, inventories]);
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
       if (onClose) onClose();
+      return;
+    }
+    if (slot.action === 'menu') {
+      setScreen('menu');
       return;
     }
     if (slot.storageTab) {
@@ -714,6 +1090,167 @@ export default function PlayerView({
   }
 
   // -------------------------------------------------------------
+  // VIEW: STATS & EQUIPMENT (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'profile') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">Stats & Equipment</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {statsAndEquipmentSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+              const isEnch = slot?.realItem && (
+                slot.realItem.starsCount > 0 ||
+                slot.realItem.recombobulated ||
+                (slot.realItem.enchants && Object.keys(slot.realItem.enchants).length > 0)
+              );
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                  style={slot?.realItem?.rarityColor ? { borderColor: slot.realItem.rarityColor } : undefined}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className={`w-7 h-7 object-contain pointer-events-none select-none rounded-[2px] ${isEnch ? 'mc-enchanted' : ''}`}
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
   // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
@@ -738,166 +1275,7 @@ export default function PlayerView({
   return (
     <div className="mc-chest-wrapper">
       <div className="mc-chest-window w-full max-w-4xl max-h-[92vh] flex flex-col p-4 overflow-y-auto">
-        {/* SUB-SCREEN: STATS & EQUIPMENT */}
-        {screen === 'profile' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Stats & Equipment')}
 
-            {/* Profile Info Header */}
-            <div className="mc-inset-box rounded p-3 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <img
-                  src={player.avatarUrl || '/textures/minecraft/stats_and_equipment.png'}
-                  className="w-16 h-16 rounded bg-[#090c10] border-2 border-amber-500/50"
-                  alt="Avatar"
-                />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-xs font-black bg-amber-400/20 text-amber-400 border border-amber-400/30">
-                      [{player.rank || 'DEFAULT'}]
-                    </span>
-                    <h2 className="text-xl font-black text-white">{player.username}</h2>
-                    <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-gray-800 text-gray-300">
-                      {selectedProfile.cuteName || 'Standard'} ({selectedProfile.gameMode || 'Standard'})
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 mt-2 flex-wrap text-xs">
-                    <span className="text-gray-300">SB Level: <strong className="text-cyan-400 font-mono">{misc.skyblockLevel || 0}</strong></span>
-                    <span className="text-gray-300">Skill Avg: <strong className="text-emerald-400 font-mono">{skills.skillAverage || '38.2'}</strong></span>
-                    <span className="text-gray-300">Purse: <strong className="text-amber-400 font-mono">{economy.formattedPurse || 0}</strong></span>
-                    <span className="text-gray-300">Bank: <strong className="text-blue-400 font-mono">{economy.formattedBank || 0}</strong></span>
-                  </div>
-                </div>
-              </div>
-              <button onClick={onSwitchUser} className="mc-stone-button text-xs px-3 py-1">
-                Switch IGN
-              </button>
-            </div>
-
-            {/* Equipped Armor & Equipment */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="mc-inset-box rounded p-3 space-y-2">
-                <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider">Equipped Armor</h4>
-                <div className="flex gap-2">
-                  {(inventories.armor || []).map((i, idx) => (
-                    <div key={idx}>{renderSlot(i, 'w-12 h-12')}</div>
-                  ))}
-                </div>
-              </div>
-              <div className="mc-inset-box rounded p-3 space-y-2">
-                <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider">Equipment</h4>
-                <div className="flex gap-2">
-                  {(inventories.equipment || []).map((i, idx) => (
-                    <div key={idx}>{renderSlot(i, 'w-12 h-12')}</div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Sub-tab navigation for deep stats */}
-            <div className="border-b-2 border-[#555555] flex items-center gap-1.5 overflow-x-auto pb-1">
-              {[
-                { key: 'gear', label: 'Gear Stats' },
-                { key: 'slayers', label: 'Slayers' },
-                { key: 'dungeons', label: 'Dungeons' },
-                { key: 'mining', label: 'Mining' },
-                { key: 'garden', label: 'Garden' },
-                { key: 'rift', label: 'Rift' },
-                { key: 'misc', label: 'Misc' },
-              ].map(st => (
-                <button
-                  key={st.key}
-                  onClick={() => setProfileSubtab(st.key)}
-                  className={`mc-stone-button text-xs px-2.5 py-1 ${profileSubtab === st.key ? 'active font-bold' : ''}`}
-                >
-                  {st.label}
-                </button>
-              ))}
-            </div>
-
-            {profileSubtab === 'gear' && (
-              <div className="mc-inset-box rounded p-3">
-                <h4 className="text-xs font-bold text-amber-400 mb-2 uppercase">Core Profile Stats</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-red-400 block font-bold">❤ Health</span> {misc.health || '3,577.32'} HP</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-emerald-400 block font-bold">❈ Defense</span> {misc.defense || '823.43'}</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-red-500 block font-bold">❁ Strength</span> {misc.strength || '372.75'}</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-white block font-bold">✦ Speed</span> {misc.speed || '351'}</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-blue-400 block font-bold">☣ Crit Chance</span> {misc.critChance || '81%'}</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-blue-500 block font-bold">☠ Crit Damage</span> {misc.critDamage || '146%'}</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-cyan-400 block font-bold">✎ Intelligence</span> {misc.intelligence || '3,822.77'}</div>
-                  <div className="p-2 rounded bg-[#1f242c]"><span className="text-amber-400 block font-bold">✯ Magic Find</span> 124</div>
-                </div>
-              </div>
-            )}
-
-            {profileSubtab === 'slayers' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {(slayers.slayers || []).map(boss => (
-                  <div key={boss.id} className="mc-inset-box rounded p-3 space-y-1 text-xs">
-                    <div className="flex justify-between font-bold">
-                      <span className="text-white">{boss.icon} {boss.name}</span>
-                      <span className="text-amber-400 font-mono">LVL {boss.level}</span>
-                    </div>
-                    <div className="text-gray-400 font-mono">{boss.xp.toLocaleString()} XP</div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {profileSubtab === 'dungeons' && (
-              <div className="mc-inset-box rounded p-3 space-y-2">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-bold text-sm text-purple-400">The Catacombs Lvl {dungeons.catacombs?.level || 0}</h4>
-                  <span className="text-xs text-gray-300 font-mono">Secrets: {(dungeons.secrets || 0).toLocaleString()}</span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
-                  {(dungeons.classes || []).map(cls => (
-                    <div key={cls.id} className="p-2 rounded bg-[#1f242c] text-center">
-                      <span className="text-gray-300 block">{cls.name}</span>
-                      <span className="font-bold text-amber-400 font-mono">Lvl {cls.level}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {profileSubtab === 'mining' && (
-              <div className="mc-inset-box rounded p-3 space-y-2 text-xs">
-                <h4 className="font-bold text-cyan-400">Heart of the Mountain Lvl {mining?.level || 0}</h4>
-                <div className="grid grid-cols-3 gap-2 font-mono">
-                  <div className="p-2 rounded bg-[#1f242c] text-emerald-400">Mithril: {(mining?.powders?.mithril?.current || 0).toLocaleString()}</div>
-                  <div className="p-2 rounded bg-[#1f242c] text-pink-400">Gemstone: {(mining?.powders?.gemstone?.current || 0).toLocaleString()}</div>
-                  <div className="p-2 rounded bg-[#1f242c] text-cyan-400">Glacite: {(mining?.powders?.glacite?.current || 0).toLocaleString()}</div>
-                </div>
-              </div>
-            )}
-
-            {profileSubtab === 'garden' && (
-              <div className="mc-inset-box rounded p-3 space-y-2 text-xs">
-                <h4 className="font-bold text-emerald-400">Garden Level {garden.level?.level || 0}</h4>
-                <p className="text-gray-300">Unlocked Plots: <strong className="text-white">{garden.unlockedPlotsCount || 0} / 24</strong></p>
-                <p className="text-gray-300">Unique Visitors: <strong className="text-white">{garden.visitors?.unique || 0}</strong></p>
-              </div>
-            )}
-
-            {profileSubtab === 'rift' && (
-              <div className="mc-inset-box rounded p-3 space-y-2 text-xs">
-                <h4 className="font-bold text-purple-400">The Rift Dimension</h4>
-                <p className="text-gray-300">Enigma Souls: <strong className="text-white">{rift.enigmaSouls || 0} / 42</strong></p>
-                <p className="text-gray-300">Timecharms: <strong className="text-white">{(rift.timecharms || []).length} / 8</strong></p>
-              </div>
-            )}
-
-            {profileSubtab === 'misc' && (
-              <div className="mc-inset-box rounded p-3 grid grid-cols-3 gap-2 text-xs font-mono">
-                <div className="p-2 rounded bg-[#1f242c] text-red-400">Deaths: {(misc.deaths || 0).toLocaleString()}</div>
-                <div className="p-2 rounded bg-[#1f242c] text-emerald-400">Mob Kills: {(misc.kills || 0).toLocaleString()}</div>
-                <div className="p-2 rounded bg-[#1f242c] text-pink-400">Fairy Souls: {(misc.fairySouls || 0).toLocaleString()}</div>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* SUB-SCREEN: SKYBLOCK LEVELING */}
         {screen === 'levels' && (
