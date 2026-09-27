@@ -10,10 +10,7 @@ const SCENE_CONFIGS = {
     targets: [
       {
         id: 'bazaar_npc',
-        left: '42%',
-        top: '35%',
-        width: '16%',
-        height: '42%',
+        points: '613,323 665,323 665,364 681,369 679,430 662,430 660,382 658,487 620,487 618,382 616,430 599,430 597,369 613,364',
         action: 'bazaar'
       }
     ]
@@ -25,18 +22,12 @@ const SCENE_CONFIGS = {
     targets: [
       {
         id: 'banker_npc',
-        left: '35%',
-        top: '47%',
-        width: '16%',
-        height: '38%',
+        points: '535,425 585,425 585,487 613,495 613,539 512,539 512,495 535,487',
         action: 'bank_account'
       },
       {
         id: 'vault_npc',
-        left: '58%',
-        top: '44%',
-        width: '20%',
-        height: '42%',
+        points: '810,365 890,365 935,410 935,495 910,538 800,538 780,480 780,410',
         action: 'bank_vault'
       }
     ]
@@ -48,10 +39,7 @@ const SCENE_CONFIGS = {
     targets: [
       {
         id: 'auction_master',
-        left: '41%',
-        top: '44%',
-        width: '18%',
-        height: '43%',
+        points: '617,440 663,440 663,479 689,487 685,546 666,546 660,499 657,600 621,600 618,499 613,546 595,546 593,487 617,479',
         action: 'auction_main'
       }
     ]
@@ -62,6 +50,7 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
   const config = SCENE_CONFIGS[scene] || SCENE_CONFIGS.bazaar;
 
   const [isLooping, setIsLooping] = useState(false);
+  const [hoveredId, setHoveredId] = useState(null);
   const [wrapperStyle, setWrapperStyle] = useState({
     width: '100%',
     height: '100%',
@@ -115,6 +104,7 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
   // Initialize and switch videos
   useEffect(() => {
     setIsLooping(false);
+    setHoveredId(null);
 
     const intro = introVideoRef.current;
     const loop = loopVideoRef.current;
@@ -201,20 +191,39 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
           }}
         />
 
-        {/* Clean, transparent clickable hitboxes over NPCs */}
-        {config.targets.map((tgt) => (
-          <div
-            key={tgt.id}
-            onClick={() => handleTargetClick(tgt.action)}
-            className="absolute z-20 cursor-pointer"
-            style={{
-              left: tgt.left,
-              top: tgt.top,
-              width: tgt.width,
-              height: tgt.height
-            }}
-          />
-        ))}
+        {/* SVG Polygon Outline Tracing NPC Silhouette Exactly (No Box) */}
+        <svg
+          viewBox="0 0 1280 720"
+          className="absolute inset-0 w-full h-full pointer-events-auto select-none"
+          style={{ zIndex: 20 }}
+        >
+          <defs>
+            <filter id="npc-purple-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#c084fc" floodOpacity="0.95" />
+              <feDropShadow dx="0" dy="0" stdDeviation="5.5" floodColor="#a855f7" floodOpacity="0.8" />
+            </filter>
+          </defs>
+
+          {config.targets.map((tgt) => {
+            const isHovered = hoveredId === tgt.id;
+            return (
+              <polygon
+                key={tgt.id}
+                points={tgt.points}
+                onClick={() => handleTargetClick(tgt.action)}
+                onMouseEnter={() => setHoveredId(tgt.id)}
+                onMouseLeave={() => setHoveredId(null)}
+                className="cursor-pointer transition-all duration-150"
+                stroke={isHovered ? '#c084fc' : 'transparent'}
+                strokeWidth={isHovered ? '3' : '0'}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                fill={isHovered ? 'rgba(168, 85, 247, 0.08)' : 'rgba(0, 0, 0, 0.001)'}
+                filter={isHovered ? 'url(#npc-purple-glow)' : 'none'}
+              />
+            );
+          })}
+        </svg>
       </div>
 
       {/* Clean Top Bar: Back to Map button [ESC] */}
