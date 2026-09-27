@@ -4277,6 +4277,7 @@ export default function PlayerView({
   }, []);
 
   // -------------------------------------------------------------
+  // -------------------------------------------------------------
   // PROFILE MANAGEMENT MENU SLOTS (Matches screenshot media_1790527618082.png - 36 slots)
   // -------------------------------------------------------------
   const profileMenuSlots = useMemo(() => {
@@ -4289,44 +4290,65 @@ export default function PlayerView({
       };
     }
 
+    // Profiles array from API or mock fallback matching user screenshot
+    const profileList = profiles && profiles.length > 0 ? profiles : [
+      { profileId: selectedProfile?.profileId || 'p1', cuteName: selectedProfile?.cuteName || 'Banana', game_mode: selectedProfile?.game_mode || 'classic' },
+      { profileId: 'p2', cuteName: 'Blueberry', game_mode: 'classic' }
+    ];
+
+    // Find active profile and other profiles
+    const activeProf = profileList.find(p => p.profileId === selectedProfile?.profileId) || profileList[0];
+    const otherProfs = profileList.filter(p => p.profileId !== activeProf.profileId);
+
+    // Slot 11: Active Profile (Emerald Block)
     slots[11] = {
       id: 'active_profile',
-      name: `Playing on: ${selectedProfile?.cuteName || 'Banana'}`,
+      name: `Playing on: ${activeProf?.cuteName || 'Banana'}`,
       icon: '/textures/minecraft/emerald_block.png',
+      profileId: activeProf?.profileId,
       rawItem: {
-        cleanName: `Playing on: ${selectedProfile?.cuteName || 'Banana'}`,
-        formattedName: `<span style="color: #55FF55; font-weight: bold">Profile: ${selectedProfile?.cuteName || 'Banana'}</span>`,
+        cleanName: `Playing on: ${activeProf?.cuteName || 'Banana'}`,
+        formattedName: `<span style="color: #55FF55; font-weight: bold">Profile: ${activeProf?.cuteName || 'Banana'}</span>`,
         loreHtml: [
           '<span style="color: #55FF55">Currently Playing!</span>',
           '',
-          `<span style="color: #AAAAAA">Members: </span><span style="color: #FFFF55">${selectedProfile?.members ? Object.keys(selectedProfile.members).length : 1}</span>`,
-          `<span style="color: #AAAAAA">Game Mode: </span><span style="color: #FFAA00">${selectedProfile?.game_mode ? selectedProfile.game_mode.toUpperCase() : 'Classic'}</span>`,
-        ],
-      },
-    };
-
-    slots[12] = {
-      id: 'other_profile',
-      name: 'Switch Profile',
-      icon: '/textures/minecraft/grass_block.png',
-      rawItem: {
-        cleanName: 'Switch Profile',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Profile: Blueberry</span>',
-        loreHtml: [
-          '<span style="color: #AAAAAA">Switch to this profile.</span>',
+          `<span style="color: #AAAAAA">Members: </span><span style="color: #FFFF55">${activeProf?.members ? Object.keys(activeProf.members).length : 1}</span>`,
+          `<span style="color: #AAAAAA">Game Mode: </span><span style="color: #FFAA00">${activeProf?.game_mode ? activeProf.game_mode.toUpperCase() : 'Classic'}</span>`,
           '',
-          '<span style="color: #FFFF55">Click to switch!</span>',
+          '<span style="color: #AAAAAA">This is your currently active</span>',
+          '<span style="color: #AAAAAA">SkyBlock profile.</span>',
         ],
       },
     };
 
+    // Slot 12: Other profile (Grass Block)
+    const secondProf = otherProfs[0] || { profileId: 'p2', cuteName: 'Blueberry' };
+    slots[12] = {
+      id: `profile_${secondProf.profileId}`,
+      name: `Profile: ${secondProf.cuteName}`,
+      icon: '/textures/minecraft/grass_block.png',
+      action: 'select_profile',
+      profileId: secondProf.profileId,
+      rawItem: {
+        cleanName: `Profile: ${secondProf.cuteName}`,
+        formattedName: `<span style="color: #55FF55; font-weight: bold">Profile: ${secondProf.cuteName}</span>`,
+        loreHtml: [
+          `<span style="color: #AAAAAA">Members: </span><span style="color: #FFFF55">${secondProf?.members ? Object.keys(secondProf.members).length : 1}</span>`,
+          `<span style="color: #AAAAAA">Game Mode: </span><span style="color: #FFAA00">${secondProf?.game_mode ? secondProf.game_mode.toUpperCase() : 'Classic'}</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to switch to this profile!</span>',
+        ],
+      },
+    };
+
+    // Slot 13: Create New Profile (Wooden Button)
     slots[13] = {
       id: 'create_profile',
       name: 'Create New Profile',
       icon: '/textures/minecraft/wooden_button.png',
       rawItem: {
         cleanName: 'Create New Profile',
-        formattedName: '<span style="color: #FFFF55; font-weight: bold">Create New Profile</span>',
+        formattedName: '<span style="color: #FFFF55; font-weight: bold">Create a new profile</span>',
         loreHtml: [
           '<span style="color: #AAAAAA">Start a fresh SkyBlock journey</span>',
           '<span style="color: #AAAAAA">with a new character!</span>',
@@ -4336,34 +4358,41 @@ export default function PlayerView({
       },
     };
 
+    // Slot 14: Locked Profile Slot (Bedrock)
     slots[14] = {
       id: 'locked_1',
-      name: 'Locked Slot',
+      name: 'Locked Profile Slot',
       icon: '/textures/minecraft/bedrock.png',
       rawItem: {
-        cleanName: 'Locked Slot',
-        formattedName: '<span style="color: #FF5555; font-weight: bold">Profile Slot (Locked)</span>',
+        cleanName: 'Locked Profile Slot',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Profile Slot</span>',
         loreHtml: [
           '<span style="color: #AAAAAA">Unlock additional profile slots</span>',
           '<span style="color: #AAAAAA">with a Hypixel VIP rank or higher.</span>',
+          '',
+          '<span style="color: #FF5555">Locked</span>',
         ],
       },
     };
 
+    // Slot 15: Locked Profile Slot (Bedrock)
     slots[15] = {
       id: 'locked_2',
-      name: 'Locked Slot',
+      name: 'Locked Profile Slot',
       icon: '/textures/minecraft/bedrock.png',
       rawItem: {
-        cleanName: 'Locked Slot',
-        formattedName: '<span style="color: #FF5555; font-weight: bold">Profile Slot (Locked)</span>',
+        cleanName: 'Locked Profile Slot',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Profile Slot</span>',
         loreHtml: [
           '<span style="color: #AAAAAA">Unlock additional profile slots</span>',
           '<span style="color: #AAAAAA">with a Hypixel MVP rank or higher.</span>',
+          '',
+          '<span style="color: #FF5555">Locked</span>',
         ],
       },
     };
 
+    // Slot 30: Go Back (Arrow)
     slots[30] = {
       id: 'back',
       name: 'Go Back',
@@ -4376,6 +4405,7 @@ export default function PlayerView({
       },
     };
 
+    // Slot 31: Close (Barrier)
     slots[31] = {
       id: 'close',
       name: 'Close',
@@ -4389,7 +4419,7 @@ export default function PlayerView({
     };
 
     return slots;
-  }, [selectedProfile]);
+  }, [profiles, selectedProfile]);
 
   // -------------------------------------------------------------
   // BOOSTER COOKIE MENU SLOTS (Matches screenshot media_1790527638591.png - 54 slots)
@@ -4602,6 +4632,10 @@ export default function PlayerView({
     }
     if (slot.action === 'select_loadout') {
       setSelectedLoadout(slot.loadoutNum);
+      return;
+    }
+    if (slot.action === 'select_profile' && slot.profileId) {
+      if (onSelectProfile) onSelectProfile(slot.profileId);
       return;
     }
     if (slot.storageTab) {
