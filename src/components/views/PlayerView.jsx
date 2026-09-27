@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import ItemSlot from '@/components/ItemSlot';
 import { getItemTexture, getSkullHash } from '@/lib/itemTextures';
 import { formatCoins } from '@/lib/skyblockUtils';
+import { generatePetLore, calculatePetLevel, PET_TIER_COLORS } from '@/lib/petConstants';
 
 function renderSlot(item, customClass = '') {
   return <ItemSlot item={item} customClass={customClass} />;
@@ -76,18 +77,6 @@ const PET_MHF_MAP = {
   PARROT: 'https://mc-heads.net/head/MHF_Parrot/64',
   TURTLE: 'https://mc-heads.net/head/MHF_Turtle/64',
   POLAR_BEAR: '/textures/minecraft/polar_bear_head.png',
-};
-
-const PET_TIER_COLORS = {
-  COMMON: '#FFFFFF',
-  UNCOMMON: '#55FF55',
-  RARE: '#55FFFF',
-  EPIC: '#AA00AA',
-  LEGENDARY: '#FFAA00',
-  MYTHIC: '#FF55FF',
-  DIVINE: '#55FFFF',
-  SPECIAL: '#FF5555',
-  VERY_SPECIAL: '#FF5555',
 };
 
 function getPetIcon(pet) {
@@ -923,18 +912,20 @@ export default function PlayerView({
     // Bottom Navigation Row (Row 5: slots 47, 48, 49, 50, 51)
     // Slot 47 (Row 5, Col 2): Active Pet (Sheep head or player pet)
     const petIcon = getPetIcon(activePet);
+    const activePetLvl = activePet ? (activePet.level || calculatePetLevel(activePet.exp || 0, activePet.tier).level || 1) : 78;
+    const activePetName = activePet ? `[Lvl ${activePetLvl}] ${activePet.cleanName}` : 'Sheep Pet';
+    const activePetTierColor = activePet ? (PET_TIER_COLORS[activePet.tier] || '#FFAA00') : '#FFAA00';
 
     slots[47] = {
       id: 'active_pet',
-      name: activePet ? `[Lvl ${activePet.level}] ${activePet.cleanName}` : 'Sheep Pet',
+      name: activePetName,
       icon: petIcon,
       targetScreen: 'pets',
       rawItem: {
-        cleanName: activePet ? `[Lvl ${activePet.level}] ${activePet.cleanName}` : 'Sheep Pet',
-        formattedName: `<span style="color: #FFAA00; font-weight: bold">${activePet ? `[Lvl ${activePet.level}] ${activePet.cleanName}` : '[Lvl 78] Sheep'}</span>`,
-        loreHtml: [
-          `<span style="color: #AAAAAA">Tier: </span><span style="color: #FFAA00">${activePet?.tier || 'LEGENDARY'}</span>`,
-          `<span style="color: #AAAAAA">Held Item: </span><span style="color: #55FFFF">${activePet?.heldItem || 'TEXTBOOK'}</span>`,
+        cleanName: activePetName,
+        formattedName: `<span style="color: ${activePetTierColor}; font-weight: bold">${activePetName} ✦</span>`,
+        loreHtml: activePet ? generatePetLore({ ...activePet, level: activePetLvl }) : [
+          '<span style="color: #AAAAAA">Tier: </span><span style="color: #FFAA00">LEGENDARY</span>',
           '',
           '<span style="color: #FFFF55">Click to view all pets!</span>',
         ],
@@ -3375,26 +3366,10 @@ export default function PlayerView({
         const iconUrl = getPetIcon(pet);
         const tierColor = PET_TIER_COLORS[pet.tier] || '#FFAA00';
         const isSummoned = Boolean(pet.active);
-        const displayName = `[Lvl ${pet.level || 1}] ${pet.cleanName}`;
-
-        const petLore = [
-          `<span style="color: #55FFFF">${pet.tier || 'LEGENDARY'} Pet${pet.skin ? ', ' + pet.skin.replace(/_/g, ' ') : ''}</span>`,
-          '',
-          isSummoned ? '<span style="color: #55FF55; font-weight: bold">✦ CURRENTLY SUMMONED ✦</span>' : '',
-          isSummoned ? '' : '',
-          pet.heldItem ? `<span style="color: #FFAA00">Held Item: </span><span style="color: #55FF55">${pet.heldItem}</span>` : '<span style="color: #555555">Held Item: None</span>',
-          `<span style="color: #55FF55">(${pet.candyUsed || 0}/10) Pet Candy Used</span>`,
-          '',
-          (pet.level || 1) >= (pet.maxLevel || 100)
-            ? '<span style="color: #55FF55; font-weight: bold">MAX LEVEL</span>'
-            : `<span style="color: #AAAAAA">Progress to Level ${(pet.level || 1) + 1}: </span><span style="color: #FFAA00">12.6%</span>`,
-          '',
-          isSummoned
-            ? '<span style="color: #FF5555">Click to despawn!</span>'
-            : '<span style="color: #FFFF55">Left-click to summon!</span>',
-          '<span style="color: #FFFF55">Shift Left-click to favorite!</span>',
-          '<span style="color: #FFFF55">Right-click to convert to item!</span>',
-        ].filter(Boolean);
+        const xpInfo = calculatePetLevel(pet.exp || 0, pet.tier);
+        const lvl = pet.level || xpInfo.level || 1;
+        const displayName = `[Lvl ${lvl}] ${pet.cleanName}`;
+        const petLore = generatePetLore({ ...pet, level: lvl });
 
         slots[slotIdx] = {
           id: `pet_${i}`,

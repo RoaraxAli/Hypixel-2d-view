@@ -1,4 +1,5 @@
 // SkyBlock Calculation Utilities & XP Curves
+import { calculatePetLevel } from './petConstants';
 
 // Standard SkyBlock Skill XP Curve (Levels 1 - 60)
 export const SKILL_XP_TABLE = [
@@ -319,7 +320,8 @@ export function calculatePets(petsArray = []) {
       if (isGdrag) {
         approxLvl = Math.min(200, Math.max(1, Math.floor(Math.cbrt(pet.exp / 25)) + 1));
       } else {
-        approxLvl = Math.min(100, Math.max(1, Math.floor(Math.pow(pet.exp / 25300000, 0.4) * 100)));
+        const info = calculatePetLevel(pet.exp, pet.tier);
+        approxLvl = info.level;
       }
     }
 
