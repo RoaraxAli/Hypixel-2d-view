@@ -1554,6 +1554,300 @@ export default function PlayerView({
     return slots;
   }, []);
 
+  // Build the authentic 54-slot SkyBlock Leveling container GUI matching in-game screenshot:
+  const levelingMenuSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    const sbLevel = misc.skyblockLevel || 205;
+    const totalXp = misc.skyblockExperience || (sbLevel * 100 + 9);
+    const xpProgress = misc.skyblockLevelProgress !== undefined ? misc.skyblockLevelProgress : (totalXp % 100);
+    const completionPct = 34;
+
+    const makeProgressBar = (current, max) => {
+      const pct = max > 0 ? Math.min(100, Math.max(0, (current / max) * 100)) : 0;
+      const totalBars = 25;
+      const greenBars = Math.min(totalBars, Math.max(0, Math.round((pct / 100) * totalBars)));
+      const darkBars = totalBars - greenBars;
+      return `<span style="color: #55FF55">${'-'.repeat(greenBars)}</span><span style="color: #555555">${'-'.repeat(darkBars)}</span>`;
+    };
+
+    // Slot 4 (Row 0, Col 4): Painting (Your SkyBlock Level Ranking)
+    slots[4] = {
+      id: 'level_ranking',
+      name: 'Your SkyBlock Level Ranking',
+      icon: '/textures/minecraft/painting.png',
+      rawItem: {
+        cleanName: 'Your SkyBlock Level Ranking',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Your SkyBlock Level Ranking</span>',
+        loreHtml: [
+          '<span style="color: #555555">Classic Mode</span>',
+          `<span style="color: #AAAAAA">Your level: </span><span style="color: #55FFFF">${sbLevel}</span>`,
+          `<span style="color: #AAAAAA">You have: </span><span style="color: #55FFFF">${totalXp.toLocaleString()} XP</span>`,
+          '',
+          `<span style="color: #AAAAAA">You have completed </span><span style="color: #00AAAA">${completionPct}%</span><span style="color: #AAAAAA"> of the</span>`,
+          '<span style="color: #AAAAAA">total SkyBlock XP Tasks.</span>',
+          '',
+          '<span style="color: #AAAAAA">Ranking information requires</span>',
+          '<span style="color: #AAAAAA">SkyBlock Level 10 or higher.</span>',
+          '<span style="color: #555555">Level rankings may take time</span>',
+          '<span style="color: #555555">to refresh.</span>',
+        ],
+      },
+    };
+
+    // Slot 16 (Row 1, Col 7): Redstone Torch (Ways to Level Up)
+    slots[16] = {
+      id: 'ways_to_level_up',
+      name: 'Ways to Level Up',
+      icon: '/textures/minecraft/redstone_torch.png',
+      rawItem: {
+        cleanName: 'Ways to Level Up',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Ways to Level Up</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Learn more about the different ways</span>',
+          '<span style="color: #AAAAAA">to earn SkyBlock XP.</span>',
+          '',
+          '<span style="color: #AAAAAA">Also see a specific breakdown of</span>',
+          '<span style="color: #AAAAAA">where all your XP comes from!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 19 (Row 2, Col 1): Lime Stained Glass Pane (Current Level)
+    slots[19] = {
+      id: 'current_level',
+      name: `Level ${sbLevel}`,
+      icon: '/textures/minecraft/lime_stained_glass_pane.png',
+      rawItem: {
+        cleanName: `Level ${sbLevel}`,
+        formattedName: `<span style="color: #AAAAAA; font-weight: bold">Level ${sbLevel}</span>`,
+        loreHtml: [
+          '<span style="color: #555555">Your Level</span>',
+          '',
+          '<span style="color: #AAAAAA">Rewards:</span>',
+          '<span style="color: #55FF55; font-weight: bold">UNLOCKED</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view rewards!</span>',
+        ],
+      },
+    };
+
+    // Slot 20 (Row 2, Col 2): Yellow Stained Glass Pane (Next Level)
+    slots[20] = {
+      id: 'next_level',
+      name: `Level ${sbLevel + 1}`,
+      icon: '/textures/minecraft/yellow_stained_glass_pane.png',
+      rawItem: {
+        cleanName: `Level ${sbLevel + 1}`,
+        formattedName: `<span style="color: #AAAAAA; font-weight: bold">Level ${sbLevel + 1}</span>`,
+        loreHtml: [
+          '<span style="color: #555555">Next Level</span>',
+          '',
+          '<span style="color: #AAAAAA">Reward:</span>',
+          '<span style="color: #555555"> +</span><span style="color: #55FF55">5 </span><span style="color: #FF5555">❤ Health</span>',
+          '',
+          '<span style="color: #AAAAAA">Progress to Level Up:</span>',
+          `${makeProgressBar(xpProgress, 100)} <span style="color: #AAAAAA">${xpProgress}</span><span style="color: #555555">/</span><span style="color: #AAAAAA">100 XP</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to view rewards!</span>',
+        ],
+      },
+    };
+
+    // Slot 21 (Row 2, Col 3): Red Stained Glass Pane (Next+1)
+    slots[21] = {
+      id: 'level_plus_2',
+      name: `Level ${sbLevel + 2}`,
+      icon: '/textures/minecraft/red_stained_glass_pane.png',
+      rawItem: {
+        cleanName: `Level ${sbLevel + 2}`,
+        formattedName: `<span style="color: #AAAAAA; font-weight: bold">Level ${sbLevel + 2}</span>`,
+        loreHtml: [
+          '<span style="color: #AAAAAA">Reward:</span>',
+          '<span style="color: #555555"> +</span><span style="color: #55FF55">5 </span><span style="color: #FF5555">❤ Health</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view rewards!</span>',
+        ],
+      },
+    };
+
+    // Slot 22 (Row 2, Col 4): Red Stained Glass Pane (Next+2)
+    slots[22] = {
+      id: 'level_plus_3',
+      name: `Level ${sbLevel + 3}`,
+      icon: '/textures/minecraft/red_stained_glass_pane.png',
+      rawItem: {
+        cleanName: `Level ${sbLevel + 3}`,
+        formattedName: `<span style="color: #AAAAAA; font-weight: bold">Level ${sbLevel + 3}</span>`,
+        loreHtml: [
+          '<span style="color: #AAAAAA">Reward:</span>',
+          '<span style="color: #555555"> +</span><span style="color: #55FF55">5 </span><span style="color: #FF5555">❤ Health</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view rewards!</span>',
+        ],
+      },
+    };
+
+    // Slot 23 (Row 2, Col 5): Red Stained Glass Pane (Next+3)
+    slots[23] = {
+      id: 'level_plus_4',
+      name: `Level ${sbLevel + 4}`,
+      icon: '/textures/minecraft/red_stained_glass_pane.png',
+      rawItem: {
+        cleanName: `Level ${sbLevel + 4}`,
+        formattedName: `<span style="color: #AAAAAA; font-weight: bold">Level ${sbLevel + 4}</span>`,
+        loreHtml: [
+          '<span style="color: #AAAAAA">Reward:</span>',
+          '<span style="color: #555555"> +</span><span style="color: #55FF55">5 </span><span style="color: #FF5555">❤ Health</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view rewards!</span>',
+        ],
+      },
+    };
+
+    // Slot 25 (Row 2, Col 7): SkyBlock Guide Head (SkyBlock Guide)
+    slots[25] = {
+      id: 'skyblock_guide',
+      name: 'SkyBlock Guide',
+      icon: '/textures/minecraft/skyblock_guide_head.png',
+      rawItem: {
+        cleanName: 'SkyBlock Guide',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Guide</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Your </span><span style="color: #FFAA00">SkyBlock Guide </span><span style="color: #AAAAAA">tracks the</span>',
+          '<span style="color: #AAAAAA">progress you have made through</span>',
+          '<span style="color: #AAAAAA">SkyBlock.</span>',
+          '',
+          '<span style="color: #AAAAAA">Complete tasks within your current</span>',
+          '<span style="color: #AAAAAA">game stage to increase your </span><span style="color: #55FFFF">SkyBlock</span>',
+          '<span style="color: #55FFFF">Level </span><span style="color: #AAAAAA">and become a </span><span style="color: #FF55FF">Master of</span>',
+          '<span style="color: #FF55FF">SkyBlock</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 30 (Row 3, Col 3): Book (Leveling Milestones)
+    slots[30] = {
+      id: 'leveling_milestones',
+      name: 'Leveling Milestones',
+      icon: '/textures/minecraft/book.png',
+      rawItem: {
+        cleanName: 'Leveling Milestones',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Leveling Milestones</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Check the major milestone levels and</span>',
+          '<span style="color: #AAAAAA">bonuses unlocked throughout your</span>',
+          '<span style="color: #AAAAAA">SkyBlock journey.</span>',
+          '',
+          `<span style="color: #55FFFF">Next Milestone: </span><span style="color: #FFAA00">Level ${Math.ceil((sbLevel + 1) / 10) * 10}</span>`,
+          `<span style="color: #AAAAAA">XP Needed: </span><span style="color: #55FF55">${((Math.ceil((sbLevel + 1) / 10) * 10 - sbLevel) * 100 - xpProgress)} XP</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to view milestones!</span>',
+        ],
+      },
+    };
+
+    // Slot 34 (Row 3, Col 7): Chest (Leveling Rewards)
+    slots[34] = {
+      id: 'leveling_rewards',
+      name: 'Leveling Rewards',
+      icon: '/textures/minecraft/chest.png',
+      rawItem: {
+        cleanName: 'Leveling Rewards',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Leveling Rewards</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View all the rewards you can unlock</span>',
+          '<span style="color: #AAAAAA">by leveling up your SkyBlock Level.</span>',
+          '',
+          `<span style="color: #AAAAAA">Progress to Max: </span><span style="color: #00AAAA">${Math.min(100, Math.round((sbLevel / 480) * 100))}%</span>`,
+          `${makeProgressBar(sbLevel, 480)} <span style="color: #00AAAA">${sbLevel}</span><span style="color: #55FFFF">/</span><span style="color: #00AAAA">480</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to view rewards!</span>',
+        ],
+      },
+    };
+
+    // Slot 43 (Row 4, Col 7): Name Tag (Prefix Emblems)
+    slots[43] = {
+      id: 'prefix_emblems',
+      name: 'Prefix Emblems',
+      icon: '/textures/minecraft/name_tag.png',
+      rawItem: {
+        cleanName: 'Prefix Emblems',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Prefix Emblems</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Add some spice by having an emblem</span>',
+          '<span style="color: #AAAAAA">next to your name in chat and in tab!</span>',
+          '',
+          '<span style="color: #AAAAAA">Emblems are unlocked through</span>',
+          '<span style="color: #AAAAAA">various activities such as leveling up</span>',
+          '<span style="color: #AAAAAA">or completing achievements!</span>',
+          '',
+          '<span style="color: #AAAAAA">Emblems also show important data</span>',
+          '<span style="color: #AAAAAA">associated with them in chat!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    // Slot 50 (Row 5, Col 5): Lime Dye (SkyBlock Levels in Chat ENABLED)
+    slots[50] = {
+      id: 'chat_levels_toggle',
+      name: 'SkyBlock Levels in Chat',
+      icon: '/textures/minecraft/lime_dye.png',
+      rawItem: {
+        cleanName: 'SkyBlock Levels in Chat',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">SkyBlock Levels in Chat </span><span style="color: #55FF55; font-weight: bold">ENABLED</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View other players\' SkyBlock Level</span>',
+          '<span style="color: #AAAAAA">and their selected emblem in their</span>',
+          '<span style="color: #AAAAAA">chat messages.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to toggle!</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [misc]);
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
@@ -2199,6 +2493,161 @@ export default function PlayerView({
   }
 
   // -------------------------------------------------------------
+  // VIEW: SKYBLOCK LEVELING (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'levels') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">SkyBlock Leveling</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {levelingMenuSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
   // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
@@ -2223,58 +2672,6 @@ export default function PlayerView({
   return (
     <div className="mc-chest-wrapper">
       <div className="mc-chest-window w-full max-w-4xl max-h-[92vh] flex flex-col p-4 overflow-y-auto">
-
-
-        {/* SUB-SCREEN: SKYBLOCK LEVELING */}
-        {screen === 'levels' && (
-          <div className="space-y-4">
-            {renderScreenHeader('SkyBlock Leveling')}
-            <div className="mc-inset-box rounded p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-gray-400 block uppercase font-bold">Current SkyBlock Level</span>
-                  <h3 className="text-3xl font-black text-cyan-400 font-mono">[{misc.skyblockLevel || 205}]</h3>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs text-gray-400 block uppercase font-bold">Total SkyBlock XP</span>
-                  <span className="text-base text-amber-400 font-mono font-bold">
-                    {((misc.skyblockLevel || 205) * 100 + 9).toLocaleString()} XP
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-xs font-mono text-gray-300">
-                  <span>Progress to Level {(misc.skyblockLevel || 205) + 1}</span>
-                  <span className="text-cyan-400 font-bold">9 / 100 XP (9.0%)</span>
-                </div>
-                <div className="w-full bg-[#090c10] h-3 rounded-full overflow-hidden border border-[#21262d]">
-                  <div className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full" style={{ width: '9%' }} />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-xs font-mono">
-                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
-                  <span className="text-emerald-400 block font-bold text-sm">Skills</span>
-                  <span className="text-gray-300">+4,250 XP</span>
-                </div>
-                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
-                  <span className="text-amber-400 block font-bold text-sm">Collections</span>
-                  <span className="text-gray-300">+2,820 XP</span>
-                </div>
-                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
-                  <span className="text-purple-400 block font-bold text-sm">Slayers</span>
-                  <span className="text-gray-300">+1,650 XP</span>
-                </div>
-                <div className="p-2.5 rounded bg-[#1a1f26] border border-[#2d333b]">
-                  <span className="text-red-400 block font-bold text-sm">Dungeons</span>
-                  <span className="text-gray-300">+3,100 XP</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
 
         {/* SUB-SCREEN: STORAGE */}
         {screen === 'storage' && (
