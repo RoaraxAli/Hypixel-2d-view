@@ -269,6 +269,8 @@ export function getSkullHash(skullTexture) {
  */
 export function getItemTexture(item) {
   if (!item || item.empty) return null;
+  if (item.icon) return item.icon;
+  if (item.texture) return item.texture;
 
   // 1. Custom Player Skull Texture (Talismans, Helmets, Heads, Backpacks, Pets)
   if (item.skullTexture) {

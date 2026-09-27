@@ -25,7 +25,7 @@ export default function HomePage() {
   const [activeScene, setActiveScene] = useState(null); // 'bazaar' | 'economy' | 'auctions' | null
   const [activeDestination, setActiveDestination] = useState(null);
   const [sceneInitialTab, setSceneInitialTab] = useState(null);
-  const [playerSubtab, setPlayerSubtab] = useState('inventory');
+  const [playerSubtab, setPlayerSubtab] = useState('menu');
   const [showUserPrompt, setShowUserPrompt] = useState(false);
   const [loaderText, setLoaderText] = useState(null);
 
@@ -103,7 +103,7 @@ export default function HomePage() {
     } else {
       setActiveScene(null);
       setActiveDestination(dest);
-      if (dest === 'player') setPlayerSubtab('inventory');
+      if (dest === 'player') setPlayerSubtab('menu');
     }
   }, []);
 
@@ -217,6 +217,7 @@ export default function HomePage() {
               }
             }}
             onSwitchUser={() => setShowUserPrompt(true)}
+            onClose={() => setActiveDestination(null)}
           />
         )}
 

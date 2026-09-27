@@ -2,8 +2,8 @@
 
 export const DEST_META = {
   player: {
-    title: 'Player Profile & Gear',
-    subtitle: 'Inventories, Equipped Armor, Skills, Slayers & Pets',
+    title: 'SkyBlock Menu',
+    subtitle: 'Skills, Collections, Recipes, Storage, Pets & Profile',
   },
   auctions: {
     title: 'Auction House',
@@ -58,7 +58,7 @@ export const DEST_META = {
 export default function SkyblockWindow({ isOpen, destination, onClose, children }) {
   if (!isOpen) return null;
 
-  const isCustomChestView = ['bazaar', 'auctions', 'economy', 'bank'].includes(destination);
+  const isCustomChestView = ['bazaar', 'auctions', 'economy', 'bank', 'player'].includes(destination);
   const meta = DEST_META[destination] || DEST_META.player;
 
   return (

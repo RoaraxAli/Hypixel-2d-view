@@ -7,7 +7,7 @@ const HUB_PINS = [
   { id: 'auctions', name: 'Auction House', left: '70.0%', top: '37.0%' },
   { id: 'bazaar', name: 'Bazaar', left: '68.5%', top: '57.0%' },
   { id: 'economy', name: 'The Bank', left: '67.0%', top: '63.5%' },
-  { id: 'player', name: 'Player Profile', left: '50.0%', top: '52.0%' },
+  { id: 'player', name: 'SkyBlock Menu', left: '50.0%', top: '52.0%' },
   { id: 'mining', name: 'Deep Caverns', left: '53.5%', top: '82.0%' },
   { id: 'garden', name: 'The Garden', left: '21.0%', top: '88.0%' },
   { id: 'museum', name: 'Museum', left: '33.5%', top: '26.5%' },
