@@ -1848,6 +1848,107 @@ export default function PlayerView({
     return slots;
   }, [misc]);
 
+  // Build the authentic 54-slot Quests & Chapters container GUI matching in-game screenshot:
+  const questsMenuSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    // Slot 4 (Row 0, Col 4): Book and Quill (Quests & Chapters Overview)
+    slots[4] = {
+      id: 'quests_chapters_overview',
+      name: 'Quests & Chapters',
+      icon: '/textures/minecraft/book_and_quill.png',
+      rawItem: {
+        cleanName: 'Quests & Chapters',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Quests & Chapters</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Each island has its own series of</span>',
+          '<span style="color: #55FF55">Chapters</span><span style="color: #AAAAAA"> for you to complete! Finish</span>',
+          '<span style="color: #AAAAAA">individual objectives for small rewards, or</span>',
+          '<span style="color: #AAAAAA">entire Chapters to earn big ones!</span>',
+          '',
+          '<span style="color: #AAAAAA">Some islands also have </span><span style="color: #55FF55">Quests</span><span style="color: #AAAAAA"> for</span>',
+          '<span style="color: #AAAAAA">you to complete! Some items can only</span>',
+          '<span style="color: #AAAAAA">be obtained through Quests.</span>',
+        ],
+      },
+    };
+
+    // Slot 20 (Row 2, Col 2): Book (Quests)
+    slots[20] = {
+      id: 'quests_view',
+      name: 'Quests',
+      icon: '/textures/minecraft/book.png',
+      rawItem: {
+        cleanName: 'Quests',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Quests</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your active and completed Quests</span>',
+          '<span style="color: #AAAAAA">throughout the world of SkyBlock.</span>',
+          '',
+          '<span style="color: #AAAAAA">Active Quests: </span><span style="color: #55FFFF">4</span>',
+          '<span style="color: #AAAAAA">Completed Quests: </span><span style="color: #55FF55">48</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 24 (Row 2, Col 6): Book and Quill (Chapters)
+    slots[24] = {
+      id: 'chapters_view',
+      name: 'Chapters',
+      icon: '/textures/minecraft/book_and_quill.png',
+      rawItem: {
+        cleanName: 'Chapters',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Chapters</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Progress through guided Chapters across</span>',
+          '<span style="color: #AAAAAA">different islands to learn mechanics</span>',
+          '<span style="color: #AAAAAA">and earn rewards!</span>',
+          '',
+          '<span style="color: #AAAAAA">Unlocked Chapters: </span><span style="color: #55FFFF">12</span>',
+          '<span style="color: #AAAAAA">Completed: </span><span style="color: #55FF55">9</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    return slots;
+  }, []);
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
@@ -2648,6 +2749,161 @@ export default function PlayerView({
   }
 
   // -------------------------------------------------------------
+  // VIEW: QUESTS & CHAPTERS (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'quests') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">Quests & Chapters</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {questsMenuSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
   // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
@@ -3123,33 +3379,6 @@ export default function PlayerView({
           </div>
         )}
 
-        {/* SUB-SCREEN: QUESTS */}
-        {screen === 'quests' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Quests & Chapters')}
-            <div className="space-y-2">
-              {[
-                { title: 'The Hub Discovery', progress: '100% Completed', desc: 'Visit all 12 key districts in the Hub village and meet the villagers.', done: true },
-                { title: 'The Slayer Trials', progress: '3 / 4 Slayers Maxed', desc: 'Defeat Tier IV Revenant Horror, Tarantula Broodfather, and Sven Packmaster.', done: false },
-                { title: 'Dungeon Master', progress: 'Floor VII Cleared', desc: 'Defeat Necron in Floor VII of The Catacombs with S+ score.', done: true },
-                { title: 'Heart of the Mountain', progress: 'HOTM 7 Unlocked', desc: 'Reach Peak of the Mountain and complete 250 commissions in Dwarven Mines.', done: false },
-              ].map(q => (
-                <div key={q.title} className="mc-inset-box rounded p-3 flex justify-between items-center gap-3">
-                  <div>
-                    <h4 className="font-bold text-sm text-white flex items-center gap-2">
-                      {q.title}
-                      {q.done && <span className="text-[10px] bg-emerald-500 text-black px-1.5 py-0.5 rounded font-black">COMPLETED</span>}
-                    </h4>
-                    <p className="text-xs text-gray-400 mt-0.5">{q.desc}</p>
-                  </div>
-                  <span className={`text-xs font-mono font-bold whitespace-nowrap ${q.done ? 'text-emerald-400' : 'text-amber-400'}`}>
-                    {q.progress}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* SUB-SCREEN: CALENDAR & EVENTS */}
         {screen === 'calendar' && (
