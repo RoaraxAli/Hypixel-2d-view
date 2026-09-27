@@ -9,6 +9,23 @@ function renderSlot(item, customClass = '') {
   return <ItemSlot item={item} customClass={customClass} />;
 }
 
+function toRoman(num) {
+  if (!num || num <= 0) return '0';
+  const lookup = [
+    ['C', 100], ['XC', 90], ['L', 50], ['XL', 40],
+    ['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]
+  ];
+  let res = '';
+  let n = Math.floor(num);
+  for (const [letter, value] of lookup) {
+    while (n >= value) {
+      res += letter;
+      n -= value;
+    }
+  }
+  return res;
+}
+
 export default function PlayerView({
   playerData,
   activeSubtab = 'menu',
@@ -916,6 +933,387 @@ export default function PlayerView({
     return slots;
   }, [player, selectedProfile, misc, skills, mining, activePet, inventories]);
 
+  // Build the authentic 54-slot Your Skills container GUI matching in-game screenshot:
+  const skillsMenuSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    const skillList = skills.skills || [];
+    const skillMap = {};
+    for (const s of skillList) {
+      if (s.id) skillMap[s.id.toUpperCase()] = s;
+    }
+
+    const makeSkillSlot = (id, displayName, icon, desc, rewardsGen, defaultMax = 50) => {
+      const data = skillMap[id.toUpperCase()] || {
+        level: 0,
+        maxLevel: defaultMax,
+        currentXp: 0,
+        nextLevelXp: 50,
+        progressPercent: 0,
+        xp: 0,
+      };
+
+      const level = data.level || 0;
+      const maxLevel = data.maxLevel || defaultMax;
+      const isMax = level >= maxLevel;
+      const romanCurr = toRoman(level);
+      const romanNext = toRoman(level + 1);
+      const percent = data.progressPercent || 0;
+      const currXp = data.currentXp || 0;
+      const nextXp = data.nextLevelXp || 50;
+      const totalXp = data.xp || 0;
+
+      const totalBars = 20;
+      const greenBars = isMax ? totalBars : Math.min(totalBars, Math.max(0, Math.round((percent / 100) * totalBars)));
+      const whiteBars = totalBars - greenBars;
+
+      const loreHtml = [
+        `<span style="color: #AAAAAA">${desc}</span>`,
+        '',
+      ];
+
+      if (!isMax) {
+        loreHtml.push(
+          `<span style="color: #AAAAAA">Progress to Level ${romanNext}: </span><span style="color: #FFFF55">${percent}%</span>`,
+          `<span style="color: #55FF55">${'-'.repeat(greenBars)}</span><span style="color: #555555">${'-'.repeat(whiteBars)}</span> <span style="color: #FFFF55">${currXp.toLocaleString()}</span><span style="color: #FFAA00">/</span><span style="color: #FFFF55">${nextXp.toLocaleString()}</span>`,
+          '',
+          `<span style="color: #AAAAAA">Level ${romanNext} Rewards:</span>`
+        );
+      } else {
+        loreHtml.push(
+          '<span style="color: #FFAA00; font-weight: bold">MAXED OUT!</span>',
+          `<span style="color: #55FF55">${'-'.repeat(20)}</span> <span style="color: #FFFF55">${totalXp.toLocaleString()} XP</span>`,
+          '',
+          '<span style="color: #AAAAAA">All level rewards unlocked!</span>'
+        );
+      }
+
+      const generatedRewards = rewardsGen(level, romanNext);
+      for (const r of generatedRewards) {
+        loreHtml.push(r);
+      }
+
+      loreHtml.push('');
+      loreHtml.push(`<span style="color: #AAAAAA">Total XP: </span><span style="color: #FFAA00">${totalXp.toLocaleString()}</span>`);
+      loreHtml.push('');
+      loreHtml.push('<span style="color: #FFFF55">Click to view!</span>');
+
+      return {
+        id: id.toLowerCase(),
+        name: `${displayName} ${romanCurr}`,
+        icon,
+        rawItem: {
+          cleanName: `${displayName} ${romanCurr}`,
+          formattedName: `<span style="color: #55FF55; font-weight: bold">${displayName} ${romanCurr}</span>`,
+          loreHtml,
+        },
+      };
+    };
+
+    // Slot 4: Diamond Sword (Your Skills Overview)
+    const skillAvg = skills.skillAverage || '0';
+    const totalSkillXp = skillList.reduce((sum, s) => sum + (s.xp || 0), 0);
+    slots[4] = {
+      id: 'skill_average',
+      name: 'Your Skills',
+      icon: '/textures/minecraft/diamond_sword.png',
+      rawItem: {
+        cleanName: 'Your Skills',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Your Skills</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Skill progression and</span>',
+          '<span style="color: #AAAAAA">rewards.</span>',
+          '',
+          `<span style="color: #AAAAAA">Skill Average: </span><span style="color: #FFAA00; font-weight: bold">${skillAvg}</span>`,
+          `<span style="color: #AAAAAA">Total Skill XP: </span><span style="color: #FFAA00">${totalSkillXp.toLocaleString()}</span>`,
+          '',
+          '<span style="color: #555555">Level without cosmetics:</span>',
+          `<span style="color: #AAAAAA">Overall Progress: </span><span style="color: #55FF55">${skillAvg} / 55</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to show rankings!</span>',
+        ],
+      },
+    };
+
+    // Row 2: Primary Skills
+    // Slot 19: Combat (Iron Sword)
+    slots[19] = makeSkillSlot(
+      'COMBAT',
+      'Combat',
+      '/textures/minecraft/iron_sword.png',
+      'Fight mobs and special bosses to earn Combat XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Warrior ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Deal </span><span style="color: #55FF55">+${(lvl + 1) * 4}%</span><span style="color: #FFFFFF"> more damage to mobs.</span>`,
+        '  <span style="color: #55FF55">+0.5% </span><span style="color: #5555FF">☣ Crit Chance</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      60
+    );
+
+    // Slot 20: Farming (Golden Hoe)
+    slots[20] = makeSkillSlot(
+      'FARMING',
+      'Farming',
+      '/textures/minecraft/golden_hoe.png',
+      'Harvest crops and shear sheep to earn Farming XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Farmhand ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Grants </span><span style="color: #55FF55">+${(lvl + 1) * 4} </span><span style="color: #FFAA00">☘ Farming Fortune</span>`,
+        '  <span style="color: #55FF55">+2 </span><span style="color: #FF5555">❤ Health</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      60
+    );
+
+    // Slot 21: Fishing (Fishing Rod)
+    slots[21] = makeSkillSlot(
+      'FISHING',
+      'Fishing',
+      '/textures/minecraft/fishing_rod_uncast.png',
+      'Visit your local pond to fish and earn Fishing XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Treasure Hunter ${rNext}</span>`,
+        '    <span style="color: #FFFFFF">Grants </span><span style="color: #55FF55">+0.1 </span><span style="color: #FFAA00">⛃ Treasure Chance</span>',
+        '  <span style="color: #55FF55">+2 </span><span style="color: #FF5555">❤ Health</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      50
+    );
+
+    // Slot 22: Mining (Iron Pickaxe)
+    slots[22] = makeSkillSlot(
+      'MINING',
+      'Mining',
+      '/textures/minecraft/iron_pickaxe.png',
+      'Dive into deep caves and find rare ores to earn Mining XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Spelunker ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Grants </span><span style="color: #55FF55">+${(lvl + 1) * 4} </span><span style="color: #FFAA00">☘ Mining Fortune</span>`,
+        '  <span style="color: #55FF55">+1 </span><span style="color: #55FF55">❈ Defense</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      60
+    );
+
+    // Slot 23: Foraging (Jungle Sapling)
+    slots[23] = makeSkillSlot(
+      'FORAGING',
+      'Foraging',
+      '/textures/minecraft/sapling_jungle.png',
+      'Cut trees and forage for other plants to earn Foraging XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Logger ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Grants </span><span style="color: #55FF55">+${(lvl + 1) * 4} </span><span style="color: #FFAA00">☘ Foraging Fortune</span>`,
+        '  <span style="color: #55FF55">+1 </span><span style="color: #FF5555">❁ Strength</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      50
+    );
+
+    // Slot 24: Enchanting (Enchantment Table)
+    slots[24] = makeSkillSlot(
+      'ENCHANTING',
+      'Enchanting',
+      '/textures/minecraft/enchantment_table.png',
+      'Enchant items to earn Enchanting XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Conjurer ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Gain </span><span style="color: #55FF55">+${(lvl + 1) * 5}% </span><span style="color: #FFFFFF">more experience orbs</span>`,
+        '  <span style="color: #55FF55">+0.5% </span><span style="color: #FF55FF">๑ Ability Damage</span>',
+        '  <span style="color: #55FF55">+1 </span><span style="color: #55FFFF">✎ Intelligence</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      60
+    );
+
+    // Slot 25: Alchemy (Brewing Stand)
+    slots[25] = makeSkillSlot(
+      'ALCHEMY',
+      'Alchemy',
+      '/textures/minecraft/brewing_stand.png',
+      'Brew potions to earn Alchemy XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Brewer ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Potions brewed have </span><span style="color: #55FF55">+${lvl + 1}% </span><span style="color: #FFFFFF">longer duration</span>`,
+        '  <span style="color: #55FF55">+1 </span><span style="color: #55FFFF">✎ Intelligence</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      50
+    );
+
+    // Row 3: Secondary & Cosmetic Skills
+    // Slot 28: Carpentry (Crafting Table)
+    slots[28] = makeSkillSlot(
+      'CARPENTRY',
+      'Carpentry',
+      '/textures/minecraft/crafting_table.png',
+      'Craft items to earn Carpentry XP!',
+      () => [
+        '  <span style="color: #55FF55">+1 </span><span style="color: #FF5555">❤ Health</span>',
+        '  <span style="color: #55FF55">Unlock Furniture Recipes</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+      ],
+      50
+    );
+
+    // Slot 29: Runecrafting (Magma Cream)
+    slots[29] = makeSkillSlot(
+      'RUNECRAFTING',
+      'Runecrafting',
+      '/textures/minecraft/magma_cream.png',
+      'Slay bosses and runic mobs, and fuse runes to earn Runecrafting XP!',
+      (lvl) => [
+        `  <span style="color: #55FF55">Access to Level </span><span style="color: #FF55FF">${Math.min(25, lvl + 1)} </span><span style="color: #55FF55">Runes</span>`,
+        '  <span style="color: #FF55FF">Cosmetic Skill</span>',
+      ],
+      25
+    );
+
+    // Slot 30: Taming (Polar Bear head)
+    slots[30] = makeSkillSlot(
+      'TAMING',
+      'Taming',
+      '/textures/minecraft/polar_bear_head.png',
+      'Level up pets to earn Taming XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Zoologist ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Gain </span><span style="color: #55FF55">+${lvl + 1}% </span><span style="color: #FFFFFF">extra pet exp</span>`,
+        '  <span style="color: #55FF55">+1 </span><span style="color: #FF55FF">♣ Pet Luck</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      50
+    );
+
+    // Slot 31: Social (Emerald)
+    slots[31] = makeSkillSlot(
+      'SOCIAL',
+      'Social',
+      '/textures/minecraft/emerald.png',
+      'Gain Social XP for hosting guests and visiting islands!',
+      () => [
+        '  <span style="color: #55FF55">Unlock new Island Social Games</span>',
+        '  <span style="color: #55FF55">Access to Amelia\'s Parkour items</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+      ],
+      25
+    );
+
+    // Slot 32: Hunting (Lead)
+    slots[32] = makeSkillSlot(
+      'HUNTING',
+      'Hunting',
+      '/textures/minecraft/lead.png',
+      'Hunt various monsters to earn Hunting XP!',
+      (lvl, rNext) => [
+        `  <span style="color: #FFFF55">Charming ${rNext}</span>`,
+        `    <span style="color: #FFFFFF">Grants </span><span style="color: #55FF55">+${((lvl + 1) * 0.04).toFixed(2)}% </span><span style="color: #FFFFFF">chance to charm mobs</span>`,
+        '  <span style="color: #55FF55">+1 </span><span style="color: #FFAA00">☘ Hunter Fortune</span>',
+        '  <span style="color: #55FF55">+100 </span><span style="color: #FFAA00">Coins</span>',
+        '  <span style="color: #55FF55">+5 </span><span style="color: #55FFFF">SkyBlock XP</span>',
+      ],
+      50
+    );
+
+    // Slot 33: Dungeoneering (Mort Skull)
+    const cata = dungeons?.catacombs || {};
+    const cataLvl = cata.level || 0;
+    const cataMax = cata.maxLevel || 50;
+    const cataProg = cata.progressPercent || 0;
+    const cataCurr = cata.currentXp || 0;
+    const cataNext = cata.nextLevelXp || 0;
+    const cataTotal = cata.xp || 0;
+    const cataIsMax = cataLvl >= cataMax;
+    const cataBars = cataIsMax ? 20 : Math.min(20, Math.max(0, Math.round((cataProg / 100) * 20)));
+
+    slots[33] = {
+      id: 'dungeoneering',
+      name: `Dungeoneering ${toRoman(cataLvl)}`,
+      icon: '/textures/minecraft/mort_skull.png',
+      rawItem: {
+        cleanName: `Dungeoneering ${toRoman(cataLvl)}`,
+        formattedName: `<span style="color: #55FF55; font-weight: bold">Dungeoneering ${toRoman(cataLvl)}</span>`,
+        loreHtml: [
+          '<span style="color: #AAAAAA">Complete Dungeons to level up your</span>',
+          '<span style="color: #AAAAAA">classes and unlock powerful gear!</span>',
+          '',
+          `<span style="color: #AAAAAA">Progress to Level ${toRoman(cataLvl + 1)}: </span><span style="color: #FFFF55">${cataProg}%</span>`,
+          `<span style="color: #55FF55">${'-'.repeat(cataBars)}</span><span style="color: #555555">${'-'.repeat(20 - cataBars)}</span> <span style="color: #FFFF55">${cataCurr.toLocaleString()}</span><span style="color: #FFAA00">/</span><span style="color: #FFFF55">${cataNext.toLocaleString()}</span>`,
+          '',
+          `<span style="color: #AAAAAA">Level ${toRoman(cataLvl + 1)} Rewards:</span>`,
+          '  <span style="color: #55FF55">+Stat boosts while inside Dungeons</span>',
+          '  <span style="color: #55FF55">+2 </span><span style="color: #FF5555">❤ Health</span>',
+          '',
+          `<span style="color: #AAAAAA">Total XP: </span><span style="color: #FFAA00">${cataTotal.toLocaleString()}</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Row 5: Navigation
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back to SkyBlock Menu)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    // Slot 53 (Row 5, Col 8): Oak Sign (Skill Progression)
+    slots[53] = {
+      id: 'skill_info',
+      name: 'Skill Progression',
+      icon: '/textures/minecraft/oak_sign.png',
+      rawItem: {
+        cleanName: 'Skill Progression',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Skill Progression</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Level up skills to earn permanent</span>',
+          '<span style="color: #AAAAAA">stat boosts, coins, and unlock</span>',
+          '<span style="color: #AAAAAA">new zones and abilities!</span>',
+          '',
+          '<span style="color: #AAAAAA">Total Skills: </span><span style="color: #55FFFF">12</span>',
+          '<span style="color: #AAAAAA">Max Skill Cap: </span><span style="color: #FFAA00">Level 60</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [skills, dungeons]);
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
@@ -1251,6 +1649,161 @@ export default function PlayerView({
   }
 
   // -------------------------------------------------------------
+  // VIEW: YOUR SKILLS (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'skills') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">Your Skills</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {skillsMenuSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
   // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
@@ -1327,46 +1880,6 @@ export default function PlayerView({
           </div>
         )}
 
-        {/* SUB-SCREEN: SKILLS */}
-        {screen === 'skills' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Your Skills')}
-            <div className="flex items-center justify-between px-1">
-              <span className="text-sm font-bold text-gray-200">Non-Cosmetic Skill Average</span>
-              <span className="text-base text-emerald-400 font-mono font-bold">{skills.skillAverage || '38.2'}</span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {(skills.skills || []).map(skill => {
-                const isMax = skill.level >= skill.maxLevel;
-                return (
-                  <div key={skill.id} className="mc-inset-box rounded p-3 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{skill.icon}</span>
-                        <div>
-                          <h4 className="font-bold text-sm text-white">{skill.name}</h4>
-                          <span className="text-[11px] text-gray-400 font-mono">{(skill.xp || 0).toLocaleString()} XP</span>
-                        </div>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded text-xs font-black font-mono ${
-                        isMax ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-gray-800 text-gray-200'
-                      }`}>
-                        {isMax ? 'MAX ' : 'LVL '}{skill.level}
-                      </span>
-                    </div>
-                    <div className="w-full bg-[#090c10] h-2 rounded-full overflow-hidden border border-[#21262d]">
-                      <div className="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full" style={{ width: `${skill.progressPercent || 0}%` }} />
-                    </div>
-                    <div className="flex justify-between text-[11px] text-gray-400 font-mono">
-                      <span>{isMax ? 'Maxed Out' : `${(skill.currentXp || 0).toLocaleString()} / ${(skill.nextLevelXp || 0).toLocaleString()}`}</span>
-                      <span>{skill.progressPercent || 0}%</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
 
         {/* SUB-SCREEN: STORAGE */}
         {screen === 'storage' && (
