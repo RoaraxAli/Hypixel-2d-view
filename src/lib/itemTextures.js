@@ -284,7 +284,7 @@ export function getItemTexture(item) {
   const sbId = (item.skyblockId || '').toUpperCase();
   if (sbId) {
     // Hyperion & Wither Blades
-    if (['HYPERION', 'VALKYRIE', 'SCYLLA', 'ASTRAEA', 'NECRON_BLADE'].includes(sbId)) {
+    if (['VALKYRIE', 'SCYLLA', 'ASTRAEA', 'NECRON_BLADE'].includes(sbId)) {
       return `${CDN_BASE_ITEMS}/iron_sword.png`;
     }
     if (['GIANTS_SWORD', 'GIANT_SWORD'].includes(sbId)) {
@@ -293,10 +293,10 @@ export function getItemTexture(item) {
     if (['LIVID_DAGGER', 'SHADOW_FURY', 'DARK_CLAYMORE', 'FEL_SWORD', 'SILENT_DEATH'].includes(sbId)) {
       return `${CDN_BASE_ITEMS}/stone_sword.png`;
     }
-    if (['TERMINATOR', 'JUJU_SHORTBOW', 'RUNAANS_BOW', 'MOSQUITO_BOW', 'DRAGON_SHORTBOW', 'SPIRIT_BOW', 'VENOM_TOUCHE_BOW', 'SAVANNA_BOW', 'MAGMA_BOW'].includes(sbId)) {
+    if (['TERMINATOR', 'JUJU_SHORTBOW', 'RUNAANS_BOW', 'DRAGON_SHORTBOW', 'SPIRIT_BOW', 'VENOM_TOUCHE_BOW', 'SAVANNA_BOW', 'MAGMA_BOW'].includes(sbId)) {
       return `${CDN_BASE_ITEMS}/bow_standby.png`;
     }
-    if (['ASPECT_OF_THE_DRAGONS', 'AOTD', 'REAPER_FALCHION', 'DAEDALUS_AXE', 'ASPECT_OF_THE_END', 'AOTE', 'ASPECT_OF_THE_VOID', 'AOTV', 'LEAPING_SWORD', 'SILK_EDGE_SWORD', 'TACTICIANS_SWORD', 'EDIBLE_MACE', 'REVENANT_FALCHION', 'REAPER_SCYTHE'].includes(sbId)) {
+    if (['ASPECT_OF_THE_DRAGONS', 'AOTD', 'REAPER_FALCHION', 'DAEDALUS_AXE', 'ASPECT_OF_THE_END', 'AOTE', 'LEAPING_SWORD', 'SILK_EDGE_SWORD', 'TACTICIANS_SWORD', 'EDIBLE_MACE', 'REVENANT_FALCHION', 'REAPER_SCYTHE'].includes(sbId)) {
       return `${CDN_BASE_ITEMS}/diamond_sword.png`;
     }
     if (['MIDAS_SWORD', 'ROGUE_SWORD', 'MIDAS_STAFF', 'FANCY_SWORD'].includes(sbId)) {
@@ -311,7 +311,7 @@ export function getItemTexture(item) {
     if (['SPIRIT_SCEPTRE', 'AURORA_STAFF', 'FIRE_VEIL_WAND', 'GYROKINETIC_WAND'].includes(sbId)) {
       return `${CDN_BASE_ITEMS}/blaze_rod.png`;
     }
-    if (['WAND_OF_HEALING', 'WAND_OF_MENDING', 'WAND_OF_RESTORATION', 'WAND_OF_ATONEMENT', 'ICE_SPRAY_WAND'].includes(sbId)) {
+    if (['WAND_OF_HEALING', 'WAND_OF_MENDING', 'WAND_OF_ATONEMENT', 'ICE_SPRAY_WAND'].includes(sbId)) {
       return `${CDN_BASE_ITEMS}/stick.png`;
     }
     if (['TREE_CAPITATOR', 'TREECAPITATOR'].includes(sbId)) {
@@ -345,27 +345,205 @@ export function getItemTexture(item) {
       return `${CDN_BASE_ITEMS}/book_enchanted.png`;
     }
 
-    // Armor Sets
+    // Equipment Overrides (Belts, Abiphones, Cloaks, Gauntlets, Necklaces, etc. - NEVER PAPER!)
+    if (sbId.includes('SAFARI_BELT') || (sbId.includes('BELT') && sbId.includes('SAFARI'))) {
+      return '/textures/minecraft/safari_belt.png';
+    }
+    if (sbId.includes('ABIPHONE')) {
+      if (sbId.includes('X_PLUS') || sbId.includes('RED')) return '/textures/minecraft/abiphone_x_plus.png';
+      return '/textures/minecraft/abiphone.png';
+    }
+    if (sbId.includes('BELT')) {
+      if (sbId.includes('IMPLOSION')) return '/textures/minecraft/equipment/implosion_belt.png';
+      if (sbId.includes('ADAPTIVE')) return '/textures/minecraft/equipment/adaptive_belt.png';
+      if (sbId.includes('SCOVILLE')) return '/textures/minecraft/equipment/scoville_belt.png';
+      if (sbId.includes('MOLTEN')) return '/textures/minecraft/equipment/molten_belt.png';
+      if (sbId.includes('LOTUS')) return '/textures/minecraft/equipment/lotus_belt.png';
+      if (sbId.includes('MITHRIL')) return '/textures/minecraft/equipment/mithril_belt.png';
+      if (sbId.includes('TITANIUM')) return '/textures/minecraft/equipment/titanium_belt.png';
+      if (sbId.includes('JADE')) return '/textures/minecraft/equipment/jade_belt.png';
+      if (sbId.includes('ARACHNE')) return '/textures/minecraft/equipment/arachne_belt.png';
+      if (sbId.includes('BLAZE')) return '/textures/minecraft/equipment/blaze_belt.png';
+      return '/textures/minecraft/safari_belt.png';
+    }
+    if (sbId.includes('CLOAK') || sbId.includes('CAPE')) {
+      if (sbId.includes('MOLTEN')) return '/textures/minecraft/equipment/molten_cloak.png';
+      if (sbId.includes('LOTUS')) return '/textures/minecraft/equipment/lotus_cloak.png';
+      if (sbId.includes('ANCIENT')) return '/textures/minecraft/equipment/ancient_cloak.png';
+      if (sbId.includes('ANNIHILATION')) return '/textures/minecraft/equipment/annihilation_cloak.png';
+      if (sbId.includes('DESTRUCTION')) return '/textures/minecraft/equipment/destruction_cloak.png';
+      if (sbId.includes('GHAST')) return '/textures/minecraft/equipment/ghast_cloak.png';
+      if (sbId.includes('SHADOW_ASSASSIN')) return '/textures/minecraft/equipment/shadow_assassin_cloak.png';
+      return '/textures/minecraft/equipment/molten_cloak.png';
+    }
+    if (sbId.includes('GAUNTLET') || sbId.includes('GLOVE') || sbId.includes('FIST')) {
+      if (sbId.includes('CONTAGION')) return '/textures/minecraft/equipment/gauntlet_of_contagion.png';
+      if (sbId.includes('FLAMING')) return '/textures/minecraft/equipment/flaming_fist.png';
+      if (sbId.includes('GLOWSTONE')) return '/textures/minecraft/equipment/glowstone_gauntlet.png';
+      if (sbId.includes('MAGMA_LORD')) return '/textures/minecraft/equipment/magma_lord_gauntlet.png';
+      if (sbId.includes('MITHRIL')) return '/textures/minecraft/equipment/mithril_gauntlet.png';
+      if (sbId.includes('TITANIUM')) return '/textures/minecraft/equipment/titanium_gauntlet.png';
+      if (sbId.includes('SOULWEAVER')) return '/textures/minecraft/equipment/soulweaver_gloves.png';
+      if (sbId.includes('ARACHNE')) return '/textures/minecraft/equipment/arachne_gloves.png';
+      return '/textures/minecraft/equipment/gauntlet_of_contagion.png';
+    }
+    if (sbId.includes('NECKLACE') || sbId.includes('BRACELET') || sbId.includes('PENDANT')) {
+      if (sbId.includes('MOLTEN_BRACELET')) return '/textures/minecraft/equipment/molten_bracelet.png';
+      if (sbId.includes('LOTUS_BRACELET')) return '/textures/minecraft/equipment/lotus_bracelet.png';
+      if (sbId.includes('MOLTEN')) return '/textures/minecraft/equipment/molten_necklace.png';
+      if (sbId.includes('LOTUS')) return '/textures/minecraft/equipment/lotus_necklace.png';
+      if (sbId.includes('BONE')) return '/textures/minecraft/equipment/bone_necklace.png';
+      if (sbId.includes('LAVA_SHELL')) return '/textures/minecraft/equipment/lava_shell_necklace.png';
+      if (sbId.includes('MAGMA')) return '/textures/minecraft/equipment/magma_necklace.png';
+      if (sbId.includes('DELIRIUM')) return '/textures/minecraft/equipment/delirium_necklace.png';
+      if (sbId.includes('THUNDERBOLT')) return '/textures/minecraft/equipment/thunderbolt_necklace.png';
+      if (sbId.includes('TITANIUM')) return '/textures/minecraft/equipment/titanium_necklace.png';
+      if (sbId.includes('MITHRIL')) return '/textures/minecraft/equipment/mithril_necklace.png';
+      if (sbId.includes('DIVAN')) return '/textures/minecraft/equipment/divan_pendant.png';
+      return '/textures/minecraft/equipment/molten_necklace.png';
+    }
+    if (sbId.includes('TRAVEL_SCROLL') || (sbId.includes('SCROLL') && !sbId.includes('POWER'))) {
+      return '/textures/minecraft/travel_scroll.png';
+    }
+    if (sbId.includes('SCROLL')) {
+      return '/textures/minecraft/travel_scroll.png';
+    }
+
+    // Hunting, Trapper, and Garden Greenhouse Utilities (NEVER PAPER!)
+    if (sbId.includes('ENTANGLER_LASSO') || sbId.includes('LASSO')) {
+      return '/textures/minecraft/lead.png';
+    }
+    if (sbId.includes('VACUUM')) {
+      if (sbId.includes('INFINI')) return '/textures/minecraft/infini_vacuum.png';
+      return '/textures/minecraft/skymart_vacuum.png';
+    }
+    if (sbId.includes('RETIA') || sbId.includes('HUNTRAP')) {
+      return '/textures/minecraft/defuse_kit.png';
+    }
+    if (sbId.includes('FISHING_NET') || sbId.includes('_NET')) {
+      return '/textures/minecraft/web.png';
+    }
+    if (sbId.includes('ROYAL_COMPASS')) {
+      return '/textures/minecraft/royal_compass.png';
+    }
+    if (sbId.includes('PLANT_DIAGNOSTICS_TOOL') || sbId.includes('DIAGNOSTICS')) {
+      return '/textures/minecraft/plant_diagnostics_tool.png';
+    }
+    if (sbId.includes('ARROW_SWAPPER')) {
+      return '/textures/minecraft/arrow_swapper.png';
+    }
+
+    // Specific Weapons and Tools
+    if (['STONK', 'STONK_PICKAXE'].includes(sbId)) {
+      return '/textures/minecraft/stonk.png';
+    }
+    if (sbId.includes('PICKONIMBUS')) {
+      return '/textures/minecraft/pickonimbus.png';
+    }
+    if (['DUNGEONBREAKER'].includes(sbId)) {
+      return '/textures/minecraft/dungeonbreaker.png';
+    }
+    if (['WAND_OF_RESTORATION'].includes(sbId)) {
+      return '/textures/minecraft/wand_of_restoration.png';
+    }
+    if (['ASPECT_OF_THE_VOID', 'AOTV'].includes(sbId)) {
+      return '/textures/minecraft/aspect_of_the_void.png';
+    }
+    if (['MOSQUITO_BOW', 'MOSQUITO_SHORTBOW'].includes(sbId)) {
+      return '/textures/minecraft/mosquito_bow.png';
+    }
+    if (['HYPERION'].includes(sbId)) {
+      return '/textures/minecraft/hyperion.png';
+    }
+    if (['MAGMA_ROD'].includes(sbId)) {
+      return '/textures/minecraft/magma_rod.png';
+    }
+    if (['ADVANCED_GARDENING_HOE'].includes(sbId)) {
+      return '/textures/minecraft/advanced_gardening_hoe.png';
+    }
+    if (['RADIANT_POWER_ORB'].includes(sbId)) {
+      return '/textures/minecraft/radiant_power_orb.png';
+    }
+
+    // Specific Authentic Armor Sets (Aurora, Necron, Storm, Maxor, Goldor, Crimson, Terror, Sorrow, etc.)
+    if (sbId.includes('BURNING_AURORA_HELMET')) return '/textures/minecraft/burning_aurora_helmet.png';
+    if (sbId.includes('BURNING_AURORA_CHESTPLATE')) return '/textures/minecraft/burning_aurora_chestplate.png';
+    if (sbId.includes('BURNING_AURORA_LEGGINGS')) return '/textures/minecraft/burning_aurora_leggings.png';
+    if (sbId.includes('BURNING_AURORA_BOOTS')) return '/textures/minecraft/burning_aurora_boots.png';
+    if (sbId.includes('AURORA_HELMET')) return '/textures/minecraft/aurora_helmet.png';
+    if (sbId.includes('AURORA_CHESTPLATE')) return '/textures/minecraft/aurora_chestplate.png';
+    if (sbId.includes('AURORA_LEGGINGS')) return '/textures/minecraft/aurora_leggings.png';
+    if (sbId.includes('AURORA_BOOTS')) return '/textures/minecraft/aurora_boots.png';
+
+    if (sbId.includes('NECRON_HELMET')) return '/textures/minecraft/necron_helmet.png';
+    if (sbId.includes('NECRON_CHESTPLATE')) return '/textures/minecraft/necron_chestplate.png';
+    if (sbId.includes('NECRON_LEGGINGS')) return '/textures/minecraft/necron_leggings.png';
+    if (sbId.includes('NECRON_BOOTS')) return '/textures/minecraft/necron_boots.png';
+
+    if (sbId.includes('STORM_HELMET')) return '/textures/minecraft/storm_helmet.png';
+    if (sbId.includes('STORM_CHESTPLATE')) return '/textures/minecraft/storm_chestplate.png';
+    if (sbId.includes('STORM_LEGGINGS')) return '/textures/minecraft/storm_leggings.png';
+    if (sbId.includes('STORM_BOOTS')) return '/textures/minecraft/storm_boots.png';
+
+    if (sbId.includes('MAXOR_HELMET')) return '/textures/minecraft/maxor_helmet.png';
+    if (sbId.includes('MAXOR_CHESTPLATE')) return '/textures/minecraft/maxor_chestplate.png';
+    if (sbId.includes('MAXOR_LEGGINGS')) return '/textures/minecraft/maxor_leggings.png';
+    if (sbId.includes('MAXOR_BOOTS')) return '/textures/minecraft/maxor_boots.png';
+
+    if (sbId.includes('GOLDOR_HELMET')) return '/textures/minecraft/goldor_helmet.png';
+    if (sbId.includes('GOLDOR_CHESTPLATE')) return '/textures/minecraft/goldor_chestplate.png';
+    if (sbId.includes('GOLDOR_LEGGINGS')) return '/textures/minecraft/goldor_leggings.png';
+    if (sbId.includes('GOLDOR_BOOTS')) return '/textures/minecraft/goldor_boots.png';
+
+    if (sbId.includes('CRIMSON_CHESTPLATE')) return '/textures/minecraft/crimson_chestplate.png';
+    if (sbId.includes('TERROR_CHESTPLATE')) return '/textures/minecraft/terror_chestplate.png';
+
+    if (sbId.includes('SORROW_CHESTPLATE')) return '/textures/minecraft/sorrow_chestplate.png';
+    if (sbId.includes('SORROW_LEGGINGS')) return '/textures/minecraft/sorrow_leggings.png';
+    if (sbId.includes('SORROW_BOOTS')) return '/textures/minecraft/sorrow_boots.png';
+
+    if (sbId.includes('SHADOW_ASSASSIN_CHESTPLATE')) return '/textures/minecraft/shadow_assassin_chestplate.png';
+    if (sbId.includes('SHADOW_ASSASSIN_LEGGINGS')) return '/textures/minecraft/shadow_assassin_leggings.png';
+    if (sbId.includes('SHADOW_ASSASSIN_BOOTS')) return '/textures/minecraft/shadow_assassin_boots.png';
+
+    // General Armor Sets (Respect Minecraft base types, never force diamond)
     if (sbId.includes('_CHESTPLATE')) {
-      if (sbId.includes('NECRON') || sbId.includes('STORM') || sbId.includes('MAXOR') || sbId.includes('GOLDOR') || sbId.includes('SHADOW_ASSASSIN') || sbId.includes('CRIMSON') || sbId.includes('AURORA') || sbId.includes('TERROR')) {
+      if (item.id === 299 || sbId.includes('CRIMSON') || sbId.includes('TERROR') || sbId.includes('AURORA')) {
         return `${CDN_BASE_ITEMS}/leather_chestplate.png`;
       }
-      return `${CDN_BASE_ITEMS}/diamond_chestplate.png`;
+      if (item.id === 303) return `${CDN_BASE_ITEMS}/chainmail_chestplate.png`;
+      if (item.id === 307) return `${CDN_BASE_ITEMS}/iron_chestplate.png`;
+      if (item.id === 315) return `${CDN_BASE_ITEMS}/gold_chestplate.png`;
+      if (item.id === 311) return `${CDN_BASE_ITEMS}/diamond_chestplate.png`;
+      return `${CDN_BASE_ITEMS}/leather_chestplate.png`;
     }
     if (sbId.includes('_LEGGINGS')) {
-      if (sbId.includes('NECRON') || sbId.includes('STORM') || sbId.includes('MAXOR') || sbId.includes('GOLDOR') || sbId.includes('SHADOW_ASSASSIN')) {
+      if (item.id === 300 || sbId.includes('CRIMSON') || sbId.includes('TERROR') || sbId.includes('AURORA')) {
         return `${CDN_BASE_ITEMS}/leather_leggings.png`;
       }
-      return `${CDN_BASE_ITEMS}/diamond_leggings.png`;
+      if (item.id === 304) return `${CDN_BASE_ITEMS}/chainmail_leggings.png`;
+      if (item.id === 308) return `${CDN_BASE_ITEMS}/iron_leggings.png`;
+      if (item.id === 316) return `${CDN_BASE_ITEMS}/gold_leggings.png`;
+      if (item.id === 312) return `${CDN_BASE_ITEMS}/diamond_leggings.png`;
+      return `${CDN_BASE_ITEMS}/leather_leggings.png`;
     }
     if (sbId.includes('_BOOTS')) {
-      if (sbId.includes('NECRON') || sbId.includes('STORM') || sbId.includes('MAXOR') || sbId.includes('GOLDOR') || sbId.includes('SHADOW_ASSASSIN')) {
+      if (item.id === 301 || sbId.includes('CRIMSON') || sbId.includes('TERROR') || sbId.includes('AURORA')) {
         return `${CDN_BASE_ITEMS}/leather_boots.png`;
       }
-      return `${CDN_BASE_ITEMS}/diamond_boots.png`;
+      if (item.id === 305) return `${CDN_BASE_ITEMS}/chainmail_boots.png`;
+      if (item.id === 309) return `${CDN_BASE_ITEMS}/iron_boots.png`;
+      if (item.id === 317) return `${CDN_BASE_ITEMS}/gold_boots.png`;
+      if (item.id === 313) return `${CDN_BASE_ITEMS}/diamond_boots.png`;
+      return `${CDN_BASE_ITEMS}/leather_boots.png`;
     }
     if (sbId.includes('_HELMET')) {
-      return `${CDN_BASE_ITEMS}/diamond_helmet.png`;
+      if (item.id === 298) return `${CDN_BASE_ITEMS}/leather_helmet.png`;
+      if (item.id === 302) return `${CDN_BASE_ITEMS}/chainmail_helmet.png`;
+      if (item.id === 306) return `${CDN_BASE_ITEMS}/iron_helmet.png`;
+      if (item.id === 314) return `${CDN_BASE_ITEMS}/gold_helmet.png`;
+      if (item.id === 310) return `${CDN_BASE_ITEMS}/diamond_helmet.png`;
+      return `${CDN_BASE_ITEMS}/leather_helmet.png`;
     }
 
     // Common SkyBlock Enchanted Materials
@@ -476,16 +654,36 @@ export function getItemTexture(item) {
     return `${CDN_BASE_ITEMS}/fishing_rod_uncast.png`;
   }
   if (name.includes('helmet') || name.includes('hat') || name.includes('crown') || name.includes('mask') || name.includes('hood')) {
-    return `${CDN_BASE_ITEMS}/diamond_helmet.png`;
+    if (numericId === 298) return `${CDN_BASE_ITEMS}/leather_helmet.png`;
+    if (numericId === 302) return `${CDN_BASE_ITEMS}/chainmail_helmet.png`;
+    if (numericId === 306) return `${CDN_BASE_ITEMS}/iron_helmet.png`;
+    if (numericId === 314) return `${CDN_BASE_ITEMS}/gold_helmet.png`;
+    if (numericId === 310) return `${CDN_BASE_ITEMS}/diamond_helmet.png`;
+    return `${CDN_BASE_ITEMS}/leather_helmet.png`;
   }
   if (name.includes('chestplate') || name.includes('tunic') || name.includes('jacket') || name.includes('cloak')) {
-    return `${CDN_BASE_ITEMS}/diamond_chestplate.png`;
+    if (numericId === 299) return `${CDN_BASE_ITEMS}/leather_chestplate.png`;
+    if (numericId === 303) return `${CDN_BASE_ITEMS}/chainmail_chestplate.png`;
+    if (numericId === 307) return `${CDN_BASE_ITEMS}/iron_chestplate.png`;
+    if (numericId === 315) return `${CDN_BASE_ITEMS}/gold_chestplate.png`;
+    if (numericId === 311) return `${CDN_BASE_ITEMS}/diamond_chestplate.png`;
+    return `${CDN_BASE_ITEMS}/leather_chestplate.png`;
   }
   if (name.includes('leggings') || name.includes('pants') || name.includes('trousers')) {
-    return `${CDN_BASE_ITEMS}/diamond_leggings.png`;
+    if (numericId === 300) return `${CDN_BASE_ITEMS}/leather_leggings.png`;
+    if (numericId === 304) return `${CDN_BASE_ITEMS}/chainmail_leggings.png`;
+    if (numericId === 308) return `${CDN_BASE_ITEMS}/iron_leggings.png`;
+    if (numericId === 316) return `${CDN_BASE_ITEMS}/gold_leggings.png`;
+    if (numericId === 312) return `${CDN_BASE_ITEMS}/diamond_leggings.png`;
+    return `${CDN_BASE_ITEMS}/leather_leggings.png`;
   }
   if (name.includes('boots') || name.includes('shoes')) {
-    return `${CDN_BASE_ITEMS}/diamond_boots.png`;
+    if (numericId === 301) return `${CDN_BASE_ITEMS}/leather_boots.png`;
+    if (numericId === 305) return `${CDN_BASE_ITEMS}/chainmail_boots.png`;
+    if (numericId === 309) return `${CDN_BASE_ITEMS}/iron_boots.png`;
+    if (numericId === 317) return `${CDN_BASE_ITEMS}/gold_boots.png`;
+    if (numericId === 313) return `${CDN_BASE_ITEMS}/diamond_boots.png`;
+    return `${CDN_BASE_ITEMS}/leather_boots.png`;
   }
   if (name.includes('potion')) {
     return `${CDN_BASE_ITEMS}/potion_bottle_drinkable.png`;

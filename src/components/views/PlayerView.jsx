@@ -1162,10 +1162,50 @@ export default function PlayerView({
               <span className="text-xs text-gray-300 block">Armor Set Slots (1 - 4 Unlocked)</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { slot: 1, name: 'Active Armor Set', active: true, helmet: '/textures/minecraft/diamond_helmet.png', chest: '/textures/minecraft/diamond_chestplate.png', legs: '/textures/minecraft/diamond_leggings.png', boots: '/textures/minecraft/diamond_boots.png' },
-                  { slot: 2, name: 'Sorrow Mining Set', active: false, helmet: '/textures/minecraft/iron_block.png', chest: '/textures/minecraft/iron_block.png', legs: '/textures/minecraft/iron_block.png', boots: '/textures/minecraft/iron_block.png' },
-                  { slot: 3, name: 'Young Dragon Set', active: false, helmet: '/textures/minecraft/feather.png', chest: '/textures/minecraft/feather.png', legs: '/textures/minecraft/feather.png', boots: '/textures/minecraft/feather.png' },
-                  { slot: 4, name: 'Mastiff Shaman Set', active: false, helmet: '/textures/minecraft/gold_block.png', chest: '/textures/minecraft/gold_block.png', legs: '/textures/minecraft/gold_block.png', boots: '/textures/minecraft/gold_block.png' },
+                  {
+                    slot: 1,
+                    name: 'Active Armor Set',
+                    active: true,
+                    pieces: [
+                      (inventories.armor || [])[0] || null,
+                      (inventories.armor || [])[1] || null,
+                      (inventories.armor || [])[2] || null,
+                      (inventories.armor || [])[3] || null,
+                    ]
+                  },
+                  {
+                    slot: 2,
+                    name: 'Sorrow Mining Set',
+                    active: false,
+                    pieces: [
+                      { cleanName: 'Sorrow Helmet', skyblockId: 'SORROW_HELMET', id: 397 },
+                      { cleanName: 'Sorrow Chestplate', skyblockId: 'SORROW_CHESTPLATE', id: 311 },
+                      { cleanName: 'Sorrow Leggings', skyblockId: 'SORROW_LEGGINGS', id: 312 },
+                      { cleanName: 'Sorrow Boots', skyblockId: 'SORROW_BOOTS', id: 313 }
+                    ]
+                  },
+                  {
+                    slot: 3,
+                    name: 'Shadow Assassin Set',
+                    active: false,
+                    pieces: [
+                      { cleanName: 'Shadow Assassin Helmet', skyblockId: 'SHADOW_ASSASSIN_HELMET', id: 397 },
+                      { cleanName: 'Shadow Assassin Chestplate', skyblockId: 'SHADOW_ASSASSIN_CHESTPLATE', id: 307 },
+                      { cleanName: 'Shadow Assassin Leggings', skyblockId: 'SHADOW_ASSASSIN_LEGGINGS', id: 308 },
+                      { cleanName: 'Shadow Assassin Boots', skyblockId: 'SHADOW_ASSASSIN_BOOTS', id: 309 }
+                    ]
+                  },
+                  {
+                    slot: 4,
+                    name: 'Necron Boss Set',
+                    active: false,
+                    pieces: [
+                      { cleanName: 'Necron Helmet', skyblockId: 'NECRON_HELMET', id: 397 },
+                      { cleanName: 'Necron Chestplate', skyblockId: 'NECRON_CHESTPLATE', id: 311 },
+                      { cleanName: 'Necron Leggings', skyblockId: 'NECRON_LEGGINGS', id: 312 },
+                      { cleanName: 'Necron Boots', skyblockId: 'NECRON_BOOTS', id: 313 }
+                    ]
+                  },
                 ].map(set => (
                   <div key={set.slot} className={`p-3 rounded border-2 ${set.active ? 'border-amber-400 bg-amber-500/10' : 'border-[#373737] bg-[#1a1f26]'} text-center space-y-2`}>
                     <div className="flex justify-between items-center">
@@ -1173,10 +1213,11 @@ export default function PlayerView({
                       {set.active && <span className="text-[10px] font-black bg-amber-500 text-black px-1.5 py-0.5 rounded">EQUIPPED</span>}
                     </div>
                     <div className="flex justify-center gap-1.5 py-2">
-                      <div className="mc-slot-cell w-9 h-9"><img src={set.helmet} alt="" className="w-6 h-6 object-contain" /></div>
-                      <div className="mc-slot-cell w-9 h-9"><img src={set.chest} alt="" className="w-6 h-6 object-contain" /></div>
-                      <div className="mc-slot-cell w-9 h-9"><img src={set.legs} alt="" className="w-6 h-6 object-contain" /></div>
-                      <div className="mc-slot-cell w-9 h-9"><img src={set.boots} alt="" className="w-6 h-6 object-contain" /></div>
+                      {set.pieces.map((piece, pIdx) => (
+                        <div key={pIdx} className="w-9 h-9">
+                          {piece ? renderSlot(piece, 'w-9 h-9') : <div className="mc-slot empty w-9 h-9" />}
+                        </div>
+                      ))}
                     </div>
                     <button className="mc-stone-button text-xs px-2.5 py-0.5 w-full">
                       {set.active ? 'Unequip' : 'Equip Set'}
