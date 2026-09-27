@@ -107,6 +107,9 @@ export async function GET(request, { params }) {
       talismanBag: [],
       potionBag: [],
       fishingBag: [],
+      quiver: [],
+      sacks: [],
+      sacksCounts: {},
       personalVault: []
     };
 
@@ -114,7 +117,7 @@ export async function GET(request, { params }) {
       const invData = member.inventory || {};
       const bagData = invData.bag_contents || {};
 
-      const [armor, equipment, inventory, enderChest, talismanBag, potionBag, fishingBag, personalVault] = await Promise.all([
+      const [armor, equipment, inventory, enderChest, talismanBag, potionBag, fishingBag, quiver, sacksBag, personalVault] = await Promise.all([
         parseNbtItems(invData.inv_armor?.data),
         parseNbtItems(invData.equipment_contents?.data),
         parseNbtItems(invData.inv_contents?.data || member.inv_contents?.data),
@@ -122,6 +125,8 @@ export async function GET(request, { params }) {
         parseNbtItems(bagData.talisman_bag?.data),
         parseNbtItems(bagData.potion_bag?.data),
         parseNbtItems(bagData.fishing_bag?.data),
+        parseNbtItems(bagData.quiver?.data),
+        parseNbtItems(bagData.sacks_bag?.data),
         parseNbtItems(invData.personal_vault_contents?.data)
       ]);
 
@@ -133,6 +138,9 @@ export async function GET(request, { params }) {
       decodedInventories.talismanBag = talismanBag;
       decodedInventories.potionBag = potionBag;
       decodedInventories.fishingBag = fishingBag;
+      decodedInventories.quiver = quiver;
+      decodedInventories.sacks = sacksBag;
+      decodedInventories.sacksCounts = invData.sacks_counts || {};
       decodedInventories.personalVault = personalVault;
 
       // Backpacks

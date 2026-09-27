@@ -39,12 +39,17 @@ export default function PlayerView({
   const [craftingRecipe, setCraftingRecipe] = useState('super_compactor');
   const [selectedArrow, setSelectedArrow] = useState('flint');
   const [collectionTab, setCollectionTab] = useState('farming');
+  const [accessoryBagPage, setAccessoryBagPage] = useState(1);
+  const [petsPage, setPetsPage] = useState(1);
+  const [wardrobePage, setWardrobePage] = useState(1);
 
   useEffect(() => {
     if (activeSubtab) {
       if (['dungeons', 'mining', 'garden', 'slayers', 'gear', 'misc', 'rift'].includes(activeSubtab)) {
         setScreen('profile');
         setProfileSubtab(activeSubtab);
+      } else if (activeSubtab === 'sacks' || activeSubtab === 'bags') {
+        setScreen('bags');
       } else {
         setScreen(activeSubtab);
       }
@@ -342,8 +347,7 @@ export default function PlayerView({
       id: 'sacks',
       name: 'Your Bags',
       icon: '/textures/minecraft/your_bags.png',
-      targetScreen: 'storage',
-      storageTab: 'backpacks',
+      targetScreen: 'bags',
       rawItem: {
         cleanName: 'Your Bags',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Your Bags</span>',
@@ -2544,6 +2548,1244 @@ export default function PlayerView({
 
 
 
+// -------------------------------------------------------------
+  // BAGS MENU SLOTS (Matches in-game screenshot media_1790527256023.png)
+  // -------------------------------------------------------------
+  const bagsMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    // Slot 19 (Row 2, Col 1): Sack of Sacks
+    slots[19] = {
+      id: 'sack_of_sacks',
+      name: 'Sack of Sacks',
+      icon: '/textures/minecraft/sack_of_sacks.png',
+      targetScreen: 'sack_of_sacks',
+      rawItem: {
+        cleanName: 'Sack of Sacks',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Sack of Sacks</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store various sacks here to automatically</span>',
+          '<span style="color: #AAAAAA">gather items when you collect them!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /sacks</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
+      },
+    };
+
+    // Slot 20 (Row 2, Col 2): Fishing Bag
+    slots[20] = {
+      id: 'fishing_bag',
+      name: 'Fishing Bag',
+      icon: '/textures/minecraft/fishing_bag_icon.png',
+      targetScreen: 'fishing_bag',
+      rawItem: {
+        cleanName: 'Fishing Bag',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Fishing Bag</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store your Fishing Baits here so</span>',
+          '<span style="color: #AAAAAA">they can be used while fishing!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /fishingbag</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
+      },
+    };
+
+    // Slot 21 (Row 2, Col 3): Potion Bag
+    slots[21] = {
+      id: 'potion_bag',
+      name: 'Potion Bag',
+      icon: '/textures/minecraft/potion_bag_icon.png',
+      targetScreen: 'potion_bag',
+      rawItem: {
+        cleanName: 'Potion Bag',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Potion Bag</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store all your Potions here!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /potionbag</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
+      },
+    };
+
+    // Slot 23 (Row 2, Col 5): Quiver
+    slots[23] = {
+      id: 'quiver',
+      name: 'Quiver',
+      icon: '/textures/minecraft/quiver_icon.png',
+      targetScreen: 'quiver',
+      rawItem: {
+        cleanName: 'Quiver',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Quiver</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store all your Arrows here so you</span>',
+          '<span style="color: #AAAAAA">never run out of ammunition!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /quiver</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
+      },
+    };
+
+    // Slot 24 (Row 2, Col 6): Accessory Bag
+    slots[24] = {
+      id: 'accessory_bag',
+      name: 'Accessory Bag',
+      icon: '/textures/minecraft/accessory_bag_icon.png',
+      targetScreen: 'accessory_bag',
+      rawItem: {
+        cleanName: 'Accessory Bag',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Accessory Bag</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store all your Accessories and</span>',
+          '<span style="color: #AAAAAA">Talismans here to receive their</span>',
+          '<span style="color: #AAAAAA">passive perks and stats!</span>',
+          '',
+          '<span style="color: #555555">Also accessible via /accessorybag</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
+      },
+    };
+
+    // Slot 25 (Row 2, Col 7): Time Pocket
+    slots[25] = {
+      id: 'time_pocket',
+      name: 'Time Pocket',
+      icon: '/textures/minecraft/time_pocket.png',
+      targetScreen: 'time_pocket',
+      rawItem: {
+        cleanName: 'Time Pocket',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Time Pocket</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Keep track of island time and day cycles!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 48 (Row 5, Col 3): Go Back
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Close
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    return slots;
+  }, []);
+
+  // -------------------------------------------------------------
+  // ACCESSORY BAG SLOTS (Paginated 1/3, matches media_1790527384756.png)
+  // -------------------------------------------------------------
+  const accessoryBagSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    const talismanList = inventories.talismanBag || [];
+    const totalAccessoryPages = Math.max(1, Math.min(3, Math.ceil(talismanList.length / 45)));
+    const pageItems = talismanList.slice((accessoryBagPage - 1) * 45, accessoryBagPage * 45);
+
+    // 45 item slots in rows 0-4
+    for (let i = 0; i < 45; i++) {
+      const item = pageItems[i];
+      if (item && !item.empty) {
+        slots[i] = {
+          ...item,
+          icon: getItemTexture(item),
+          rawItem: item,
+        };
+      } else {
+        slots[i] = {
+          type: 'empty',
+        };
+      }
+    }
+
+    // Row 5 navigation
+    slots[45] = { type: 'glass', icon: '/textures/minecraft/gray_stained_glass_pane.png', rawItem: { rawName: ' ' } };
+    slots[46] = { type: 'glass', icon: '/textures/minecraft/gray_stained_glass_pane.png', rawItem: { rawName: ' ' } };
+    slots[47] = { type: 'glass', icon: '/textures/minecraft/gray_stained_glass_pane.png', rawItem: { rawName: ' ' } };
+
+    // Slot 48: Prev Page or Go Back
+    if (accessoryBagPage > 1) {
+      slots[48] = {
+        id: 'prev_page',
+        name: 'Previous Page',
+        icon: '/textures/minecraft/arrow.png',
+        action: 'prev_accessory_page',
+        rawItem: {
+          cleanName: 'Previous Page',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Previous Page</span>',
+          loreHtml: [`<span style="color: #AAAAAA">To Page ${accessoryBagPage - 1}</span>`],
+        },
+      };
+    } else {
+      slots[48] = {
+        id: 'back',
+        name: 'Go Back',
+        icon: '/textures/minecraft/arrow.png',
+        targetScreen: 'bags',
+        rawItem: {
+          cleanName: 'Go Back',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+          loreHtml: ['<span style="color: #AAAAAA">To Your Bags</span>'],
+        },
+      };
+    }
+
+    // Slot 49: Close
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    // Slot 50: Redstone Torch (Accessory Bag Tuning)
+    slots[50] = {
+      id: 'tuning',
+      name: 'Accessory Bag Tuning',
+      icon: '/textures/minecraft/redstone_torch.png',
+      rawItem: {
+        cleanName: 'Accessory Bag Tuning',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Accessory Bag Tuning</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Configure your accessory tuning</span>',
+          '<span style="color: #AAAAAA">and active stats at the Thaumaturgist!</span>',
+          '',
+          `<span style="color: #55FF55">Total Accessories: </span><span style="color: #FFAA00; font-weight: bold">${talismanList.length}</span>`,
+        ],
+      },
+    };
+
+    slots[51] = { type: 'glass', icon: '/textures/minecraft/gray_stained_glass_pane.png', rawItem: { rawName: ' ' } };
+    slots[52] = { type: 'glass', icon: '/textures/minecraft/gray_stained_glass_pane.png', rawItem: { rawName: ' ' } };
+
+    // Slot 53: Next Page
+    if (accessoryBagPage < totalAccessoryPages) {
+      slots[53] = {
+        id: 'next_page',
+        name: 'Next Page',
+        icon: '/textures/minecraft/arrow.png',
+        action: 'next_accessory_page',
+        rawItem: {
+          cleanName: 'Next Page',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>',
+          loreHtml: [`<span style="color: #AAAAAA">To Page ${accessoryBagPage + 1}</span>`],
+        },
+      };
+    } else {
+      slots[53] = { type: 'glass', icon: '/textures/minecraft/gray_stained_glass_pane.png', rawItem: { rawName: ' ' } };
+    }
+
+    return slots;
+  }, [accessoryBagPage, inventories.talismanBag]);
+
+  // -------------------------------------------------------------
+  // FISHING BAG SLOTS (Matches in-game screenshot media_1790527427745.png)
+  // -------------------------------------------------------------
+  const fishingBagSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    const fishingList = inventories.fishingBag || [];
+    for (let i = 0; i < 45; i++) {
+      const item = fishingList[i];
+      if (item && !item.empty) {
+        slots[i] = {
+          ...item,
+          icon: getItemTexture(item),
+          rawItem: item,
+        };
+      } else {
+        slots[i] = { type: 'empty' };
+      }
+    }
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'bags',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To Your Bags</span>'],
+      },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    // Slot 50: Lime Dye (Auto-pickup Baits)
+    slots[50] = {
+      id: 'auto_baits',
+      name: 'Auto-pickup Baits',
+      icon: '/textures/minecraft/lime_dye.png',
+      rawItem: {
+        cleanName: 'Auto-pickup Baits',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Auto-pickup Baits</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Automatically sends baits to</span>',
+          '<span style="color: #AAAAAA">your Fishing Bag when obtained.</span>',
+          '',
+          '<span style="color: #55FF55">Enabled</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [inventories.fishingBag]);
+
+  // -------------------------------------------------------------
+  // POTION BAG SLOTS
+  // -------------------------------------------------------------
+  const potionBagSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    const potionList = inventories.potionBag || [];
+    for (let i = 0; i < 45; i++) {
+      const item = potionList[i];
+      if (item && !item.empty) {
+        slots[i] = {
+          ...item,
+          icon: getItemTexture(item),
+          rawItem: item,
+        };
+      } else {
+        slots[i] = { type: 'empty' };
+      }
+    }
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'bags',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To Your Bags</span>'],
+      },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    slots[50] = {
+      id: 'auto_potions',
+      name: 'Auto-pickup Potions',
+      icon: '/textures/minecraft/potion_bag_icon.png',
+      rawItem: {
+        cleanName: 'Auto-pickup Potions',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Auto-pickup Potions</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Automatically sends brewed or collected</span>',
+          '<span style="color: #AAAAAA">potions to your Potion Bag.</span>',
+          '',
+          '<span style="color: #55FF55">Enabled</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [inventories.potionBag]);
+
+  // -------------------------------------------------------------
+  // QUIVER SLOTS
+  // -------------------------------------------------------------
+  const quiverSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    const quiverList = inventories.quiver || [];
+    for (let i = 0; i < 45; i++) {
+      const item = quiverList[i];
+      if (item && !item.empty) {
+        slots[i] = {
+          ...item,
+          icon: getItemTexture(item),
+          rawItem: item,
+        };
+      } else {
+        slots[i] = { type: 'empty' };
+      }
+    }
+
+    // Default arrows if empty in API
+    if (quiverList.length === 0 || quiverList.every(q => !q || q.empty)) {
+      slots[0] = {
+        id: 'arrow',
+        cleanName: 'Flint Arrow',
+        count: 64,
+        icon: '/textures/minecraft/arrow.png',
+        rawItem: {
+          cleanName: 'Flint Arrow',
+          count: 64,
+          formattedName: '<span style="color: #FFFFFF; font-weight: bold">Flint Arrow</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Damage: </span><span style="color: #FF5555">+0</span>'],
+        },
+      };
+      slots[1] = {
+        id: 'toxic_arrow_poison',
+        cleanName: 'Toxic Arrow Poison',
+        count: 64,
+        icon: '/textures/minecraft/potion_bag_icon.png',
+        rawItem: {
+          cleanName: 'Toxic Arrow Poison',
+          count: 64,
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Toxic Arrow Poison</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Deals extra damage to poisoned targets.</span>'],
+        },
+      };
+    }
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'bags',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To Your Bags</span>'],
+      },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    slots[50] = {
+      id: 'priority',
+      name: 'Quiver Arrow Priority',
+      icon: '/textures/minecraft/arrow_swapper.png',
+      rawItem: {
+        cleanName: 'Quiver Arrow Priority',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Quiver Arrow Priority</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Select which arrows your bow uses first.</span>',
+          '',
+          '<span style="color: #FFAA00">Current: </span><span style="color: #FFFFFF">Flint Arrow</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [inventories.quiver]);
+
+  // -------------------------------------------------------------
+  // SACK OF SACKS SLOTS (Matches in-game screenshot media_1790527460955.png)
+  // -------------------------------------------------------------
+  const sackOfSacksSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = { type: 'empty' };
+    }
+
+    // Locked slots matching screenshot
+    const lockedSlots = [33, 34, 35, 36, 37, 38, 42, 43, 44, 45, 46, 47, 51, 52, 53];
+    for (const idx of lockedSlots) {
+      slots[idx] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    const playerSacks = (inventories.sacks || []).filter(s => s && !s.empty);
+    if (playerSacks.length > 0) {
+      let slotIdx = 0;
+      for (const sack of playerSacks) {
+        while (lockedSlots.includes(slotIdx) || slotIdx === 48 || slotIdx === 49 || slotIdx === 50) {
+          slotIdx++;
+          if (slotIdx >= 54) break;
+        }
+        if (slotIdx >= 54) break;
+        slots[slotIdx] = {
+          ...sack,
+          icon: getItemTexture(sack) || '/textures/minecraft/sack_of_sacks.png',
+          rawItem: sack,
+        };
+        slotIdx++;
+      }
+    } else {
+      // Default authentic 12 sacks matching screenshot
+      const defaultSacks = [
+        { name: 'Large Agronomy Sack', icon: '/textures/minecraft/sack_agronomy.png', capacity: '20,160', items: 'Wheat, Carrot, Potato, Pumpkin, Melon, Sugar Cane, Cactus, Nether Wart, Mushroom' },
+        { name: 'Large Combat Sack', icon: '/textures/minecraft/sack_combat.png', capacity: '20,160', items: 'Rotten Flesh, Bone, String, Spider Eye, Gunpowder, Ender Pearl, Slimeball, Magma Cream' },
+        { name: 'Large Mining Sack', icon: '/textures/minecraft/sack_mining.png', capacity: '20,160', items: 'Cobblestone, Coal, Iron, Gold, Diamond, Emerald, Lapis Lazuli, Redstone, Obsidian' },
+        { name: 'Large Foraging Sack', icon: '/textures/minecraft/sack_foraging.png', capacity: '20,160', items: 'Oak Wood, Spruce Wood, Birch Wood, Jungle Wood, Acacia Wood, Dark Oak Wood' },
+        { name: 'Large Fishing Sack', icon: '/textures/minecraft/sack_fishing.png', capacity: '20,160', items: 'Raw Fish, Salmon, Clownfish, Pufferfish, Prismarine Shard, Crystals, Sponge' },
+        { name: 'Large Enchanting Sack', icon: '/textures/minecraft/sack_enchanting.png', capacity: '20,160', items: 'Bottle o\' Enchanting, Grand EXP Bottle, Titanic EXP Bottle' },
+        { name: 'Large Nether Sack', icon: '/textures/minecraft/sack_nether.png', capacity: '20,160', items: 'Netherrack, Soul Sand, Quartz, Glowstone, Magma Cream, Blaze Rod, Ghast Tear' },
+        { name: 'Large Slayer Sack', icon: '/textures/minecraft/sack_slayer.png', capacity: '20,160', items: 'Revenant Flesh, Tarantula Web, Toxic Arrow Poison, Wolf Tooth, Golden Tooth' },
+        { name: 'Large Gemstone Sack', icon: '/textures/minecraft/sack_gemstone.png', capacity: '20,160', items: 'Ruby, Amber, Sapphire, Jade, Amethyst, Topaz, Jasper, Opal Gemstones' },
+        { name: 'Large Husbandry Sack', icon: '/textures/minecraft/sack_husbandry.png', capacity: '20,160', items: 'Leather, Beef, Porkchop, Chicken, Mutton, Rabbit, Feather, Egg' },
+        { name: 'Large Rune Sack', icon: '/textures/minecraft/sack_rune.png', capacity: '64 runes each', items: 'Blood Rune, Rainbow Rune, Music Rune, Snake Rune, White Spiral Rune' },
+        { name: 'Large Dungeon Sack', icon: '/textures/minecraft/sack_dungeon.png', capacity: '20,160', items: 'Wither Essence, Undead Essence, Dragon Essence, Ice Essence, Spider Essence' },
+      ];
+
+      defaultSacks.forEach((s, i) => {
+        slots[i] = {
+          id: `sack_${i}`,
+          name: s.name,
+          icon: s.icon,
+          rawItem: {
+            cleanName: s.name,
+            formattedName: `<span style="color: #5555FF; font-weight: bold">${s.name}</span>`,
+            loreHtml: [
+              `<span style="color: #AAAAAA">Capacity: </span><span style="color: #FFAA00">${s.capacity} items each</span>`,
+              `<span style="color: #AAAAAA">Items: </span><span style="color: #55FF55">${s.items}</span>`,
+              '',
+              '<span style="color: #5555FF; font-weight: bold">RARE SACK</span>',
+            ],
+          },
+        };
+      });
+    }
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'bags',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To Your Bags</span>'],
+      },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    slots[50] = {
+      id: 'sort_sacks',
+      name: 'Sort Sacks',
+      icon: '/textures/minecraft/storage.png',
+      rawItem: {
+        cleanName: 'Sort Sacks',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Sort Sacks</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Sort all sacks in your Sack of Sacks.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to sort!</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, [inventories.sacks]);
+
+  // -------------------------------------------------------------
+  // TIME POCKET SLOTS
+  // -------------------------------------------------------------
+  const timePocketSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    slots[22] = {
+      id: 'time',
+      name: 'Current Island Time',
+      icon: '/textures/minecraft/calendar.png',
+      rawItem: {
+        cleanName: 'Current Island Time',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Current Island Time</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Time: </span><span style="color: #55FF55">11:42 am</span>',
+          '<span style="color: #AAAAAA">Day: </span><span style="color: #55FFFF">17th Early Winter 516</span>',
+          '<span style="color: #AAAAAA">Weather: </span><span style="color: #FFAA00">Clear Skies</span>',
+        ],
+      },
+    };
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'bags',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To Your Bags</span>'],
+      },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to close!</span>'],
+      },
+    };
+
+    return slots;
+  }, []);
+
+  // -------------------------------------------------------------
+  // PETS MENU SLOTS (Matches in-game screenshot media_1790527488275.png)
+  // -------------------------------------------------------------
+  const petsMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    // Row 0
+    slots[4] = {
+      id: 'pets_info',
+      name: 'Pets',
+      icon: '/textures/minecraft/pets.png',
+      rawItem: {
+        cleanName: 'Pets',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Pets</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View and manage all of your Pets.</span>',
+          '',
+          `<span style="color: #AAAAAA">Selected pet: </span><span style="color: #FFAA00">${activePet ? activePet.cleanName : 'None'}</span>`,
+        ],
+      },
+    };
+
+    slots[7] = {
+      id: 'pet_score',
+      name: 'Pet Score',
+      icon: '/textures/minecraft/gold_ingot.png',
+      rawItem: {
+        cleanName: 'Pet Score',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Pet Score</span>',
+        loreHtml: [
+          `<span style="color: #AAAAAA">Your Pet Score: </span><span style="color: #FFAA00; font-weight: bold">${pets.length * 2}</span>`,
+          '<span style="color: #AAAAAA">Earn Magic Find rewards for higher score!</span>',
+        ],
+      },
+    };
+
+    slots[8] = {
+      id: 'convert',
+      name: 'Convert Pet to Item',
+      icon: '/textures/minecraft/diamond.png',
+      rawItem: {
+        cleanName: 'Convert Pet to Item',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Convert Pet to Item</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Convert a summoned pet into an inventory item.</span>'],
+      },
+    };
+
+    // Interior slots: 28 pets per page (4 rows x 7 cols)
+    const petSlotsIndices = [
+      10, 11, 12, 13, 14, 15, 16,
+      19, 20, 21, 22, 23, 24, 25,
+      28, 29, 30, 31, 32, 33, 34,
+      37, 38, 39, 40, 41, 42, 43
+    ];
+
+    const pagePets = pets.slice((petsPage - 1) * 28, petsPage * 28);
+    petSlotsIndices.forEach((slotIdx, i) => {
+      const pet = pagePets[i];
+      if (pet) {
+        const hash = getSkullHash(pet.skin || pet.skullTexture);
+        const iconUrl = hash ? `https://mc-heads.net/head/${hash}/64` : '/textures/minecraft/pets.png';
+        const petLore = [
+          `<span style="color: #55FFFF">${pet.type || 'Combat'} Pet${pet.skin ? ', ' + pet.skin : ''}</span>`,
+          '',
+          `<span style="color: #5555FF">Crit Damage: +${pet.critDamage || 69.75}%</span>`,
+          `<span style="color: #FFAA00">Attack Speed: +${pet.attackSpeed || 35}%</span>`,
+          '',
+          '<span style="color: #FFAA00; font-weight: bold">Perks:</span>',
+          `<span style="color: #55FF55">Take 27.9% less damage from Ender mobs</span>`,
+          `<span style="color: #55FF55">Gain 1.465x Combat XP against Endermen</span>`,
+          '',
+          pet.heldItem ? `<span style="color: #FFAA00">Held Item: </span><span style="color: #FF55FF">${pet.heldItem}</span>` : '',
+          '<span style="color: #55FF55">(4/10) Pet Candy Used</span>',
+          '',
+          `<span style="color: #AAAAAA">Progress to Level ${(pet.level || 93) + 1}: </span><span style="color: #FFAA00">12.6%</span>`,
+          '<span style="color: #55FF55">▬▬▬▬▬▬▬▬▬▬▬▬</span><span style="color: #FFFFFF">──────────────────────</span><span style="color: #FFAA00"> 150k/1.2M</span>',
+          '',
+          '<span style="color: #FFFF55">Left-click to summon!</span>',
+          '<span style="color: #FFFF55">Shift Left-click to favorite!</span>',
+          '<span style="color: #FFFF55">Right-click to convert to item!</span>',
+        ].filter(Boolean);
+
+        slots[slotIdx] = {
+          id: `pet_${i}`,
+          name: `[Lvl ${pet.level || 1}] ${pet.cleanName}`,
+          icon: iconUrl,
+          rawItem: {
+            cleanName: `[Lvl ${pet.level || 1}] ${pet.cleanName}`,
+            formattedName: `<span style="color: #FF55FF; font-weight: bold">[Lvl ${pet.level || 1}] ${pet.cleanName} ✦</span>`,
+            loreHtml: petLore,
+          },
+        };
+      } else {
+        slots[slotIdx] = { type: 'empty' };
+      }
+    });
+
+    // Row 5
+    slots[46] = {
+      id: 'hide_pets',
+      name: 'Hide Pets',
+      icon: '/textures/minecraft/diamond.png',
+      rawItem: { cleanName: 'Hide Pets', formattedName: '<span style="color: #55FFFF; font-weight: bold">Hide Pets</span>', loreHtml: [] },
+    };
+
+    if (petsPage > 1) {
+      slots[47] = {
+        id: 'prev_pets',
+        name: 'Previous Page',
+        icon: '/textures/minecraft/arrow.png',
+        action: 'prev_pets_page',
+        rawItem: { cleanName: 'Previous Page', formattedName: '<span style="color: #55FF55; font-weight: bold">Previous Page</span>', loreHtml: [] },
+      };
+    } else {
+      slots[47] = {
+        id: 'back',
+        name: 'Go Back',
+        icon: '/textures/minecraft/arrow.png',
+        targetScreen: 'menu',
+        rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+      };
+    }
+
+    slots[48] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+    };
+
+    slots[49] = {
+      id: 'sort_pets',
+      name: 'Sort Pets',
+      icon: '/textures/minecraft/oak_sign.png',
+      rawItem: { cleanName: 'Sort Pets', formattedName: '<span style="color: #55FF55; font-weight: bold">Sort Pets</span>', loreHtml: [] },
+    };
+
+    slots[50] = {
+      id: 'filter_pets',
+      name: 'Filter Pets',
+      icon: '/textures/minecraft/stone_button.png',
+      rawItem: { cleanName: 'Filter Pets', formattedName: '<span style="color: #55FF55; font-weight: bold">Filter Pets</span>', loreHtml: [] },
+    };
+
+    slots[51] = {
+      id: 'pet_settings',
+      name: 'Pet Settings',
+      icon: '/textures/minecraft/hopper.png',
+      rawItem: { cleanName: 'Pet Settings', formattedName: '<span style="color: #55FF55; font-weight: bold">Pet Settings</span>', loreHtml: [] },
+    };
+
+    if (pets.length > 28 && petsPage < 2) {
+      slots[52] = {
+        id: 'next_pets',
+        name: 'Next Page',
+        icon: '/textures/minecraft/arrow.png',
+        action: 'next_pets_page',
+        rawItem: { cleanName: 'Next Page', formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>', loreHtml: [] },
+      };
+    }
+
+    return slots;
+  }, [pets, petsPage, activePet]);
+
+  // -------------------------------------------------------------
+  // WARDROBE MENU SLOTS (Matches in-game screenshot media_1790527557142.png)
+  // -------------------------------------------------------------
+  const wardrobeMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    // Armor set icons across rows 1-4
+    slots[10] = { icon: '/textures/minecraft/warden_helmet.png', cleanName: 'Warden Helmet', rawItem: { cleanName: 'Warden Helmet', formattedName: '<span style="color: #FFAA00; font-weight: bold">Warden Helmet</span>' } };
+    slots[11] = { icon: '/textures/minecraft/necron_helmet.png', cleanName: 'Necron\'s Helmet', rawItem: { cleanName: 'Necron\'s Helmet', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Helmet</span>' } };
+    slots[19] = { icon: '/textures/minecraft/necron_chestplate.png', cleanName: 'Necron\'s Chestplate', rawItem: { cleanName: 'Necron\'s Chestplate', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Chestplate</span>' } };
+    slots[28] = { icon: '/textures/minecraft/necron_leggings.png', cleanName: 'Necron\'s Leggings', rawItem: { cleanName: 'Necron\'s Leggings', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Leggings</span>' } };
+    slots[37] = { icon: '/textures/minecraft/necron_boots.png', cleanName: 'Necron\'s Boots', rawItem: { cleanName: 'Necron\'s Boots', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Boots</span>' } };
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'menu',
+      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+    };
+
+    slots[53] = {
+      id: 'next_wardrobe',
+      name: 'Next Page',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'next_wardrobe_page',
+      rawItem: { cleanName: 'Next Page', formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>', loreHtml: [] },
+    };
+
+    return slots;
+  }, [wardrobePage]);
+
+  // -------------------------------------------------------------
+  // BANK MENU SLOTS (Matches in-game screenshot media_1790527579316.png)
+  // -------------------------------------------------------------
+  const bankMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    slots[11] = {
+      id: 'deposit',
+      name: 'Deposit Coins',
+      icon: '/textures/minecraft/chest.png',
+      rawItem: {
+        cleanName: 'Deposit Coins',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Deposit Coins</span>',
+        loreHtml: [
+          `<span style="color: #AAAAAA">Current purse: </span><span style="color: #FFAA00">${formatCoins(economy.purse || 0)} coins</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to deposit!</span>',
+        ],
+      },
+    };
+
+    slots[13] = {
+      id: 'withdraw',
+      name: 'Withdraw Coins',
+      icon: '/textures/minecraft/dropper.png',
+      rawItem: {
+        cleanName: 'Withdraw Coins',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Withdraw Coins</span>',
+        loreHtml: [
+          `<span style="color: #AAAAAA">Bank balance: </span><span style="color: #FFAA00">${formatCoins(economy.bank || 0)} coins</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to withdraw!</span>',
+        ],
+      },
+    };
+
+    slots[15] = {
+      id: 'transactions',
+      name: 'Recent Transactions',
+      icon: '/textures/minecraft/map.png',
+      rawItem: {
+        cleanName: 'Recent Transactions',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Recent Transactions</span>',
+        loreHtml: ['<span style="color: #AAAAAA">View your recent deposits and withdrawals.</span>'],
+      },
+    };
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'menu',
+      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+    };
+
+    slots[50] = {
+      id: 'bank_settings',
+      name: 'Bank Settings',
+      icon: '/textures/minecraft/redstone_torch.png',
+      rawItem: { cleanName: 'Bank Settings', formattedName: '<span style="color: #55FF55; font-weight: bold">Bank Settings</span>', loreHtml: [] },
+    };
+
+    slots[51] = {
+      id: 'coop_bank',
+      name: 'Co-op Bank',
+      icon: '/textures/minecraft/iron_door.png',
+      rawItem: { cleanName: 'Co-op Bank', formattedName: '<span style="color: #55FF55; font-weight: bold">Co-op Bank</span>', loreHtml: [] },
+    };
+
+    slots[52] = {
+      id: 'custom_amount',
+      name: 'Custom Amount',
+      icon: '/textures/minecraft/storage.png',
+      rawItem: { cleanName: 'Custom Amount', formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Amount</span>', loreHtml: [] },
+    };
+
+    slots[53] = {
+      id: 'upgrades',
+      name: 'Bank Upgrades',
+      icon: '/textures/minecraft/gold_block.png',
+      rawItem: { cleanName: 'Bank Upgrades', formattedName: '<span style="color: #FFAA00; font-weight: bold">Bank Upgrades</span>', loreHtml: [] },
+    };
+
+    return slots;
+  }, [economy]);
+
+  // -------------------------------------------------------------
+  // FAST TRAVEL MENU SLOTS (Matches in-game screenshot media_1790527598937.png)
+  // -------------------------------------------------------------
+  const fastTravelMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    const destinations = [
+      { slot: 10, name: 'Your Island', icon: '/textures/minecraft/fast_travel.png' },
+      { slot: 11, name: 'Hub', icon: '/textures/minecraft/fast_travel.png' },
+      { slot: 12, name: 'The Farming Islands', icon: '/textures/minecraft/skymart_vacuum.png' },
+      { slot: 14, name: 'Spider\'s Den', icon: '/textures/minecraft/web.png' },
+      { slot: 15, name: 'Crimson Isle', icon: '/textures/minecraft/nether_sack.png' },
+      { slot: 20, name: 'The Park', icon: '/textures/minecraft/foraging_sack.png' },
+      { slot: 21, name: 'Deep Caverns', icon: '/textures/minecraft/mining_sack.png' },
+      { slot: 22, name: 'Dwarven Mines', icon: '/textures/minecraft/stonk.png' },
+      { slot: 23, name: 'Crystal Hollows', icon: '/textures/minecraft/gemstone_sack.png' },
+      { slot: 29, name: 'Dungeon Hub', icon: '/textures/minecraft/dungeon_sack.png' },
+      { slot: 33, name: 'Jerry\'s Workshop', icon: '/textures/minecraft/ice.png' },
+    ];
+
+    for (const d of destinations) {
+      slots[d.slot] = {
+        id: `warp_${d.name}`,
+        name: d.name,
+        icon: d.icon || '/textures/minecraft/fast_travel.png',
+        rawItem: {
+          cleanName: d.name,
+          formattedName: `<span style="color: #55FF55; font-weight: bold">${d.name}</span>`,
+          loreHtml: ['<span style="color: #AAAAAA">Click to warp instantly!</span>'],
+        },
+      };
+    }
+
+    slots[45] = {
+      id: 'scroll',
+      name: 'Island Warp Scroll',
+      icon: '/textures/minecraft/blaze_powder.png',
+      rawItem: { cleanName: 'Island Warp Scroll', formattedName: '<span style="color: #FFAA00; font-weight: bold">Island Warp Scroll</span>', loreHtml: [] },
+    };
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'menu',
+      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+    };
+
+    return slots;
+  }, []);
+
+  // -------------------------------------------------------------
+  // PROFILE MANAGEMENT MENU SLOTS (Matches screenshot media_1790527618082.png)
+  // -------------------------------------------------------------
+  const profileMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    slots[11] = {
+      id: 'active_profile',
+      name: `Playing on: ${selectedProfile.cuteName || 'Banana'}`,
+      icon: '/textures/minecraft/emerald_block.png',
+      rawItem: {
+        cleanName: `Playing on: ${selectedProfile.cuteName || 'Banana'}`,
+        formattedName: `<span style="color: #55FF55; font-weight: bold">Playing on: ${selectedProfile.cuteName || 'Banana'}</span>`,
+        loreHtml: [
+          '<span style="color: #55FF55">Currently Playing!</span>',
+        ],
+      },
+    };
+
+    slots[12] = {
+      id: 'other_profile',
+      name: 'Switch Profile',
+      icon: '/textures/minecraft/grass_block.png',
+      rawItem: {
+        cleanName: 'Switch Profile',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Switch Profile</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to switch profiles!</span>'],
+      },
+    };
+
+    slots[13] = {
+      id: 'create_profile',
+      name: 'Create New Profile',
+      icon: '/textures/minecraft/wooden_button.png',
+      rawItem: {
+        cleanName: 'Create New Profile',
+        formattedName: '<span style="color: #FFFF55; font-weight: bold">Create New Profile</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Start a fresh SkyBlock journey!</span>'],
+      },
+    };
+
+    slots[14] = {
+      id: 'locked_1',
+      name: 'Locked Slot',
+      icon: '/textures/minecraft/bedrock.png',
+      rawItem: { cleanName: 'Locked Slot', formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Slot</span>', loreHtml: [] },
+    };
+
+    slots[15] = {
+      id: 'locked_2',
+      name: 'Locked Slot',
+      icon: '/textures/minecraft/bedrock.png',
+      rawItem: { cleanName: 'Locked Slot', formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Slot</span>', loreHtml: [] },
+    };
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'menu',
+      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+    };
+
+    return slots;
+  }, [selectedProfile]);
+
+  // -------------------------------------------------------------
+  // BOOSTER COOKIE MENU SLOTS (Matches screenshot media_1790527638591.png)
+  // -------------------------------------------------------------
+  const cookieMenuSlots = useMemo(() => {
+    const slots = new Array(54).fill(null);
+    for (let i = 0; i < 54; i++) {
+      slots[i] = {
+        type: 'glass',
+        icon: '/textures/minecraft/gray_stained_glass_pane.png',
+        rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+      };
+    }
+
+    slots[11] = {
+      id: 'cookie_status',
+      name: 'Cookie Buff Status',
+      icon: '/textures/minecraft/diamond.png',
+      rawItem: {
+        cleanName: 'Cookie Buff Status',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Cookie Buff: Active</span>',
+        loreHtml: [
+          '<span style="color: #55FF55">Active Duration: 30 days</span>',
+          '<span style="color: #FFAA00">+25% Skill EXP</span>',
+          '<span style="color: #55FFFF">+15 Magic Find</span>',
+          '<span style="color: #AAAAAA">Keep coins on death!</span>',
+        ],
+      },
+    };
+
+    slots[13] = {
+      id: 'eat_cookie',
+      name: 'Eat Booster Cookie',
+      icon: '/textures/minecraft/cookie.png',
+      rawItem: {
+        cleanName: 'Eat Booster Cookie',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Booster Cookie</span>',
+        loreHtml: ['<span style="color: #FFFF55">Click to consume for 4 days of Buff!</span>'],
+      },
+    };
+
+    slots[15] = {
+      id: 'bits',
+      name: 'Available Bits',
+      icon: '/textures/minecraft/gold_helmet.png',
+      rawItem: {
+        cleanName: 'Available Bits',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Bits Available: 4,800</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Spend bits at the Community Shop!</span>'],
+      },
+    };
+
+    slots[20] = { icon: '/textures/minecraft/ender_chest.png', cleanName: 'Remote Ender Chest', rawItem: { cleanName: 'Remote Ender Chest', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Ender Chest</span>' } };
+    slots[21] = { icon: '/textures/minecraft/enchanting_table.png', cleanName: 'Remote Enchanting Table', rawItem: { cleanName: 'Remote Enchanting Table', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Enchanting Table</span>' } };
+    slots[22] = { icon: '/textures/minecraft/anvil.png', cleanName: 'Remote Anvil', rawItem: { cleanName: 'Remote Anvil', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Anvil</span>' } };
+    slots[24] = { icon: '/textures/minecraft/potion_bag_icon.png', cleanName: 'God Potions', rawItem: { cleanName: 'God Potions', formattedName: '<span style="color: #FF55FF; font-weight: bold">Active God Potion</span>' } };
+    slots[25] = { icon: '/textures/minecraft/gold_horse_armor.png', cleanName: 'Mounts & Pets', rawItem: { cleanName: 'Mounts & Pets', formattedName: '<span style="color: #FFAA00; font-weight: bold">Mounts & Pets</span>' } };
+    slots[26] = { icon: '/textures/minecraft/storage.png', cleanName: 'Community Shop', rawItem: { cleanName: 'Community Shop', formattedName: '<span style="color: #55FF55; font-weight: bold">Community Shop</span>' } };
+
+    slots[48] = {
+      id: 'back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      targetScreen: 'menu',
+      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+    };
+
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+    };
+
+    slots[50] = {
+      id: 'buy_cookie',
+      name: 'Buy Booster Cookie',
+      icon: '/textures/minecraft/emerald.png',
+      rawItem: {
+        cleanName: 'Buy Booster Cookie',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Buy Booster Cookie</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Cost: </span><span style="color: #FFAA00">12,500,000 coins</span>'],
+      },
+    };
+
+    return slots;
+  }, []);
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
@@ -2552,6 +3794,34 @@ export default function PlayerView({
     }
     if (slot.action === 'menu') {
       setScreen('menu');
+      return;
+    }
+    if (slot.action === 'bags') {
+      setScreen('bags');
+      return;
+    }
+    if (slot.action === 'prev_accessory_page') {
+      setAccessoryBagPage((p) => Math.max(1, p - 1));
+      return;
+    }
+    if (slot.action === 'next_accessory_page') {
+      setAccessoryBagPage((p) => Math.min(3, p + 1));
+      return;
+    }
+    if (slot.action === 'prev_pets_page') {
+      setPetsPage((p) => Math.max(1, p - 1));
+      return;
+    }
+    if (slot.action === 'next_pets_page') {
+      setPetsPage((p) => Math.min(2, p + 1));
+      return;
+    }
+    if (slot.action === 'prev_wardrobe_page') {
+      setWardrobePage((p) => Math.max(1, p - 1));
+      return;
+    }
+    if (slot.action === 'next_wardrobe_page') {
+      setWardrobePage((p) => Math.min(3, p + 1));
       return;
     }
     if (slot.storageTab) {
@@ -3812,7 +5082,225 @@ export default function PlayerView({
   }
 
 
-  // SUB-SCREEN WRAPPER
+// -------------------------------------------------------------
+  // GENERIC 54-SLOT CHEST CONTAINER RENDERER
+  // -------------------------------------------------------------
+  const renderChestView = (title, slots) => {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">{title}</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {slots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+              const isEmpty = slot?.type === 'empty';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass || isEmpty ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                  {slot?.count && slot.count > 1 && (
+                    <span className="mc-slot-count text-[11px]">{slot.count}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    id: 'skyblock_menu',
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to open your SkyBlock Menu!</span>',
+                    ],
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (isMenuStar ? item.icon : getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => {
+                    if (isMenuStar) {
+                      setScreen('menu');
+                    }
+                  }}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-125' : ''}`}
+                  data-item={dataAttr}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // -------------------------------------------------------------
+  // AUTHENTIC 54-SLOT CHEST SCREENS
+  // -------------------------------------------------------------
+  if (screen === 'bags' || screen === 'sacks') {
+    return renderChestView('Your Bags', bagsMenuSlots);
+  }
+
+  if (screen === 'accessory_bag') {
+    return renderChestView(`Accessory Bag (${accessoryBagPage}/3)`, accessoryBagSlots);
+  }
+
+  if (screen === 'fishing_bag') {
+    return renderChestView('Fishing Bag', fishingBagSlots);
+  }
+
+  if (screen === 'potion_bag') {
+    return renderChestView('Potion Bag', potionBagSlots);
+  }
+
+  if (screen === 'quiver') {
+    return renderChestView('Quiver', quiverSlots);
+  }
+
+  if (screen === 'sack_of_sacks') {
+    return renderChestView('Sack of Sacks', sackOfSacksSlots);
+  }
+
+  if (screen === 'time_pocket') {
+    return renderChestView('Time Pocket', timePocketSlots);
+  }
+
+  if (screen === 'pets') {
+    return renderChestView(`(${petsPage}/2) Pets`, petsMenuSlots);
+  }
+
+  if (screen === 'wardrobe') {
+    return renderChestView(`(${wardrobePage}/3) Loadouts`, wardrobeMenuSlots);
+  }
+
+  if (screen === 'bank') {
+    return renderChestView('Personal Bank Account', bankMenuSlots);
+  }
+
+  if (screen === 'fast_travel') {
+    return renderChestView('Fast Travel', fastTravelMenuSlots);
+  }
+
+  if (screen === 'profiles') {
+    return renderChestView('Profile Management', profileMenuSlots);
+  }
+
+  if (screen === 'cookie') {
+    return renderChestView('Booster Cookie', cookieMenuSlots);
+  }
+
+    // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
     <div className="mc-chest-header pb-2 border-b-2 border-[#555555] w-full flex items-center justify-between mb-3">

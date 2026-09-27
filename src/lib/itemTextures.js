@@ -506,6 +506,22 @@ export function getItemTexture(item) {
     if (sbId.includes('SHADOW_ASSASSIN_LEGGINGS')) return '/textures/minecraft/shadow_assassin_leggings.png';
     if (sbId.includes('SHADOW_ASSASSIN_BOOTS')) return '/textures/minecraft/shadow_assassin_boots.png';
 
+    // Sack Textures
+    if (sbId.includes('AGRONOMY_SACK')) return '/textures/minecraft/sack_agronomy.png';
+    if (sbId.includes('COMBAT_SACK')) return '/textures/minecraft/sack_combat.png';
+    if (sbId.includes('MINING_SACK')) return '/textures/minecraft/sack_mining.png';
+    if (sbId.includes('FORAGING_SACK')) return '/textures/minecraft/sack_foraging.png';
+    if (sbId.includes('FISHING_SACK')) return '/textures/minecraft/sack_fishing.png';
+    if (sbId.includes('ENCHANTING_SACK')) return '/textures/minecraft/sack_enchanting.png';
+    if (sbId.includes('NETHER_SACK')) return '/textures/minecraft/sack_nether.png';
+    if (sbId.includes('SLAYER_SACK')) return '/textures/minecraft/sack_slayer.png';
+    if (sbId.includes('GEMSTONE_SACK')) return '/textures/minecraft/sack_gemstone.png';
+    if (sbId.includes('HUSBANDRY_SACK')) return '/textures/minecraft/sack_husbandry.png';
+    if (sbId.includes('RUNE_SACK')) return '/textures/minecraft/sack_rune.png';
+    if (sbId.includes('DUNGEON_SACK')) return '/textures/minecraft/sack_dungeon.png';
+    if (sbId.includes('SACK_OF_SACKS')) return '/textures/minecraft/sack_of_sacks.png';
+    if (sbId.includes('SACK')) return '/textures/minecraft/sack_of_sacks.png';
+
     // General Armor Sets (Respect Minecraft base types, never force diamond)
     if (sbId.includes('_CHESTPLATE')) {
       if (item.id === 299 || sbId.includes('CRIMSON') || sbId.includes('TERROR') || sbId.includes('AURORA')) {
