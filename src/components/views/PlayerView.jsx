@@ -2342,6 +2342,207 @@ export default function PlayerView({
     return slots;
   }, []);
 
+  // Build the authentic 54-slot Storage container GUI matching in-game screenshot:
+  const storageMenuSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    // Row 0:
+    // Slot 4 (Row 0, Col 4): Ender Chest
+    slots[4] = {
+      id: 'ender_chest_overview',
+      name: 'Ender Chest',
+      icon: '/textures/minecraft/ender_chest.png',
+      rawItem: {
+        cleanName: 'Ender Chest',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Ender Chest</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store global items that you want to</span>',
+          '<span style="color: #AAAAAA">access at any time from anywhere</span>',
+          '<span style="color: #AAAAAA">here.</span>',
+        ],
+      },
+    };
+
+    // Row 1: Ender Chest Pages
+    // Slot 9 (Row 1, Col 0): Paper (Ender Chest Page 1 - Active)
+    slots[9] = {
+      id: 'ender_chest_page_1',
+      name: 'Ender Chest Page 1',
+      icon: '/textures/minecraft/paper.png',
+      rawItem: {
+        cleanName: 'Ender Chest Page 1',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Ender Chest Page 1</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Capacity: </span><span style="color: #55FF55">54 Slots</span>',
+          '',
+          '<span style="color: #55FF55">Currently viewing!</span>',
+        ],
+      },
+    };
+
+    // Slot 10 (Row 1, Col 1): Purple Stained Glass Pane (Ender Chest Page 2)
+    slots[10] = {
+      id: 'ender_chest_page_2',
+      name: 'Ender Chest Page 2',
+      count: 2,
+      icon: '/textures/minecraft/purple_stained_glass_pane.png',
+      rawItem: {
+        cleanName: 'Ender Chest Page 2',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Ender Chest Page 2</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Capacity: </span><span style="color: #55FF55">54 Slots</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open page!</span>',
+        ],
+      },
+    };
+
+    // Slot 11 (Row 1, Col 2): Purple Stained Glass Pane (Ender Chest Page 3)
+    slots[11] = {
+      id: 'ender_chest_page_3',
+      name: 'Ender Chest Page 3',
+      count: 3,
+      icon: '/textures/minecraft/purple_stained_glass_pane.png',
+      rawItem: {
+        cleanName: 'Ender Chest Page 3',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Ender Chest Page 3</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Capacity: </span><span style="color: #55FF55">54 Slots</span>',
+          '',
+          '<span style="color: #FFFF55">Click to open page!</span>',
+        ],
+      },
+    };
+
+    // Slots 12 to 17 (Row 1, Cols 3-8): Red Stained Glass Pane (Locked Ender Chest Pages 4 to 9)
+    for (let p = 4; p <= 9; p++) {
+      const idx = 8 + p;
+      slots[idx] = {
+        id: `ender_chest_page_${p}`,
+        name: `Ender Chest Page ${p}`,
+        icon: '/textures/minecraft/red_stained_glass_pane.png',
+        rawItem: {
+          cleanName: `Ender Chest Page ${p}`,
+          formattedName: `<span style="color: #FF5555; font-weight: bold">Ender Chest Page ${p}</span>`,
+          loreHtml: [
+            '<span style="color: #FF5555">Locked!</span>',
+            '',
+            '<span style="color: #AAAAAA">Unlock more Ender Chest pages at</span>',
+            '<span style="color: #AAAAAA">the Community Shop!</span>',
+          ],
+        },
+      };
+    }
+
+    // Row 2:
+    // Slot 22 (Row 2, Col 4): Chest (Backpacks)
+    slots[22] = {
+      id: 'backpacks_overview',
+      name: 'Backpacks',
+      icon: '/textures/minecraft/storage.png',
+      rawItem: {
+        cleanName: 'Backpacks',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Backpacks</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Store backpacks that hold additional</span>',
+          '<span style="color: #AAAAAA">items. Accessible from anywhere!</span>',
+        ],
+      },
+    };
+
+    // Row 3 & 4: Backpack Slots 1 to 18
+    // Slots 27 to 42 (Backpack Slots 1 to 16): Brown Stained Glass Pane
+    for (let b = 1; b <= 16; b++) {
+      const slotIdx = 26 + b;
+      slots[slotIdx] = {
+        id: `backpack_slot_${b}`,
+        name: `Backpack Slot ${b}`,
+        count: b > 1 ? b : undefined,
+        icon: '/textures/minecraft/brown_stained_glass_pane.png',
+        rawItem: {
+          cleanName: `Backpack Slot ${b}`,
+          formattedName: `<span style="color: #55FF55; font-weight: bold">Backpack Slot ${b}</span>`,
+          loreHtml: [
+            '<span style="color: #AAAAAA">Place a backpack here to expand your</span>',
+            '<span style="color: #AAAAAA">storage capacity!</span>',
+            '',
+            '<span style="color: #FFFF55">Click to open!</span>',
+          ],
+        },
+      };
+    }
+
+    // Slot 43 (Row 4, Col 7): Locked Backpack Slot 17
+    slots[43] = {
+      id: 'backpack_slot_17',
+      name: 'Backpack Slot 17',
+      icon: '/textures/minecraft/locked_backpack.png',
+      rawItem: {
+        cleanName: 'Backpack Slot 17',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Backpack Slot 17</span>',
+        loreHtml: [
+          '<span style="color: #FF5555">Locked Slot!</span>',
+          '',
+          '<span style="color: #AAAAAA">Unlock by finding more Fairy Souls</span>',
+          '<span style="color: #AAAAAA">or progressing through SkyBlock!</span>',
+        ],
+      },
+    };
+
+    // Slot 44 (Row 4, Col 8): Locked Backpack Slot 18
+    slots[44] = {
+      id: 'backpack_slot_18',
+      name: 'Backpack Slot 18',
+      icon: '/textures/minecraft/locked_backpack.png',
+      rawItem: {
+        cleanName: 'Backpack Slot 18',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Backpack Slot 18</span>',
+        loreHtml: [
+          '<span style="color: #FF5555">Locked Slot!</span>',
+          '',
+          '<span style="color: #AAAAAA">Unlock by finding more Fairy Souls</span>',
+          '<span style="color: #AAAAAA">or progressing through SkyBlock!</span>',
+        ],
+      },
+    };
+
+    // Row 5:
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    return slots;
+  }, []);
+
+
 
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
@@ -3452,6 +3653,165 @@ export default function PlayerView({
     );
   }
 
+  // -------------------------------------------------------------
+  // VIEW: STORAGE (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'storage') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">Storage</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {storageMenuSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                  {slot?.count && slot.count > 1 && (
+                    <span className="mc-slot-count text-[11px]">{slot.count}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
   // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
@@ -3477,79 +3837,6 @@ export default function PlayerView({
     <div className="mc-chest-wrapper">
       <div className="mc-chest-window w-full max-w-4xl max-h-[92vh] flex flex-col p-4 overflow-y-auto">
 
-        {/* SUB-SCREEN: STORAGE */}
-        {screen === 'storage' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Storage & Bags')}
-
-            {/* Storage Tabs */}
-            <div className="flex gap-1.5 overflow-x-auto pb-1">
-              {[
-                { key: 'enderChest', label: 'Ender Chest' },
-                { key: 'talismanBag', label: 'Accessory Bag' },
-                { key: 'backpacks', label: 'Backpacks / Sacks' },
-                { key: 'potionBag', label: 'Potion Bag' },
-                { key: 'fishingBag', label: 'Fishing Bag' },
-                { key: 'personalVault', label: 'Personal Vault' },
-              ].map(st => (
-                <button
-                  key={st.key}
-                  onClick={() => setStorageKey(st.key)}
-                  className={`mc-stone-button text-xs px-2.5 py-1 ${storageKey === st.key ? 'active font-bold' : ''}`}
-                >
-                  {st.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Storage Chest Content */}
-            <div className="mc-inset-box rounded p-3 flex flex-col items-center">
-              {storageKey === 'backpacks' ? (
-                (!inventories.backpacks || inventories.backpacks.length === 0) ? (
-                  <span className="text-xs text-gray-400 p-4">No backpacks or sacks found in inventory.</span>
-                ) : (
-                  <div className="space-y-4 w-full">
-                    {inventories.backpacks.map(bp => (
-                      <div key={bp.index}>
-                        <span className="text-xs font-bold text-amber-400 block mb-1.5">{bp.name}</span>
-                        <div className="grid grid-cols-9 gap-1">
-                          {(bp.items || []).map((i, idx) => (
-                            <div key={idx}>{renderSlot(i)}</div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )
-              ) : storageItems.length === 0 ? (
-                <span className="text-xs text-gray-400 p-6">This bag is empty or player API is restricted.</span>
-              ) : (
-                <div className="grid grid-cols-9 gap-1">
-                  {storageItems.slice(0, 54).map((i, idx) => (
-                    <div key={idx}>{renderSlot(i)}</div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Player Inventory Below Storage */}
-            <div className="mc-inset-box rounded p-3">
-              <span className="text-xs font-bold text-gray-300 block mb-2">Player Inventory</span>
-              <div className="p-2 bg-[#4a4a4a] rounded border-2 border-[#373737] w-fit mx-auto">
-                <div className="grid grid-cols-9 gap-1 mb-1">
-                  {mainItems.map((i, idx) => (
-                    <div key={idx}>{renderSlot(i)}</div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-9 gap-1 pt-1 border-t-2 border-[#373737]">
-                  {hotbarItems.map((i, idx) => (
-                    <div key={idx}>{renderSlot(i)}</div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* SUB-SCREEN: PETS */}
         {screen === 'pets' && (
