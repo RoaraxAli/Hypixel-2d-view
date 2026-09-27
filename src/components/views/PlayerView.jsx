@@ -3946,6 +3946,7 @@ export default function PlayerView({
       };
     }
 
+    // Row 1, Col 2: Deposit Coins (Chest)
     slots[11] = {
       id: 'deposit',
       name: 'Deposit Coins',
@@ -3955,12 +3956,14 @@ export default function PlayerView({
         formattedName: '<span style="color: #55FF55; font-weight: bold">Deposit Coins</span>',
         loreHtml: [
           `<span style="color: #AAAAAA">Current purse: </span><span style="color: #FFAA00">${formatCoins(economy.purse || 0)} coins</span>`,
+          `<span style="color: #AAAAAA">Bank capacity: </span><span style="color: #FFAA00">1,000,000,000 coins</span>`,
           '',
-          '<span style="color: #FFFF55">Click to deposit!</span>',
+          '<span style="color: #FFFF55">Click to deposit coins!</span>',
         ],
       },
     };
 
+    // Row 1, Col 4: Withdraw Coins (Dropper)
     slots[13] = {
       id: 'withdraw',
       name: 'Withdraw Coins',
@@ -3971,11 +3974,12 @@ export default function PlayerView({
         loreHtml: [
           `<span style="color: #AAAAAA">Bank balance: </span><span style="color: #FFAA00">${formatCoins(economy.bank || 0)} coins</span>`,
           '',
-          '<span style="color: #FFFF55">Click to withdraw!</span>',
+          '<span style="color: #FFFF55">Click to withdraw coins!</span>',
         ],
       },
     };
 
+    // Row 1, Col 6: Recent Transactions (Map)
     slots[15] = {
       id: 'transactions',
       name: 'Recent Transactions',
@@ -3983,10 +3987,15 @@ export default function PlayerView({
       rawItem: {
         cleanName: 'Recent Transactions',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Recent Transactions</span>',
-        loreHtml: ['<span style="color: #AAAAAA">View your recent deposits and withdrawals.</span>'],
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your recent deposits and withdrawals.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view history!</span>',
+        ],
       },
     };
 
+    // Row 3, Col 3: Go Back (Arrow)
     slots[30] = {
       id: 'back',
       name: 'Go Back',
@@ -3995,6 +4004,7 @@ export default function PlayerView({
       rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
     };
 
+    // Row 3, Col 4: Close (Barrier)
     slots[31] = {
       id: 'close',
       name: 'Close',
@@ -4003,32 +4013,73 @@ export default function PlayerView({
       rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
     };
 
+    // Row 3, Col 5: Bank Settings (Redstone Torch)
     slots[32] = {
       id: 'bank_settings',
       name: 'Bank Settings',
       icon: '/textures/minecraft/redstone_torch.png',
-      rawItem: { cleanName: 'Bank Settings', formattedName: '<span style="color: #55FF55; font-weight: bold">Bank Settings</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Bank Settings',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Bank Settings</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Configure your bank notifications and</span>',
+          '<span style="color: #AAAAAA">custom transaction preferences.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to configure!</span>',
+        ],
+      },
     };
 
+    // Row 3, Col 6: Co-op Bank (Iron Door)
     slots[33] = {
       id: 'coop_bank',
       name: 'Co-op Bank',
       icon: '/textures/minecraft/iron_door.png',
-      rawItem: { cleanName: 'Co-op Bank', formattedName: '<span style="color: #55FF55; font-weight: bold">Co-op Bank</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Co-op Bank',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Co-op Bank</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Switch between Personal Bank and</span>',
+          '<span style="color: #AAAAAA">Co-op Bank shared account.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to toggle!</span>',
+        ],
+      },
     };
 
+    // Row 3, Col 7: Custom Amount (Chest)
     slots[34] = {
       id: 'custom_amount',
       name: 'Custom Amount',
-      icon: '/textures/minecraft/storage.png',
-      rawItem: { cleanName: 'Custom Amount', formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Amount</span>', loreHtml: [] },
+      icon: '/textures/minecraft/chest.png',
+      rawItem: {
+        cleanName: 'Custom Amount',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Amount</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Deposit or withdraw a specific amount</span>',
+          '<span style="color: #AAAAAA">of coins.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to enter amount!</span>',
+        ],
+      },
     };
 
+    // Row 3, Col 8: Bank Upgrades (Gold Block)
     slots[35] = {
       id: 'upgrades',
       name: 'Bank Upgrades',
       icon: '/textures/minecraft/gold_block.png',
-      rawItem: { cleanName: 'Bank Upgrades', formattedName: '<span style="color: #FFAA00; font-weight: bold">Bank Upgrades</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Bank Upgrades',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Bank Upgrades</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Current Account: </span><span style="color: #FFAA00">Palatial</span>',
+          `<span style="color: #AAAAAA">Bank Limit: </span><span style="color: #FFAA00">1,000,000,000 coins</span>`,
+          `<span style="color: #AAAAAA">Interest: </span><span style="color: #55FF55">2.08% every 31 hours</span>`,
+          '',
+          '<span style="color: #FFFF55">Click to view upgrade tiers!</span>',
+        ],
+      },
     };
 
     return slots;
