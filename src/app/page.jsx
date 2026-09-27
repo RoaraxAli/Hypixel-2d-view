@@ -6,10 +6,12 @@ import SkyblockWindow from '@/components/SkyblockWindow';
 import ItemTooltip from '@/components/ItemTooltip';
 import GlobalLoader from '@/components/GlobalLoader';
 import UsernamePromptModal from '@/components/UsernamePromptModal';
+import NPCSceneView from '@/components/NPCSceneView';
 
 import PlayerView from '@/components/views/PlayerView';
 import BazaarView from '@/components/views/BazaarView';
 import AuctionsView from '@/components/views/AuctionsView';
+import BankView from '@/components/views/BankView';
 import EndedAuctionsView from '@/components/views/EndedAuctionsView';
 import ElectionView from '@/components/views/ElectionView';
 import FiresalesView from '@/components/views/FiresalesView';
@@ -20,12 +22,14 @@ import MuseumView from '@/components/views/MuseumView';
 export default function HomePage() {
   const [playerData, setPlayerData] = useState(null);
   const [bazaarData, setBazaarData] = useState(null);
+  const [activeScene, setActiveScene] = useState(null); // 'bazaar' | 'economy' | 'auctions' | null
   const [activeDestination, setActiveDestination] = useState(null);
+  const [sceneInitialTab, setSceneInitialTab] = useState(null);
   const [playerSubtab, setPlayerSubtab] = useState('inventory');
   const [showUserPrompt, setShowUserPrompt] = useState(false);
   const [loaderText, setLoaderText] = useState(null);
 
-  // Fetch Player
+  // Fetch Player Profile
   const lookupPlayer = useCallback(async (query, profileId = null) => {
     setLoaderText(`Fetching SkyBlock data for ${query}...`);
     try {
@@ -72,29 +76,70 @@ export default function HomePage() {
 
   // Open Destination Handler
   const handleOpenDestination = useCallback((dest) => {
-    if (dest === 'economy') {
-      setActiveDestination('player');
-      setPlayerSubtab('economy');
+    if (dest === 'bazaar') {
+      setActiveScene('bazaar');
+      setActiveDestination(null);
+      setSceneInitialTab(null);
+    } else if (dest === 'economy' || dest === 'bank') {
+      setActiveScene('economy');
+      setActiveDestination(null);
+      setSceneInitialTab('account');
+    } else if (dest === 'auctions') {
+      setActiveScene('auctions');
+      setActiveDestination(null);
+      setSceneInitialTab('main');
     } else if (dest === 'dungeons') {
+      setActiveScene(null);
       setActiveDestination('player');
       setPlayerSubtab('dungeons');
     } else if (dest === 'mining') {
+      setActiveScene(null);
       setActiveDestination('player');
       setPlayerSubtab('mining');
     } else if (dest === 'garden') {
+      setActiveScene(null);
       setActiveDestination('player');
       setPlayerSubtab('garden');
     } else {
+      setActiveScene(null);
       setActiveDestination(dest);
       if (dest === 'player') setPlayerSubtab('inventory');
     }
   }, []);
 
+  // Handle Opening Menu from Interactive NPC scene
+  const handleSceneMenuOpen = useCallback((action) => {
+    if (action === 'bazaar') {
+      setActiveDestination('bazaar');
+    } else if (action === 'bank_account') {
+      setSceneInitialTab('account');
+      setActiveDestination('economy');
+    } else if (action === 'bank_vault') {
+      setSceneInitialTab('vault');
+      setActiveDestination('economy');
+    } else if (action === 'auction_main') {
+      setSceneInitialTab('main');
+      setActiveDestination('auctions');
+    } else if (action === 'auction_browser') {
+      setSceneInitialTab('browser');
+      setActiveDestination('auctions');
+    } else {
+      setActiveDestination(activeScene);
+    }
+  }, [activeScene]);
+
   // Keyboard Navigation: Escape to close, 1-9 for hotbar destinations
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
-        setActiveDestination(null);
+        if (activeDestination) {
+          setActiveDestination(null);
+          return;
+        }
+        if (activeScene) {
+          setActiveScene(null);
+          return;
+        }
         setShowUserPrompt(false);
         return;
       }
@@ -122,7 +167,7 @@ export default function HomePage() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [handleOpenDestination]);
+  }, [handleOpenDestination, activeDestination, activeScene]);
 
   const handleUserPromptSubmit = (username, remember) => {
     if (remember) {
@@ -136,17 +181,31 @@ export default function HomePage() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-black select-none">
-      {/* 2D Interactive Hub Map */}
-      <HubMap
-        onOpenDestination={handleOpenDestination}
-        onSearchPlayer={(query) => {
-          lookupPlayer(query);
-          handleOpenDestination('player');
-        }}
-        onShowUserPrompt={() => setShowUserPrompt(true)}
-      />
+      {/* 1. 2D Interactive Hub Map (shown when not in a 3D scene) */}
+      {!activeScene && (
+        <HubMap
+          onOpenDestination={handleOpenDestination}
+          onSearchPlayer={(query) => {
+            lookupPlayer(query);
+            handleOpenDestination('player');
+          }}
+          onShowUserPrompt={() => setShowUserPrompt(true)}
+        />
+      )}
 
-      {/* In-Game Window Dialog */}
+      {/* 2. 3D NPC Scene View (Bazaar, Bank, or Auction House video transition & infinite idle loop) */}
+      {activeScene && (
+        <NPCSceneView
+          scene={activeScene}
+          onOpenMenu={handleSceneMenuOpen}
+          onBackToMap={() => {
+            setActiveScene(null);
+            setActiveDestination(null);
+          }}
+        />
+      )}
+
+      {/* 3. In-Game Minecraft GUI Dialog (Centered over scene) */}
       <SkyblockWindow
         isOpen={Boolean(activeDestination)}
         destination={activeDestination}
@@ -172,7 +231,21 @@ export default function HomePage() {
           />
         )}
 
-        {activeDestination === 'auctions' && <AuctionsView />}
+        {activeDestination === 'economy' && (
+          <BankView
+            playerData={playerData}
+            initialTab={sceneInitialTab || 'account'}
+            onClose={() => setActiveDestination(null)}
+          />
+        )}
+
+        {activeDestination === 'auctions' && (
+          <AuctionsView
+            playerData={playerData}
+            initialScreen={sceneInitialTab || 'main'}
+            onClose={() => setActiveDestination(null)}
+          />
+        )}
 
         {activeDestination === 'ended_auctions' && <EndedAuctionsView />}
 

@@ -247,6 +247,10 @@ code, .font-mono {
   background-color: #c6c6c6;
 }
 
+.mc-chest-grid.chest-rows-3 {
+  grid-template-rows: repeat(3, 42px) !important;
+}
+
 .mc-inventory-header {
   width: 100%;
   margin-top: 14px;

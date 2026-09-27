@@ -7,15 +7,19 @@ export const DEST_META = {
   },
   auctions: {
     title: 'Auction House',
-    subtitle: 'Active Listings, BIN Filters & 60s Ended Snipes',
+    subtitle: 'Active Listings, BIN Filters & Auctions Browser',
   },
   bazaar: {
     title: 'SkyBlock Bazaar Market',
     subtitle: '2,100+ Commodities, Order Book Depth & Arbitrage Flips',
   },
   economy: {
-    title: 'The Bank & Economy',
-    subtitle: 'Coin Purse, Bank Account, 50-Item Transaction Ledger & Essences',
+    title: 'The Bank & Personal Vault',
+    subtitle: 'Coin Purse, Bank Account, Ledger & Personal Vault Storage',
+  },
+  bank: {
+    title: 'The Bank & Personal Vault',
+    subtitle: 'Coin Purse, Bank Account, Ledger & Personal Vault Storage',
   },
   dungeons: {
     title: 'Catacombs & Slayer Mastery',
@@ -54,26 +58,26 @@ export const DEST_META = {
 export default function SkyblockWindow({ isOpen, destination, onClose, children }) {
   if (!isOpen) return null;
 
-  const isBazaar = destination === 'bazaar';
+  const isMinecraftGui = ['bazaar', 'auctions', 'economy', 'bank'].includes(destination);
   const meta = DEST_META[destination] || DEST_META.player;
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 ${
-        isBazaar ? 'bazaar-mode bg-black/65 backdrop-blur-[2px]' : 'bg-black/80 backdrop-blur-md'
+      className={`fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 ${
+        isMinecraftGui ? 'bazaar-mode bg-black/65 backdrop-blur-[2px]' : 'bg-black/80 backdrop-blur-md'
       }`}
       onClick={onClose}
     >
       <div
         className={`skyblock-window ${
-          isBazaar
+          isMinecraftGui
             ? 'bazaar-mode w-auto max-w-fit h-auto max-h-[98vh] p-0'
             : 'w-full max-w-6xl h-full max-h-[92vh] overflow-hidden flex flex-col relative'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Title Bar (hidden in bazaar-mode via CSS) */}
-        {!isBazaar && (
+        {/* Title Bar (hidden in Minecraft GUI mode) */}
+        {!isMinecraftGui && (
           <div className="p-4 sm:px-6 border-b border-[#30363d] bg-[#090c10] flex items-center justify-between">
             <div>
               <h2 className="text-lg sm:text-xl font-black text-white tracking-wide">
@@ -92,10 +96,10 @@ export default function SkyblockWindow({ isOpen, destination, onClose, children 
           </div>
         )}
 
-        {/* Scrollable Body */}
+        {/* Body Content */}
         <div
           className={`flex-1 ${
-            isBazaar ? 'p-0 overflow-visible' : 'overflow-y-auto p-4 sm:p-6 space-y-6'
+            isMinecraftGui ? 'p-0 overflow-visible' : 'overflow-y-auto p-4 sm:p-6 space-y-6'
           }`}
         >
           {children}
