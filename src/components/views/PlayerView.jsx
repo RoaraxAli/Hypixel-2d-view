@@ -4099,24 +4099,100 @@ export default function PlayerView({
     }
 
     const destinations = [
-      { slot: 10, name: 'Your Island', icon: '/textures/minecraft/fast_travel.png' },
-      { slot: 11, name: 'Hub', icon: '/textures/minecraft/fast_travel.png' },
-      { slot: 12, name: 'The Farming Islands', icon: '/textures/minecraft/skymart_vacuum.png' },
-      { slot: 14, name: 'Spider\'s Den', icon: '/textures/minecraft/web.png' },
-      { slot: 15, name: 'The Park', icon: '/textures/minecraft/foraging_sack.png' },
-      { slot: 29, name: 'Jerry\'s Workshop', icon: '/textures/minecraft/ice.png' },
-      { slot: 33, name: 'Winter Island', icon: '/textures/minecraft/ice.png' },
+      {
+        slot: 10,
+        name: 'Your Island',
+        icon: '/textures/minecraft/fast_travel_island.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to your private island.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
+      {
+        slot: 11,
+        name: 'The Hub',
+        icon: '/textures/minecraft/fast_travel_hub.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to the central village</span>',
+          '<span style="color: #AAAAAA">of the main SkyBlock island.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
+      {
+        slot: 12,
+        name: 'The Farming Islands',
+        icon: '/textures/minecraft/fast_travel_farming.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to The Barn and Mushroom</span>',
+          '<span style="color: #AAAAAA">Desert to cultivate crops.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
+      {
+        slot: 14,
+        name: "Spider's Den",
+        icon: '/textures/minecraft/fast_travel_spider.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to the arachnid lair</span>',
+          '<span style="color: #AAAAAA">and Slayer territory.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
+      {
+        slot: 15,
+        name: 'The Park',
+        icon: '/textures/minecraft/fast_travel_park.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to the rich multi-tiered</span>',
+          '<span style="color: #AAAAAA">forest for foraging logs.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
+      {
+        slot: 29,
+        name: "Jerry's Workshop",
+        icon: '/textures/minecraft/fast_travel_jerry.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to the seasonal winter</span>',
+          '<span style="color: #AAAAAA">wonderland and Jerry event.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
+      {
+        slot: 33,
+        name: 'Winter Island',
+        icon: '/textures/minecraft/fast_travel_winter.png',
+        lore: [
+          '<span style="color: #AAAAAA">Teleport to the icy peaks and</span>',
+          '<span style="color: #AAAAAA">frozen lake.</span>',
+          '',
+          '<span style="color: #FFFF55">Right-Click to open options!</span>',
+          '<span style="color: #FFFF55">Left-Click to warp!</span>',
+        ],
+      },
     ];
 
     for (const d of destinations) {
       slots[d.slot] = {
         id: `warp_${d.name}`,
         name: d.name,
-        icon: d.icon || '/textures/minecraft/fast_travel.png',
+        icon: d.icon,
         rawItem: {
           cleanName: d.name,
           formattedName: `<span style="color: #55FF55; font-weight: bold">${d.name}</span>`,
-          loreHtml: ['<span style="color: #AAAAAA">Click to warp instantly!</span>'],
+          loreHtml: d.lore,
         },
       };
     }
@@ -4131,7 +4207,12 @@ export default function PlayerView({
         rawItem: {
           cleanName: 'Locked Warp',
           formattedName: '<span style="color: #FF5555; font-weight: bold">???</span>',
-          loreHtml: ['<span style="color: #AAAAAA">Discover this location to unlock warp!</span>'],
+          loreHtml: [
+            '<span style="color: #AAAAAA">You haven\'t unlocked this fast</span>',
+            '<span style="color: #AAAAAA">travel location yet!</span>',
+            '',
+            '<span style="color: #FF5555">Locked</span>',
+          ],
         },
       };
     }
@@ -4139,8 +4220,17 @@ export default function PlayerView({
     slots[45] = {
       id: 'scroll',
       name: 'Island Warp Scroll',
-      icon: '/textures/minecraft/blaze_powder.png',
-      rawItem: { cleanName: 'Island Warp Scroll', formattedName: '<span style="color: #FFAA00; font-weight: bold">Island Warp Scroll</span>', loreHtml: [] },
+      icon: '/textures/minecraft/fast_travel_fire.png',
+      rawItem: {
+        cleanName: 'Island Warp Scroll',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Island Warp Scroll</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Allows teleporting directly to</span>',
+          '<span style="color: #AAAAAA">custom coordinates and sub-areas.</span>',
+          '',
+          '<span style="color: #55FF55">Unlocked</span>',
+        ],
+      },
     };
 
     slots[48] = {
@@ -4148,7 +4238,11 @@ export default function PlayerView({
       name: 'Go Back',
       icon: '/textures/minecraft/arrow.png',
       targetScreen: 'menu',
-      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
     };
 
     slots[49] = {
@@ -4156,14 +4250,27 @@ export default function PlayerView({
       name: 'Close',
       icon: '/textures/minecraft/barrier.png',
       action: 'close',
-      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
     };
 
     slots[50] = {
       id: 'custom_spawn',
       name: 'Custom Island Spawn',
       icon: '/textures/minecraft/loadout_empty.png',
-      rawItem: { cleanName: 'Custom Island Spawn', formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Island Spawn</span>', loreHtml: ['<span style="color: #AAAAAA">Set or warp to your custom location.</span>'] },
+      rawItem: {
+        cleanName: 'Custom Island Spawn',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Custom Island Spawn</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Teleport directly to your custom</span>',
+          '<span style="color: #AAAAAA">island spawn point.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to teleport!</span>',
+        ],
+      },
     };
 
     return slots;
@@ -4184,13 +4291,16 @@ export default function PlayerView({
 
     slots[11] = {
       id: 'active_profile',
-      name: `Playing on: ${selectedProfile.cuteName || 'Banana'}`,
+      name: `Playing on: ${selectedProfile?.cuteName || 'Banana'}`,
       icon: '/textures/minecraft/emerald_block.png',
       rawItem: {
-        cleanName: `Playing on: ${selectedProfile.cuteName || 'Banana'}`,
-        formattedName: `<span style="color: #55FF55; font-weight: bold">Playing on: ${selectedProfile.cuteName || 'Banana'}</span>`,
+        cleanName: `Playing on: ${selectedProfile?.cuteName || 'Banana'}`,
+        formattedName: `<span style="color: #55FF55; font-weight: bold">Profile: ${selectedProfile?.cuteName || 'Banana'}</span>`,
         loreHtml: [
           '<span style="color: #55FF55">Currently Playing!</span>',
+          '',
+          `<span style="color: #AAAAAA">Members: </span><span style="color: #FFFF55">${selectedProfile?.members ? Object.keys(selectedProfile.members).length : 1}</span>`,
+          `<span style="color: #AAAAAA">Game Mode: </span><span style="color: #FFAA00">${selectedProfile?.game_mode ? selectedProfile.game_mode.toUpperCase() : 'Classic'}</span>`,
         ],
       },
     };
@@ -4201,8 +4311,12 @@ export default function PlayerView({
       icon: '/textures/minecraft/grass_block.png',
       rawItem: {
         cleanName: 'Switch Profile',
-        formattedName: '<span style="color: #55FF55; font-weight: bold">Switch Profile</span>',
-        loreHtml: ['<span style="color: #FFFF55">Click to switch profiles!</span>'],
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Profile: Blueberry</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Switch to this profile.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to switch!</span>',
+        ],
       },
     };
 
@@ -4213,7 +4327,12 @@ export default function PlayerView({
       rawItem: {
         cleanName: 'Create New Profile',
         formattedName: '<span style="color: #FFFF55; font-weight: bold">Create New Profile</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Start a fresh SkyBlock journey!</span>'],
+        loreHtml: [
+          '<span style="color: #AAAAAA">Start a fresh SkyBlock journey</span>',
+          '<span style="color: #AAAAAA">with a new character!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to create!</span>',
+        ],
       },
     };
 
@@ -4221,14 +4340,28 @@ export default function PlayerView({
       id: 'locked_1',
       name: 'Locked Slot',
       icon: '/textures/minecraft/bedrock.png',
-      rawItem: { cleanName: 'Locked Slot', formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Slot</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Locked Slot',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Profile Slot (Locked)</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Unlock additional profile slots</span>',
+          '<span style="color: #AAAAAA">with a Hypixel VIP rank or higher.</span>',
+        ],
+      },
     };
 
     slots[15] = {
       id: 'locked_2',
       name: 'Locked Slot',
       icon: '/textures/minecraft/bedrock.png',
-      rawItem: { cleanName: 'Locked Slot', formattedName: '<span style="color: #FF5555; font-weight: bold">Locked Slot</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Locked Slot',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Profile Slot (Locked)</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Unlock additional profile slots</span>',
+          '<span style="color: #AAAAAA">with a Hypixel MVP rank or higher.</span>',
+        ],
+      },
     };
 
     slots[30] = {
@@ -4236,7 +4369,11 @@ export default function PlayerView({
       name: 'Go Back',
       icon: '/textures/minecraft/arrow.png',
       targetScreen: 'menu',
-      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
     };
 
     slots[31] = {
@@ -4244,14 +4381,18 @@ export default function PlayerView({
       name: 'Close',
       icon: '/textures/minecraft/barrier.png',
       action: 'close',
-      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
     };
 
     return slots;
   }, [selectedProfile]);
 
   // -------------------------------------------------------------
-  // BOOSTER COOKIE MENU SLOTS (Matches screenshot media_1790527638591.png)
+  // BOOSTER COOKIE MENU SLOTS (Matches screenshot media_1790527638591.png - 54 slots)
   // -------------------------------------------------------------
   const cookieMenuSlots = useMemo(() => {
     const slots = new Array(54).fill(null);
@@ -4262,6 +4403,11 @@ export default function PlayerView({
         rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
       };
     }
+    // Slot 0 is an empty slot in the screenshot
+    slots[0] = {
+      type: 'empty',
+      rawItem: { rawName: ' ', formattedName: ' ', loreHtml: [] },
+    };
 
     slots[11] = {
       id: 'cookie_status',
@@ -4301,19 +4447,92 @@ export default function PlayerView({
       },
     };
 
-    slots[28] = { icon: '/textures/minecraft/ender_chest.png', cleanName: 'Remote Ender Chest', rawItem: { cleanName: 'Remote Ender Chest', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Ender Chest</span>' } };
-    slots[29] = { icon: '/textures/minecraft/enchanting_table.png', cleanName: 'Remote Enchanting Table', rawItem: { cleanName: 'Remote Enchanting Table', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Enchanting Table</span>' } };
-    slots[30] = { icon: '/textures/minecraft/anvil.png', cleanName: 'Remote Anvil', rawItem: { cleanName: 'Remote Anvil', formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Anvil</span>' } };
-    slots[32] = { icon: '/textures/minecraft/potion_bag_icon.png', cleanName: 'God Potions', rawItem: { cleanName: 'God Potions', formattedName: '<span style="color: #FF55FF; font-weight: bold">Active God Potion</span>' } };
-    slots[33] = { icon: '/textures/minecraft/gold_horse_armor.png', cleanName: 'Mounts & Pets', rawItem: { cleanName: 'Mounts & Pets', formattedName: '<span style="color: #FFAA00; font-weight: bold">Mounts & Pets</span>' } };
-    slots[34] = { icon: '/textures/minecraft/storage.png', cleanName: 'Community Shop', rawItem: { cleanName: 'Community Shop', formattedName: '<span style="color: #55FF55; font-weight: bold">Community Shop</span>' } };
+    slots[28] = {
+      id: 'remote_ec',
+      name: 'Remote Ender Chest',
+      icon: '/textures/minecraft/ender_chest.png',
+      rawItem: {
+        cleanName: 'Remote Ender Chest',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Ender Chest</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Open your Ender Chest anywhere.</span>', '', '<span style="color: #55FF55">Buff Active</span>'],
+      },
+    };
+
+    slots[29] = {
+      id: 'remote_ench',
+      name: 'Remote Enchanting Table',
+      icon: '/textures/minecraft/enchanting_table.png',
+      rawItem: {
+        cleanName: 'Remote Enchanting Table',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Enchanting Table</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Access enchanting powers anywhere.</span>', '', '<span style="color: #55FF55">Buff Active</span>'],
+      },
+    };
+
+    slots[30] = {
+      id: 'remote_anvil',
+      name: 'Remote Anvil',
+      icon: '/textures/minecraft/anvil.png',
+      rawItem: {
+        cleanName: 'Remote Anvil',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Anvil</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Repair and combine items on the go.</span>', '', '<span style="color: #55FF55">Buff Active</span>'],
+      },
+    };
+
+    slots[32] = {
+      id: 'god_pot',
+      name: 'Active God Potion',
+      icon: '/textures/minecraft/booster_potion.png',
+      rawItem: {
+        cleanName: 'Active God Potion',
+        formattedName: '<span style="color: #FF55FF; font-weight: bold">Active God Potion</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Potion effects are frozen and</span>',
+          '<span style="color: #AAAAAA">will not expire during Cookie Buff!</span>',
+          '',
+          '<span style="color: #55FF55">Active</span>',
+        ],
+      },
+    };
+
+    slots[33] = {
+      id: 'mounts',
+      name: 'Mounts & Pets',
+      icon: '/textures/minecraft/gold_horse_armor.png',
+      rawItem: {
+        cleanName: 'Mounts & Pets',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Mounts & Pets</span>',
+        loreHtml: ['<span style="color: #AAAAAA">Keep pet and mount buffs active.</span>'],
+      },
+    };
+
+    slots[34] = {
+      id: 'comm_shop',
+      name: 'Community Shop',
+      icon: '/textures/minecraft/community_shop.png',
+      rawItem: {
+        cleanName: 'Community Shop',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Community Shop</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Spend your earned bits with</span>',
+          '<span style="color: #AAAAAA">Elizabeth at the Community Center.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to browse!</span>',
+        ],
+      },
+    };
 
     slots[48] = {
       id: 'back',
       name: 'Go Back',
       icon: '/textures/minecraft/arrow.png',
       targetScreen: 'menu',
-      rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
     };
 
     slots[49] = {
@@ -4321,7 +4540,11 @@ export default function PlayerView({
       name: 'Close',
       icon: '/textures/minecraft/barrier.png',
       action: 'close',
-      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
     };
 
     slots[50] = {
@@ -5657,8 +5880,13 @@ export default function PlayerView({
             )}
           </div>
 
-          {/* 54-Slot Chest Grid */}
-          <div className="mc-chest-grid">
+          {/* Dynamic Chest Grid */}
+          <div
+            className="mc-chest-grid"
+            style={{
+              gridTemplateRows: `repeat(${Math.ceil(slots.length / 9)}, 42px)`
+            }}
+          >
             {slots.map((slot, idx) => {
               const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
                 ? encodeURIComponent(JSON.stringify(slot.rawItem))
