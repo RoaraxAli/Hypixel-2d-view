@@ -1314,6 +1314,246 @@ export default function PlayerView({
     return slots;
   }, [skills, dungeons]);
 
+  // Build the authentic 54-slot Collections container GUI matching in-game screenshot:
+  const collectionsMenuSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    // Helper for collection progress bar
+    const makeBar = (unlocked, total) => {
+      const pct = total > 0 ? Math.round((unlocked / total) * 100) : 0;
+      const totalBars = 20;
+      const greenBars = Math.min(totalBars, Math.max(0, Math.round((pct / 100) * totalBars)));
+      const whiteBars = totalBars - greenBars;
+      return [
+        `<span style="color: #AAAAAA">Collections Unlocked: </span><span style="color: #FFFF55">${pct}%</span>`,
+        `<span style="color: #55FF55">${'-'.repeat(greenBars)}</span><span style="color: #555555">${'-'.repeat(whiteBars)}</span> <span style="color: #FFFF55">${unlocked}</span><span style="color: #FFAA00">/</span><span style="color: #FFFF55">${total}</span>`,
+      ];
+    };
+
+    // Slot 4: Painting (Collection Overview)
+    slots[4] = {
+      id: 'collection_overview',
+      name: 'Collection',
+      icon: '/textures/minecraft/painting.png',
+      rawItem: {
+        cleanName: 'Collection',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Collection</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View all of the items available</span>',
+          '<span style="color: #AAAAAA">in SkyBlock. Collect more of an</span>',
+          '<span style="color: #AAAAAA">item to unlock rewards on your</span>',
+          '<span style="color: #AAAAAA">way to becoming the master of</span>',
+          '<span style="color: #AAAAAA">SkyBlock!</span>',
+          '',
+          ...makeBar(70, 85),
+          '',
+          '<span style="color: #FFFF55">Click to show rankings!</span>',
+        ],
+      },
+    };
+
+    // Slot 20: Farming Collections (Golden Hoe)
+    slots[20] = {
+      id: 'farming_collection',
+      name: 'Farming Collections',
+      icon: '/textures/minecraft/golden_hoe.png',
+      rawItem: {
+        cleanName: 'Farming Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Farming Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Farming Collections!</span>',
+          '',
+          ...makeBar(17, 17),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 21: Mining Collections (Iron Pickaxe)
+    slots[21] = {
+      id: 'mining_collection',
+      name: 'Mining Collections',
+      icon: '/textures/minecraft/iron_pickaxe.png',
+      rawItem: {
+        cleanName: 'Mining Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Mining Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Mining Collections!</span>',
+          '',
+          ...makeBar(22, 25),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 22: Combat Collections (Iron Sword)
+    slots[22] = {
+      id: 'combat_collection',
+      name: 'Combat Collections',
+      icon: '/textures/minecraft/iron_sword.png',
+      rawItem: {
+        cleanName: 'Combat Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Combat Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Combat Collections!</span>',
+          '',
+          ...makeBar(11, 11),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 23: Foraging Collections (Jungle Sapling)
+    slots[23] = {
+      id: 'foraging_collection',
+      name: 'Foraging Collections',
+      icon: '/textures/minecraft/sapling_jungle.png',
+      rawItem: {
+        cleanName: 'Foraging Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Foraging Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Foraging Collections!</span>',
+          '',
+          ...makeBar(10, 12),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 24: Fishing Collections (Fishing Rod)
+    slots[24] = {
+      id: 'fishing_collection',
+      name: 'Fishing Collections',
+      icon: '/textures/minecraft/fishing_rod_uncast.png',
+      rawItem: {
+        cleanName: 'Fishing Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Fishing Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Fishing Collections!</span>',
+          '',
+          ...makeBar(10, 11),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 31: Boss Collections (Wither Skeleton Skull)
+    slots[31] = {
+      id: 'boss_collection',
+      name: 'Boss Collections',
+      icon: '/textures/minecraft/wither_skeleton_skull.png',
+      rawItem: {
+        cleanName: 'Boss Collections',
+        formattedName: '<span style="color: #AA00AA; font-weight: bold">Boss Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your progress and claim</span>',
+          '<span style="color: #AAAAAA">rewards you have obtained from</span>',
+          '<span style="color: #AAAAAA">defeating SkyBlock bosses!</span>',
+          '',
+          ...makeBar(6, 8),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 32: Rift Collections (Mycelium Block)
+    slots[32] = {
+      id: 'rift_collection',
+      name: 'Rift Collections',
+      icon: '/textures/minecraft/mycelium.png',
+      rawItem: {
+        cleanName: 'Rift Collections',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Rift Collections</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your Rift Collections!</span>',
+          '',
+          ...makeBar(5, 7),
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Row 5: Navigation
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back to SkyBlock Menu)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    // Slot 50 (Row 5, Col 5): Cobblestone Minion XI (Crafted Minions)
+    slots[50] = {
+      id: 'crafted_minions',
+      name: 'Crafted Minions',
+      icon: '/textures/minecraft/cobblestone_minion.png',
+      rawItem: {
+        cleanName: 'Crafted Minions',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Crafted Minions</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View all the unique minions that you</span>',
+          '<span style="color: #AAAAAA">have crafted.</span>',
+          '',
+          '<span style="color: #AAAAAA">Unique Minions Crafted: </span><span style="color: #FFFF55">523</span>',
+          '<span style="color: #AAAAAA">Minion Slots Unlocked: </span><span style="color: #55FFFF">26</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 53 (Row 5, Col 8): Oak Sign (Collection Overview)
+    slots[53] = {
+      id: 'collection_info',
+      name: 'Collection Overview',
+      icon: '/textures/minecraft/oak_sign.png',
+      rawItem: {
+        cleanName: 'Collection Overview',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Collection Overview</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Collect items across all skills</span>',
+          '<span style="color: #AAAAAA">to unlock unique crafting recipes,</span>',
+          '<span style="color: #AAAAAA">trade options, and stat bonuses!</span>',
+          '',
+          '<span style="color: #AAAAAA">Total Collections: </span><span style="color: #FFAA00">85</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, []);
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
@@ -1668,6 +1908,161 @@ export default function PlayerView({
           {/* 54-Slot Chest Grid */}
           <div className="mc-chest-grid">
             {skillsMenuSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------
+  // VIEW: COLLECTIONS (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'collection') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">Collections</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {collectionsMenuSlots.map((slot, idx) => {
               const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
                 ? encodeURIComponent(JSON.stringify(slot.rawItem))
                 : null;
@@ -2275,117 +2670,7 @@ export default function PlayerView({
           </div>
         )}
 
-        {/* SUB-SCREEN: COLLECTION */}
-        {screen === 'collection' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Collections')}
-            <div className="flex gap-1.5 overflow-x-auto pb-1">
-              {[
-                { key: 'farming', label: 'Farming' },
-                { key: 'mining', label: 'Mining' },
-                { key: 'combat', label: 'Combat' },
-                { key: 'foraging', label: 'Foraging' },
-                { key: 'fishing', label: 'Fishing' },
-              ].map(cat => (
-                <button
-                  key={cat.key}
-                  onClick={() => setCollectionTab(cat.key)}
-                  className={`mc-stone-button text-xs px-2.5 py-1 ${collectionTab === cat.key ? 'active font-bold' : ''}`}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {collectionTab === 'farming' && [
-                { name: 'Wheat', tier: 'IX Max', icon: '/textures/minecraft/wheat.png', count: '142,500' },
-                { name: 'Carrot', tier: 'VIII', icon: '/textures/minecraft/carrot.png', count: '89,200' },
-                { name: 'Potato', tier: 'IX Max', icon: '/textures/minecraft/potato.png', count: '115,000' },
-                { name: 'Pumpkin', tier: 'VII', icon: '/textures/minecraft/pumpkin.png', count: '45,300' },
-                { name: 'Melon', tier: 'IX Max', icon: '/textures/minecraft/melon.png', count: '220,100' },
-                { name: 'Sugar Cane', tier: 'VIII', icon: '/textures/minecraft/sugar_cane.png', count: '78,400' },
-                { name: 'Cactus', tier: 'VI', icon: '/textures/minecraft/cactus.png', count: '32,100' },
-                { name: 'Cocoa Beans', tier: 'V', icon: '/textures/minecraft/cocoa_beans.png', count: '19,800' },
-              ].map(col => (
-                <div key={col.name} className="mc-inset-box rounded p-3 text-center space-y-1">
-                  <img src={col.icon} alt={col.name} className="w-7 h-7 mx-auto object-contain" />
-                  <h4 className="font-bold text-xs text-white">{col.name}</h4>
-                  <span className="text-[10px] text-amber-400 font-bold block">{col.tier}</span>
-                  <span className="text-[10px] text-gray-400 font-mono">{col.count} collected</span>
-                </div>
-              ))}
-
-              {collectionTab === 'mining' && [
-                { name: 'Cobblestone', tier: 'IX Max', icon: '/textures/minecraft/cobblestone.png', count: '512,000' },
-                { name: 'Coal', tier: 'VIII', icon: '/textures/minecraft/coal.png', count: '64,000' },
-                { name: 'Iron Ingot', tier: 'IX Max', icon: '/textures/minecraft/iron_ingot.png', count: '180,000' },
-                { name: 'Gold Ingot', tier: 'VII', icon: '/textures/minecraft/gold_ingot.png', count: '52,000' },
-                { name: 'Diamond', tier: 'IX Max', icon: '/textures/minecraft/diamond.png', count: '340,000' },
-                { name: 'Lapis Lazuli', tier: 'VIII', icon: '/textures/minecraft/lapis_lazuli.png', count: '95,000' },
-                { name: 'Redstone', tier: 'IX Max', icon: '/textures/minecraft/redstone.png', count: '450,000' },
-                { name: 'Emerald', tier: 'VIII', icon: '/textures/minecraft/emerald.png', count: '120,000' },
-              ].map(col => (
-                <div key={col.name} className="mc-inset-box rounded p-3 text-center space-y-1">
-                  <img src={col.icon} alt={col.name} className="w-7 h-7 mx-auto object-contain" />
-                  <h4 className="font-bold text-xs text-white">{col.name}</h4>
-                  <span className="text-[10px] text-amber-400 font-bold block">{col.tier}</span>
-                  <span className="text-[10px] text-gray-400 font-mono">{col.count} collected</span>
-                </div>
-              ))}
-
-              {collectionTab === 'combat' && [
-                { name: 'Rotten Flesh', tier: 'IX Max', icon: '/textures/minecraft/rotten_flesh.png', count: '280,000' },
-                { name: 'Bone', tier: 'VIII', icon: '/textures/minecraft/bone.png', count: '110,000' },
-                { name: 'String', tier: 'IX Max', icon: '/textures/minecraft/string.png', count: '190,000' },
-                { name: 'Spider Eye', tier: 'VII', icon: '/textures/minecraft/spider_eye.png', count: '48,000' },
-                { name: 'Gunpowder', tier: 'VIII', icon: '/textures/minecraft/gunpowder.png', count: '76,000' },
-                { name: 'Ender Pearl', tier: 'IX Max', icon: '/textures/minecraft/ender_pearl.png', count: '410,000' },
-                { name: 'Slimeball', tier: 'VI', icon: '/textures/minecraft/slimeball.png', count: '35,000' },
-                { name: 'Blaze Rod', tier: 'VII', icon: '/textures/minecraft/blaze_rod.png', count: '62,000' },
-              ].map(col => (
-                <div key={col.name} className="mc-inset-box rounded p-3 text-center space-y-1">
-                  <img src={col.icon} alt={col.name} className="w-7 h-7 mx-auto object-contain" />
-                  <h4 className="font-bold text-xs text-white">{col.name}</h4>
-                  <span className="text-[10px] text-amber-400 font-bold block">{col.tier}</span>
-                  <span className="text-[10px] text-gray-400 font-mono">{col.count} collected</span>
-                </div>
-              ))}
-
-              {collectionTab === 'foraging' && [
-                { name: 'Oak Wood', tier: 'IX Max', icon: '/textures/minecraft/oak_log.png', count: '185,000' },
-                { name: 'Birch Wood', tier: 'VIII', icon: '/textures/minecraft/birch_log.png', count: '92,000' },
-                { name: 'Spruce Wood', tier: 'VII', icon: '/textures/minecraft/spruce_log.png', count: '64,000' },
-                { name: 'Dark Oak Wood', tier: 'IX Max', icon: '/textures/minecraft/dark_oak_log.png', count: '240,000' },
-                { name: 'Acacia Wood', tier: 'VI', icon: '/textures/minecraft/acacia_log.png', count: '41,000' },
-                { name: 'Jungle Wood', tier: 'VIII', icon: '/textures/minecraft/jungle_log.png', count: '105,000' },
-              ].map(col => (
-                <div key={col.name} className="mc-inset-box rounded p-3 text-center space-y-1">
-                  <img src={col.icon} alt={col.name} className="w-7 h-7 mx-auto object-contain" />
-                  <h4 className="font-bold text-xs text-white">{col.name}</h4>
-                  <span className="text-[10px] text-amber-400 font-bold block">{col.tier}</span>
-                  <span className="text-[10px] text-gray-400 font-mono">{col.count} collected</span>
-                </div>
-              ))}
-
-              {collectionTab === 'fishing' && [
-                { name: 'Raw Fish', tier: 'IX Max', icon: '/textures/minecraft/raw_fish.png', count: '160,000' },
-                { name: 'Raw Salmon', tier: 'VIII', icon: '/textures/minecraft/salmon.png', count: '85,000' },
-                { name: 'Clownfish', tier: 'VI', icon: '/textures/minecraft/tropical_fish.png', count: '28,000' },
-                { name: 'Pufferfish', tier: 'VII', icon: '/textures/minecraft/pufferfish.png', count: '39,000' },
-                { name: 'Prismarine Shard', tier: 'V', icon: '/textures/minecraft/prismarine_shard.png', count: '18,000' },
-                { name: 'Clay', tier: 'VIII', icon: '/textures/minecraft/clay_ball.png', count: '94,000' },
-              ].map(col => (
-                <div key={col.name} className="mc-inset-box rounded p-3 text-center space-y-1">
-                  <img src={col.icon} alt={col.name} className="w-7 h-7 mx-auto object-contain" />
-                  <h4 className="font-bold text-xs text-white">{col.name}</h4>
-                  <span className="text-[10px] text-amber-400 font-bold block">{col.tier}</span>
-                  <span className="text-[10px] text-gray-400 font-mono">{col.count} collected</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* SUB-SCREEN: RECIPES */}
         {screen === 'recipes' && (
