@@ -15,7 +15,7 @@ const HUB_PINS = [
   { id: 'news', name: 'Update Board', left: '49.5%', top: '34.0%' },
 ];
 
-export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPrompt }) {
+export default function HubMap({ onOpenDestination, onShowUserPrompt }) {
   const containerRef = useRef(null);
   const [wrapperStyle, setWrapperStyle] = useState({
     width: '100%',
@@ -24,7 +24,6 @@ export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPr
     top: '0px',
     position: 'absolute'
   });
-  const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
     function updateDimensions() {
@@ -63,12 +62,6 @@ export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPr
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (!searchInput.trim()) return;
-    onSearchPlayer(searchInput.trim());
-  };
-
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-black select-none">
       {/* Map Viewport */}
@@ -94,29 +87,14 @@ export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPr
         </div>
       </div>
 
-      {/* Top-Left Search & Switch User Bar */}
-      <div className="absolute top-4 left-4 z-40 flex items-center gap-2">
-        <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search Player (IGN)..."
-            className="px-3 py-1.5 bg-black/80 border border-white/20 rounded-lg text-xs text-white placeholder-gray-400 backdrop-blur-md focus:outline-none focus:border-amber-400 transition w-48 sm:w-56"
-          />
-          <button
-            type="submit"
-            className="ml-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold rounded-lg transition"
-          >
-            Search
-          </button>
-        </form>
-
+      {/* Top-Left Corner: Switch User Option */}
+      <div className="absolute top-4 left-4 z-40">
         <button
           onClick={onShowUserPrompt}
-          className="px-3 py-1.5 rounded-lg bg-black/80 hover:bg-black/95 border border-white/20 text-gray-300 hover:text-amber-400 text-xs font-semibold transition backdrop-blur-md"
+          className="mc-stone-button text-base px-3.5 py-1.5 flex items-center gap-2 shadow-lg"
+          title="Switch Player IGN"
         >
-          Switch User
+          <span>Switch User</span>
         </button>
       </div>
     </div>

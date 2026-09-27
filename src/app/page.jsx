@@ -185,10 +185,6 @@ export default function HomePage() {
       {!activeScene && (
         <HubMap
           onOpenDestination={handleOpenDestination}
-          onSearchPlayer={(query) => {
-            lookupPlayer(query);
-            handleOpenDestination('player');
-          }}
           onShowUserPrompt={() => setShowUserPrompt(true)}
         />
       )}
