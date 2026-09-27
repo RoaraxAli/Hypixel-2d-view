@@ -5,15 +5,11 @@ import { useState, useEffect, useRef } from 'react';
 const SCENE_CONFIGS = {
   bazaar: {
     id: 'bazaar',
-    name: 'Bazaar Alley',
     introSrc: '/videos/bazaar-intro.mp4',
     loopSrc: '/videos/bazaar-idle.mp4',
-    speed: 1.0,
     targets: [
       {
         id: 'bazaar_npc',
-        title: 'Bazaar',
-        prompt: '[ CLICK ]',
         left: '42%',
         top: '35%',
         width: '16%',
@@ -24,15 +20,11 @@ const SCENE_CONFIGS = {
   },
   economy: {
     id: 'economy',
-    name: 'The Bank',
     introSrc: '/videos/bank-intro.mp4',
     loopSrc: '/videos/bank-idle.mp4',
-    speed: 1.0,
     targets: [
       {
         id: 'banker_npc',
-        title: 'Banker',
-        prompt: '[ CLICK ]',
         left: '35%',
         top: '47%',
         width: '16%',
@@ -41,8 +33,6 @@ const SCENE_CONFIGS = {
       },
       {
         id: 'vault_npc',
-        title: 'Vault',
-        prompt: '[ CLICK ]',
         left: '58%',
         top: '44%',
         width: '20%',
@@ -53,15 +43,11 @@ const SCENE_CONFIGS = {
   },
   auctions: {
     id: 'auctions',
-    name: 'Auction House',
     introSrc: '/videos/ah-intro.mp4',
     loopSrc: '/videos/ah-idle.mp4',
-    speed: 2.0, // 2x speed as requested: 4s becomes 2s
     targets: [
       {
         id: 'auction_master',
-        title: 'Auction Master',
-        prompt: '[ CLICK ]',
         left: '41%',
         top: '44%',
         width: '18%',
@@ -74,7 +60,6 @@ const SCENE_CONFIGS = {
 
 export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
   const config = SCENE_CONFIGS[scene] || SCENE_CONFIGS.bazaar;
-  const speed = config.speed || 1.0;
 
   const [isLooping, setIsLooping] = useState(false);
   const [wrapperStyle, setWrapperStyle] = useState({
@@ -136,7 +121,7 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
 
     if (intro) {
       intro.currentTime = 0;
-      intro.playbackRate = speed;
+      intro.playbackRate = 1.0;
       intro.play().catch((err) => {
         console.warn('Autoplay error on intro video:', err);
       });
@@ -144,33 +129,29 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
 
     if (loop) {
       loop.currentTime = 0;
-      loop.playbackRate = speed;
+      loop.playbackRate = 1.0;
       loop.load();
     }
-  }, [scene, speed]);
+  }, [scene]);
 
   const handleIntroEnded = () => {
     setIsLooping(true);
     const loop = loopVideoRef.current;
     if (loop) {
-      loop.playbackRate = speed;
+      loop.playbackRate = 1.0;
       loop.play().catch((err) => {
         console.warn('Loop video play error:', err);
       });
     }
   };
 
-  const handleSkipOrForceLoop = () => {
+  const handleTargetClick = (action) => {
     if (!isLooping) {
       if (introVideoRef.current) {
         introVideoRef.current.pause();
       }
       handleIntroEnded();
     }
-  };
-
-  const handleTargetClick = (action) => {
-    handleSkipOrForceLoop();
     onOpenMenu(action);
   };
 
@@ -189,9 +170,6 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
           muted
           playsInline
           preload="auto"
-          onPlay={(e) => {
-            e.currentTarget.playbackRate = speed;
-          }}
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
           style={{
             zIndex: isLooping ? 10 : 1,
@@ -210,14 +188,10 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
           preload="auto"
           onEnded={handleIntroEnded}
           onTimeUpdate={(e) => {
-            // Near end of video 1, trigger pre-buffered video 2 play for seamless zero-gap handoff
             const v = e.currentTarget;
             if (v.duration && v.duration - v.currentTime < 0.08 && !isLooping) {
               handleIntroEnded();
             }
-          }}
-          onPlay={(e) => {
-            e.currentTarget.playbackRate = speed;
           }}
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
           style={{
@@ -227,35 +201,24 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
           }}
         />
 
-        {/* Interactive Hitboxes & Clickable NPCs */}
+        {/* Clean, transparent clickable hitboxes over NPCs */}
         {config.targets.map((tgt) => (
           <div
             key={tgt.id}
             onClick={() => handleTargetClick(tgt.action)}
-            className="absolute z-20 cursor-pointer group flex flex-col items-center justify-start"
+            className="absolute z-20 cursor-pointer"
             style={{
               left: tgt.left,
               top: tgt.top,
               width: tgt.width,
               height: tgt.height
             }}
-            title={`Click to open ${tgt.title}`}
-          >
-            {/* Hover Indicator Box */}
-            <div className="w-full h-full rounded border-2 border-transparent group-hover:border-amber-400/80 group-hover:bg-amber-400/10 transition duration-150 relative">
-              {/* Floating Minecraft Click Prompt */}
-              <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-90 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none">
-                <span className="px-2 py-0.5 rounded bg-black/80 border border-amber-400/60 text-amber-300 font-mono text-[11px] font-bold shadow-lg animate-pulse">
-                  {tgt.prompt}
-                </span>
-              </div>
-            </div>
-          </div>
+          />
         ))}
       </div>
 
-      {/* Top Bar Controls */}
-      <div className="absolute top-4 left-4 z-40 flex items-center gap-3">
+      {/* Clean Top Bar: Back to Map button [ESC] */}
+      <div className="absolute top-4 left-4 z-40">
         <button
           onClick={onBackToMap}
           className="px-3.5 py-1.5 rounded-xl bg-black/80 hover:bg-black/95 border border-white/20 hover:border-amber-400/60 text-white font-mono text-xs font-bold transition flex items-center gap-2 backdrop-blur-md shadow-lg"
@@ -263,36 +226,6 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
           <span>◀ Back to Hub Map</span>
           <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-300">ESC</span>
         </button>
-
-        <div className="px-3 py-1.5 rounded-xl bg-black/70 border border-white/10 backdrop-blur-md flex items-center gap-2 text-xs">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="font-bold text-white tracking-wide">{config.name}</span>
-          {speed > 1.0 && (
-            <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold">
-              {speed}x Speed
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Skip Intro Button (Visible only during intro) */}
-      {!isLooping && (
-        <div className="absolute bottom-6 right-6 z-40">
-          <button
-            onClick={handleSkipOrForceLoop}
-            className="px-3 py-1 rounded-lg bg-black/60 hover:bg-black/80 border border-white/20 text-gray-300 hover:text-white text-xs font-mono transition backdrop-blur-sm"
-          >
-            Skip Intro ⏩
-          </button>
-        </div>
-      )}
-
-      {/* Bottom Hint Banner */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-        <div className="px-4 py-1.5 rounded-full bg-black/75 border border-white/15 backdrop-blur-md text-gray-300 text-xs font-medium flex items-center gap-2 shadow-2xl">
-          <span className="text-amber-400 font-bold">💡 Tip:</span>
-          <span>Click on the NPC in the center of the screen to open the menu</span>
-        </div>
       </div>
     </div>
   );
