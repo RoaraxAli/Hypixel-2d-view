@@ -106,6 +106,7 @@ export default function PlayerView({
   const [accessoryBagPage, setAccessoryBagPage] = useState(1);
   const [petsPage, setPetsPage] = useState(1);
   const [wardrobePage, setWardrobePage] = useState(1);
+  const [selectedLoadout, setSelectedLoadout] = useState(1);
 
   useEffect(() => {
     if (activeSubtab) {
@@ -3520,7 +3521,7 @@ export default function PlayerView({
   }, [pets, petsPage, activePet]);
 
   // -------------------------------------------------------------
-  // WARDROBE MENU SLOTS (Matches in-game screenshot media_1790527557142.png)
+  // WARDROBE / LOADOUTS MENU SLOTS (Matches in-game screenshot media_1790527557142.png)
   // -------------------------------------------------------------
   const wardrobeMenuSlots = useMemo(() => {
     const slots = new Array(54).fill(null);
@@ -3532,13 +3533,387 @@ export default function PlayerView({
       };
     }
 
-    // Armor set icons across rows 1-4
-    slots[10] = { icon: '/textures/minecraft/warden_helmet.png', cleanName: 'Warden Helmet', rawItem: { cleanName: 'Warden Helmet', formattedName: '<span style="color: #FFAA00; font-weight: bold">Warden Helmet</span>' } };
-    slots[11] = { icon: '/textures/minecraft/necron_helmet.png', cleanName: 'Necron\'s Helmet', rawItem: { cleanName: 'Necron\'s Helmet', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Helmet</span>' } };
-    slots[19] = { icon: '/textures/minecraft/necron_chestplate.png', cleanName: 'Necron\'s Chestplate', rawItem: { cleanName: 'Necron\'s Chestplate', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Chestplate</span>' } };
-    slots[28] = { icon: '/textures/minecraft/necron_leggings.png', cleanName: 'Necron\'s Leggings', rawItem: { cleanName: 'Necron\'s Leggings', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Leggings</span>' } };
-    slots[37] = { icon: '/textures/minecraft/necron_boots.png', cleanName: 'Necron\'s Boots', rawItem: { cleanName: 'Necron\'s Boots', formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Boots</span>' } };
+    // Left Column 0: Special Loadout Features & Settings
+    slots[9] = {
+      id: 'equipment_bag',
+      name: 'Equipment Bag',
+      icon: '/textures/minecraft/loadout_icon_equipment.png',
+      rawItem: {
+        cleanName: 'Equipment Bag',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Equipment Bag</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View your extra equipment storage</span>',
+          '<span style="color: #AAAAAA">and available sets.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
 
+    slots[18] = {
+      id: 'thaumaturgist_power',
+      name: 'Thaumaturgist Power',
+      icon: '/textures/minecraft/loadout_icon_power.png',
+      rawItem: {
+        cleanName: 'Thaumaturgist Power',
+        formattedName: '<span style="color: #FF55FF; font-weight: bold">Accessory Bag Power</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Active Power: </span><span style="color: #FF55FF">Hurtful</span>',
+          '<span style="color: #AAAAAA">Tuning Points: </span><span style="color: #55FF55">52/52</span>',
+          '',
+          '<span style="color: #FFFF55">Click to tune power!</span>',
+        ],
+      },
+    };
+
+    slots[27] = {
+      id: 'combat_deployable',
+      name: 'Combat Deployable',
+      icon: '/textures/minecraft/loadout_icon_deployable.png',
+      rawItem: {
+        cleanName: 'Combat Deployable',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Combat Deployable</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Active Deployable: </span><span style="color: #55FF55">Plasmaflux Power Orb</span>',
+          '',
+          '<span style="color: #FFFF55">Click to swap!</span>',
+        ],
+      },
+    };
+
+    slots[36] = {
+      id: 'auto_equip_rules',
+      name: 'Auto-equip Rules',
+      icon: '/textures/minecraft/loadout_icon_rules.png',
+      rawItem: {
+        cleanName: 'Auto-equip Rules',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Auto-equip Rules</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Configure automatic loadout swaps</span>',
+          '<span style="color: #AAAAAA">based on your current activity</span>',
+          '<span style="color: #AAAAAA">(Dungeons, Crimson Isle, Mining).</span>',
+          '',
+          '<span style="color: #FFFF55">Click to configure!</span>',
+        ],
+      },
+    };
+
+    // Loadout preset configurations
+    const presets = {
+      1: {
+        armor: [
+          (inventories.armor || [])[0] || { name: 'Wither Goggles', cleanName: 'Wither Goggles', formattedName: '<span style="color: #FFAA00; font-weight: bold">Wither Goggles</span>', icon: '/textures/minecraft/loadout_slot_2.png' },
+          (inventories.armor || [])[1] || { name: "Storm's Chestplate", cleanName: "Storm's Chestplate", formattedName: '<span style="color: #FF55FF; font-weight: bold">Storm\'s Chestplate</span>', icon: '/textures/minecraft/leather_chestplate.png' },
+          (inventories.armor || [])[2] || { name: "Storm's Leggings", cleanName: "Storm's Leggings", formattedName: '<span style="color: #FF55FF; font-weight: bold">Storm\'s Leggings</span>', icon: '/textures/minecraft/diamond_leggings.png' },
+          (inventories.armor || [])[3] || { name: "Storm's Boots", cleanName: "Storm's Boots", formattedName: '<span style="color: #FF55FF; font-weight: bold">Storm\'s Boots</span>', icon: '/textures/minecraft/diamond_boots.png' },
+        ],
+        equipment: [
+          (inventories.equipment || [])[0] || { name: 'Molten Necklace', cleanName: 'Molten Necklace', formattedName: '<span style="color: #FFAA00; font-weight: bold">Molten Necklace</span>', icon: '/textures/minecraft/equipment/molten_necklace.png' },
+          (inventories.equipment || [])[1] || { name: 'Molten Cloak', cleanName: 'Molten Cloak', formattedName: '<span style="color: #FFAA00; font-weight: bold">Molten Cloak</span>', icon: '/textures/minecraft/equipment/molten_cloak.png' },
+          (inventories.equipment || [])[2] || { name: 'Implosion Belt', cleanName: 'Implosion Belt', formattedName: '<span style="color: #FFAA00; font-weight: bold">Implosion Belt</span>', icon: '/textures/minecraft/safari_belt.png' },
+          (inventories.equipment || [])[3] || { name: 'Gauntlet of Contagion', cleanName: 'Gauntlet of Contagion', formattedName: '<span style="color: #FFAA00; font-weight: bold">Gauntlet of Contagion</span>', icon: '/textures/minecraft/equipment/gauntlet_of_contagion.png' },
+        ],
+        pet: activePet || {
+          name: '[Lvl 100] Sheep',
+          icon: '/textures/minecraft/pets/sheep.png',
+          formattedName: '<span style="color: #FFAA00; font-weight: bold">[Lvl 100] Sheep</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Alchemy Pet</span>', '', '<span style="color: #55FF55">Currently Summoned!</span>'],
+        },
+      },
+      2: {
+        armor: [
+          { name: "Necron's Helmet", cleanName: "Necron's Helmet", formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Helmet</span>', icon: '/textures/minecraft/necron_helmet.png' },
+          { name: "Necron's Chestplate", cleanName: "Necron's Chestplate", formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Chestplate</span>', icon: '/textures/minecraft/necron_chestplate.png' },
+          { name: "Necron's Leggings", cleanName: "Necron's Leggings", formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Leggings</span>', icon: '/textures/minecraft/necron_leggings.png' },
+          { name: "Necron's Boots", cleanName: "Necron's Boots", formattedName: '<span style="color: #FF55FF; font-weight: bold">Necron\'s Boots</span>', icon: '/textures/minecraft/necron_boots.png' },
+        ],
+        equipment: [
+          { name: 'Bone Necklace', cleanName: 'Bone Necklace', formattedName: '<span style="color: #FFAA00; font-weight: bold">Bone Necklace</span>', icon: '/textures/minecraft/equipment/molten_necklace.png' },
+          { name: 'Shadow Assassin Cloak', cleanName: 'Shadow Assassin Cloak', formattedName: '<span style="color: #FFAA00; font-weight: bold">Shadow Assassin Cloak</span>', icon: '/textures/minecraft/equipment/molten_cloak.png' },
+          { name: 'Tarantula Belt', cleanName: 'Tarantula Belt', formattedName: '<span style="color: #FFAA00; font-weight: bold">Tarantula Belt</span>', icon: '/textures/minecraft/safari_belt.png' },
+          { name: 'Gauntlet of Contagion', cleanName: 'Gauntlet of Contagion', formattedName: '<span style="color: #FFAA00; font-weight: bold">Gauntlet of Contagion</span>', icon: '/textures/minecraft/equipment/gauntlet_of_contagion.png' },
+        ],
+        pet: {
+          name: '[Lvl 100] Wither Skeleton',
+          icon: '/textures/minecraft/pets/wither_skeleton.png',
+          formattedName: '<span style="color: #FFAA00; font-weight: bold">[Lvl 100] Wither Skeleton</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Mining Pet</span>', '', '<span style="color: #55FF55">Currently Summoned!</span>'],
+        },
+      },
+      3: {
+        armor: [
+          { name: "Maxor's Helmet", cleanName: "Maxor's Helmet", formattedName: '<span style="color: #FF55FF; font-weight: bold">Maxor\'s Helmet</span>', icon: '/textures/minecraft/maxor_helmet.png' },
+          { name: "Maxor's Chestplate", cleanName: "Maxor's Chestplate", formattedName: '<span style="color: #FF55FF; font-weight: bold">Maxor\'s Chestplate</span>', icon: '/textures/minecraft/maxor_chestplate.png' },
+          { name: "Maxor's Leggings", cleanName: "Maxor's Leggings", formattedName: '<span style="color: #FF55FF; font-weight: bold">Maxor\'s Leggings</span>', icon: '/textures/minecraft/maxor_leggings.png' },
+          { name: "Maxor's Boots", cleanName: "Maxor's Boots", formattedName: '<span style="color: #FF55FF; font-weight: bold">Maxor\'s Boots</span>', icon: '/textures/minecraft/maxor_boots.png' },
+        ],
+        equipment: [
+          { name: 'Molten Necklace', cleanName: 'Molten Necklace', formattedName: '<span style="color: #FFAA00; font-weight: bold">Molten Necklace</span>', icon: '/textures/minecraft/equipment/molten_necklace.png' },
+          { name: 'Molten Cloak', cleanName: 'Molten Cloak', formattedName: '<span style="color: #FFAA00; font-weight: bold">Molten Cloak</span>', icon: '/textures/minecraft/equipment/molten_cloak.png' },
+          { name: 'Implosion Belt', cleanName: 'Implosion Belt', formattedName: '<span style="color: #FFAA00; font-weight: bold">Implosion Belt</span>', icon: '/textures/minecraft/safari_belt.png' },
+          { name: 'Gauntlet of Contagion', cleanName: 'Gauntlet of Contagion', formattedName: '<span style="color: #FFAA00; font-weight: bold">Gauntlet of Contagion</span>', icon: '/textures/minecraft/equipment/gauntlet_of_contagion.png' },
+        ],
+        pet: {
+          name: '[Lvl 100] Black Cat',
+          icon: '/textures/minecraft/pets/enderman.png',
+          formattedName: '<span style="color: #FFAA00; font-weight: bold">[Lvl 100] Black Cat</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Combat Pet</span>', '', '<span style="color: #55FF55">Currently Summoned!</span>'],
+        },
+      },
+      4: {
+        armor: [
+          { name: "Divan's Helmet", cleanName: "Divan's Helmet", formattedName: '<span style="color: #FF55FF; font-weight: bold">Divan\'s Helmet</span>', icon: '/textures/minecraft/diamond_helmet.png' },
+          { name: "Divan's Chestplate", cleanName: "Divan's Chestplate", formattedName: '<span style="color: #FF55FF; font-weight: bold">Divan\'s Chestplate</span>', icon: '/textures/minecraft/diamond_chestplate.png' },
+          { name: "Divan's Leggings", cleanName: "Divan's Leggings", formattedName: '<span style="color: #FF55FF; font-weight: bold">Divan\'s Leggings</span>', icon: '/textures/minecraft/diamond_leggings.png' },
+          { name: "Divan's Boots", cleanName: "Divan's Boots", formattedName: '<span style="color: #FF55FF; font-weight: bold">Divan\'s Boots</span>', icon: '/textures/minecraft/diamond_boots.png' },
+        ],
+        equipment: [
+          { name: "Divan's Pendant", cleanName: "Divan's Pendant", formattedName: '<span style="color: #FF55FF; font-weight: bold">Divan\'s Pendant</span>', icon: '/textures/minecraft/equipment/divan_pendant.png' },
+          { name: 'Molten Cloak', cleanName: 'Molten Cloak', formattedName: '<span style="color: #FFAA00; font-weight: bold">Molten Cloak</span>', icon: '/textures/minecraft/equipment/molten_cloak.png' },
+          { name: 'Implosion Belt', cleanName: 'Implosion Belt', formattedName: '<span style="color: #FFAA00; font-weight: bold">Implosion Belt</span>', icon: '/textures/minecraft/safari_belt.png' },
+          { name: 'Gauntlet of Contagion', cleanName: 'Gauntlet of Contagion', formattedName: '<span style="color: #FFAA00; font-weight: bold">Gauntlet of Contagion</span>', icon: '/textures/minecraft/equipment/gauntlet_of_contagion.png' },
+        ],
+        pet: {
+          name: '[Lvl 100] Bal',
+          icon: '/textures/minecraft/pets/magma_cube.png',
+          formattedName: '<span style="color: #FFAA00; font-weight: bold">[Lvl 100] Bal</span>',
+          loreHtml: ['<span style="color: #AAAAAA">Combat Pet</span>', '', '<span style="color: #55FF55">Currently Summoned!</span>'],
+        },
+      },
+    };
+
+    const activeSetup = presets[selectedLoadout] || presets[1];
+
+    // Left Column 1: Equipped Equipment (Necklace, Cloak, Belt, Gloves)
+    const eqSlots = [10, 19, 28, 37];
+    eqSlots.forEach((slotIdx, i) => {
+      const eqItem = activeSetup.equipment[i];
+      if (eqItem) {
+        slots[slotIdx] = {
+          id: `equipped_equipment_${i}`,
+          name: eqItem.cleanName || eqItem.name,
+          realItem: eqItem,
+          icon: (eqItem.cleanName ? getItemTexture(eqItem) : null) || eqItem.icon,
+          rawItem: eqItem.rawName ? eqItem : {
+            cleanName: eqItem.name,
+            formattedName: eqItem.formattedName || `<span style="color: #FFAA00; font-weight: bold">${eqItem.name}</span>`,
+            loreHtml: ['<span style="color: #55FF55">Currently Equipped Equipment</span>'],
+          },
+        };
+      }
+    });
+
+    // Left Column 2: Equipped Armor (Helmet, Chestplate, Leggings, Boots)
+    const armorSlots = [11, 20, 29, 38];
+    armorSlots.forEach((slotIdx, i) => {
+      const armItem = activeSetup.armor[i];
+      if (armItem) {
+        slots[slotIdx] = {
+          id: `equipped_armor_${i}`,
+          name: armItem.cleanName || armItem.name,
+          realItem: armItem,
+          icon: (armItem.cleanName ? getItemTexture(armItem) : null) || armItem.icon,
+          rawItem: armItem.rawName ? armItem : {
+            cleanName: armItem.name,
+            formattedName: armItem.formattedName || `<span style="color: #FFAA00; font-weight: bold">${armItem.name}</span>`,
+            loreHtml: ['<span style="color: #55FF55">Currently Equipped Armor</span>'],
+          },
+        };
+      }
+    });
+
+    // Left Column 3: Active Pet (Slot 21)
+    const currentPet = activeSetup.pet;
+    slots[21] = {
+      id: 'active_pet',
+      name: currentPet.name,
+      icon: currentPet.icon,
+      realItem: currentPet.rawItem || currentPet,
+      rawItem: currentPet.rawItem || {
+        cleanName: currentPet.name,
+        formattedName: currentPet.formattedName || `<span style="color: #FFAA00; font-weight: bold">${currentPet.name}</span>`,
+        loreHtml: currentPet.loreHtml || ['<span style="color: #55FF55">Currently Summoned Pet</span>'],
+      },
+    };
+
+    // Right Side: 12 Loadout Slots per page (Rows 1..4, Cols 5..7 -> slots: 14,15,16, 23,24,25, 32,33,34, 41,42,43)
+    const loadoutGrid = [14, 15, 16, 23, 24, 25, 32, 33, 34, 41, 42, 43];
+    const pageOffset = (wardrobePage - 1) * 12;
+
+    loadoutGrid.forEach((gridSlot, idx) => {
+      const loadoutNum = pageOffset + idx + 1;
+      if (wardrobePage === 1) {
+        if (idx === 0) {
+          const isAct = selectedLoadout === 1;
+          slots[gridSlot] = {
+            id: `loadout_${loadoutNum}`,
+            name: `Loadout #${loadoutNum}`,
+            icon: '/textures/minecraft/loadout_slot_1.png',
+            action: 'select_loadout',
+            loadoutNum: 1,
+            rawItem: {
+              cleanName: `Loadout #${loadoutNum}`,
+              formattedName: `<span style="color: #55FF55; font-weight: bold">Loadout #${loadoutNum}</span>`,
+              loreHtml: [
+                isAct ? '<span style="color: #55FF55">Currently Active!</span>' : '<span style="color: #AAAAAA">Status: Inactive</span>',
+                '',
+                '<span style="color: #AAAAAA">Armor: </span><span style="color: #FFAA00">Storm\'s Armor</span>',
+                '<span style="color: #AAAAAA">Pet: </span><span style="color: #FFAA00">[Lvl 100] Sheep</span>',
+                '<span style="color: #AAAAAA">Equipment: </span><span style="color: #FFAA00">Molten Set</span>',
+                '',
+                isAct ? '<span style="color: #55FF55">Already equipped!</span>' : '<span style="color: #FFFF55">Click to equip!</span>',
+              ],
+            },
+          };
+        } else if (idx === 1) {
+          const isAct = selectedLoadout === 2;
+          slots[gridSlot] = {
+            id: `loadout_${loadoutNum}`,
+            name: `Loadout #${loadoutNum}`,
+            icon: '/textures/minecraft/loadout_slot_2.png',
+            action: 'select_loadout',
+            loadoutNum: 2,
+            rawItem: {
+              cleanName: `Loadout #${loadoutNum}`,
+              formattedName: `<span style="color: #55FF55; font-weight: bold">Loadout #${loadoutNum}</span>`,
+              loreHtml: [
+                isAct ? '<span style="color: #55FF55">Currently Active!</span>' : '<span style="color: #AAAAAA">Status: Inactive</span>',
+                '',
+                '<span style="color: #AAAAAA">Armor: </span><span style="color: #FFAA00">Necron\'s Armor</span>',
+                '<span style="color: #AAAAAA">Pet: </span><span style="color: #FFAA00">[Lvl 100] Wither Skeleton</span>',
+                '<span style="color: #AAAAAA">Equipment: </span><span style="color: #FFAA00">Gauntlet of Contagion Set</span>',
+                '',
+                isAct ? '<span style="color: #55FF55">Already equipped!</span>' : '<span style="color: #FFFF55">Click to equip!</span>',
+              ],
+            },
+          };
+        } else if (idx === 2) {
+          const isAct = selectedLoadout === 3;
+          slots[gridSlot] = {
+            id: `loadout_${loadoutNum}`,
+            name: `Loadout #${loadoutNum}`,
+            icon: '/textures/minecraft/loadout_slot_3.png',
+            action: 'select_loadout',
+            loadoutNum: 3,
+            rawItem: {
+              cleanName: `Loadout #${loadoutNum}`,
+              formattedName: `<span style="color: #55FF55; font-weight: bold">Loadout #${loadoutNum}</span>`,
+              loreHtml: [
+                isAct ? '<span style="color: #55FF55">Currently Active!</span>' : '<span style="color: #AAAAAA">Status: Inactive</span>',
+                '',
+                '<span style="color: #AAAAAA">Armor: </span><span style="color: #FFAA00">Maxor\'s Armor</span>',
+                '<span style="color: #AAAAAA">Pet: </span><span style="color: #FFAA00">[Lvl 100] Black Cat</span>',
+                '<span style="color: #AAAAAA">Equipment: </span><span style="color: #FFAA00">Speed Equipment Set</span>',
+                '',
+                isAct ? '<span style="color: #55FF55">Already equipped!</span>' : '<span style="color: #FFFF55">Click to equip!</span>',
+              ],
+            },
+          };
+        } else if (idx === 3) {
+          const isAct = selectedLoadout === 4;
+          slots[gridSlot] = {
+            id: `loadout_${loadoutNum}`,
+            name: `Loadout #${loadoutNum}`,
+            icon: '/textures/minecraft/loadout_slot_4.png',
+            action: 'select_loadout',
+            loadoutNum: 4,
+            rawItem: {
+              cleanName: `Loadout #${loadoutNum}`,
+              formattedName: `<span style="color: #55FF55; font-weight: bold">Loadout #${loadoutNum}</span>`,
+              loreHtml: [
+                isAct ? '<span style="color: #55FF55">Currently Active!</span>' : '<span style="color: #AAAAAA">Status: Inactive</span>',
+                '',
+                '<span style="color: #AAAAAA">Armor: </span><span style="color: #FFAA00">Divan\'s Armor</span>',
+                '<span style="color: #AAAAAA">Pet: </span><span style="color: #FFAA00">[Lvl 100] Bal</span>',
+                '<span style="color: #AAAAAA">Equipment: </span><span style="color: #FFAA00">Titanium Equipment Set</span>',
+                '',
+                isAct ? '<span style="color: #55FF55">Already equipped!</span>' : '<span style="color: #FFFF55">Click to equip!</span>',
+              ],
+            },
+          };
+        } else if (idx < 10) {
+          slots[gridSlot] = {
+            id: `loadout_${loadoutNum}`,
+            name: 'Empty Loadout Slot',
+            icon: '/textures/minecraft/loadout_empty.png',
+            rawItem: {
+              cleanName: 'Empty Loadout Slot',
+              formattedName: `<span style="color: #AAAAAA; font-weight: bold">Loadout #${loadoutNum} (Empty)</span>`,
+              loreHtml: [
+                '<span style="color: #AAAAAA">Save your current setup into</span>',
+                '<span style="color: #AAAAAA">this slot.</span>',
+                '',
+                '<span style="color: #FFFF55">Right-click to save current setup!</span>',
+              ],
+            },
+          };
+        } else {
+          slots[gridSlot] = {
+            id: `loadout_locked_${loadoutNum}`,
+            name: 'Locked Loadout Slot',
+            icon: '/textures/minecraft/loadout_locked.png',
+            rawItem: {
+              cleanName: 'Locked Loadout Slot',
+              formattedName: `<span style="color: #FF5555; font-weight: bold">Loadout #${loadoutNum} (Locked)</span>`,
+              loreHtml: [
+                '<span style="color: #FF5555">Locked!</span>',
+                '<span style="color: #AAAAAA">Unlock more loadout slots via</span>',
+                '<span style="color: #FFAA00">Community Shop Upgrades</span>',
+                '<span style="color: #AAAAAA">at Elizabeth in the Hub.</span>',
+              ],
+            },
+          };
+        }
+      } else {
+        // Page 2 & 3
+        slots[gridSlot] = {
+          id: `loadout_locked_${loadoutNum}`,
+          name: 'Locked Loadout Slot',
+          icon: '/textures/minecraft/loadout_locked.png',
+          rawItem: {
+            cleanName: 'Locked Loadout Slot',
+            formattedName: `<span style="color: #FF5555; font-weight: bold">Loadout #${loadoutNum} (Locked)</span>`,
+            loreHtml: [
+              '<span style="color: #FF5555">Locked!</span>',
+              '<span style="color: #AAAAAA">Unlock more loadout slots via</span>',
+              '<span style="color: #FFAA00">Community Shop Upgrades</span>',
+              '<span style="color: #AAAAAA">at Elizabeth in the Hub.</span>',
+            ],
+          },
+        };
+      }
+    });
+
+    // Pagination Arrow: Slot 44 (Row 4, Col 8) for Next Page
+    if (wardrobePage < 3) {
+      slots[44] = {
+        id: 'next_wardrobe',
+        name: 'Next Page',
+        icon: '/textures/minecraft/arrow.png',
+        action: 'next_wardrobe_page',
+        rawItem: {
+          cleanName: 'Next Page',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>',
+          loreHtml: [`<span style="color: #AAAAAA">To Page ${wardrobePage + 1}</span>`],
+        },
+      };
+    }
+    // Previous Page Arrow on Slot 35 if on page 2 or 3
+    if (wardrobePage > 1) {
+      slots[35] = {
+        id: 'prev_wardrobe',
+        name: 'Previous Page',
+        icon: '/textures/minecraft/arrow.png',
+        action: 'prev_wardrobe_page',
+        rawItem: {
+          cleanName: 'Previous Page',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Previous Page</span>',
+          loreHtml: [`<span style="color: #AAAAAA">To Page ${wardrobePage - 1}</span>`],
+        },
+      };
+    }
+
+    // Bottom Navigation: Slot 48 (Go Back), Slot 49 (Close)
     slots[48] = {
       id: 'back',
       name: 'Go Back',
@@ -3555,16 +3930,8 @@ export default function PlayerView({
       rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
     };
 
-    slots[53] = {
-      id: 'next_wardrobe',
-      name: 'Next Page',
-      icon: '/textures/minecraft/arrow.png',
-      action: 'next_wardrobe_page',
-      rawItem: { cleanName: 'Next Page', formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>', loreHtml: [] },
-    };
-
     return slots;
-  }, [wardrobePage]);
+  }, [wardrobePage, selectedLoadout, inventories.armor, inventories.equipment, activePet]);
 
   // -------------------------------------------------------------
   // BANK MENU SLOTS (Matches in-game screenshot media_1790527579316.png)
@@ -3939,6 +4306,10 @@ export default function PlayerView({
     }
     if (slot.action === 'next_wardrobe_page') {
       setWardrobePage((p) => Math.min(3, p + 1));
+      return;
+    }
+    if (slot.action === 'select_loadout') {
+      setSelectedLoadout(slot.loadoutNum);
       return;
     }
     if (slot.storageTab) {
