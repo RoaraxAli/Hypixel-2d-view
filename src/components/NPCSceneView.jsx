@@ -50,7 +50,6 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
   const config = SCENE_CONFIGS[scene] || SCENE_CONFIGS.bazaar;
 
   const [isLooping, setIsLooping] = useState(false);
-  const [hoveredId, setHoveredId] = useState(null);
   const [wrapperStyle, setWrapperStyle] = useState({
     width: '100%',
     height: '100%',
@@ -191,38 +190,23 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
           }}
         />
 
-        {/* SVG Polygon Outline Tracing NPC Silhouette Exactly (No Box) */}
+        {/* Invisible Clickable Targets over NPCs (No Border/Hover Effect) */}
         <svg
           viewBox="0 0 1280 720"
           className="absolute inset-0 w-full h-full pointer-events-auto select-none"
           style={{ zIndex: 20 }}
         >
-          <defs>
-            <filter id="npc-purple-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#c084fc" floodOpacity="0.95" />
-              <feDropShadow dx="0" dy="0" stdDeviation="5.5" floodColor="#a855f7" floodOpacity="0.8" />
-            </filter>
-          </defs>
-
-          {config.targets.map((tgt) => {
-            const isHovered = hoveredId === tgt.id;
-            return (
-              <polygon
-                key={tgt.id}
-                points={tgt.points}
-                onClick={() => handleTargetClick(tgt.action)}
-                onMouseEnter={() => setHoveredId(tgt.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                className="cursor-pointer transition-all duration-150"
-                stroke={isHovered ? '#c084fc' : 'transparent'}
-                strokeWidth={isHovered ? '3' : '0'}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                fill={isHovered ? 'rgba(168, 85, 247, 0.08)' : 'rgba(0, 0, 0, 0.001)'}
-                filter={isHovered ? 'url(#npc-purple-glow)' : 'none'}
-              />
-            );
-          })}
+          {config.targets.map((tgt) => (
+            <polygon
+              key={tgt.id}
+              points={tgt.points}
+              onClick={() => handleTargetClick(tgt.action)}
+              className="cursor-pointer"
+              stroke="transparent"
+              strokeWidth="0"
+              fill="rgba(0, 0, 0, 0.001)"
+            />
+          ))}
         </svg>
       </div>
 
