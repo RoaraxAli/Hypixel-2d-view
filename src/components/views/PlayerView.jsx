@@ -26,6 +26,81 @@ function toRoman(num) {
   return res;
 }
 
+const PET_TEXTURE_MAP = {
+  ARMADILLO: '/textures/minecraft/pets/armadillo.png',
+  BABY_YETI: '/textures/minecraft/pets/baby_yeti.png',
+  BAT: '/textures/minecraft/pets/bat.png',
+  BEE: '/textures/minecraft/pets/bee.png',
+  BLUE_WHALE: '/textures/minecraft/pets/blue_whale.png',
+  DOLPHIN: '/textures/minecraft/pets/dolphin.png',
+  ELEPHANT: '/textures/minecraft/pets/elephant.png',
+  ENDERMAN: '/textures/minecraft/pets/enderman.png',
+  GHOUL: '/textures/minecraft/pets/ghoul.png',
+  GOLEM: '/textures/minecraft/pets/golem.png',
+  GRANDMA_WOLF: '/textures/minecraft/pets/grandma_wolf.png',
+  GUARDIAN: '/textures/minecraft/pets/guardian.png',
+  HOUND: '/textures/minecraft/pets/hound.png',
+  LION: '/textures/minecraft/pets/lion.png',
+  MAGMA_CUBE: '/textures/minecraft/pets/magma_cube.png',
+  MEGALODON: '/textures/minecraft/pets/megalodon.png',
+  MONKEY: '/textures/minecraft/pets/monkey.png',
+  MOOSHROOM_COW: '/textures/minecraft/pets/mooshroom_cow.png',
+  OCELOT: '/textures/minecraft/pets/ocelot.png',
+  RAT: '/textures/minecraft/pets/rat.png',
+  ROCK: '/textures/minecraft/pets/rock.png',
+  SHEEP: '/textures/minecraft/pets/sheep.png',
+  SILVERFISH: '/textures/minecraft/pets/silverfish.png',
+  SKELETON: '/textures/minecraft/pets/skeleton.png',
+  TARANTULA: '/textures/minecraft/pets/tarantula.png',
+  TIGER: '/textures/minecraft/pets/tiger.png',
+  WITHER_SKELETON: '/textures/minecraft/pets/wither_skeleton.png',
+  ZOMBIE: '/textures/minecraft/pets/zombie.png',
+};
+
+const PET_MHF_MAP = {
+  SPIDER: 'https://mc-heads.net/head/MHF_Spider/64',
+  CHICKEN: 'https://mc-heads.net/head/MHF_Chicken/64',
+  SQUID: 'https://mc-heads.net/head/MHF_Squid/64',
+  ENDERMITE: 'https://mc-heads.net/head/MHF_Endermite/64',
+  WOLF: 'https://mc-heads.net/head/MHF_Wolf/64',
+  HORSE: 'https://mc-heads.net/head/MHF_Horse/64',
+  COW: 'https://mc-heads.net/head/MHF_Cow/64',
+  PIG: 'https://mc-heads.net/head/MHF_Pig/64',
+  BLAZE: 'https://mc-heads.net/head/MHF_Blaze/64',
+  JERRY: 'https://mc-heads.net/head/MHF_Villager/64',
+  CAVE_SPIDER: 'https://mc-heads.net/head/MHF_CaveSpider/64',
+  GHAST: 'https://mc-heads.net/head/MHF_Ghast/64',
+  SLIME: 'https://mc-heads.net/head/MHF_Slime/64',
+  PIGMAN: 'https://mc-heads.net/head/MHF_PigZombie/64',
+  RABBIT: 'https://mc-heads.net/head/MHF_Rabbit/64',
+  PARROT: 'https://mc-heads.net/head/MHF_Parrot/64',
+  TURTLE: 'https://mc-heads.net/head/MHF_Turtle/64',
+  POLAR_BEAR: '/textures/minecraft/polar_bear_head.png',
+};
+
+const PET_TIER_COLORS = {
+  COMMON: '#FFFFFF',
+  UNCOMMON: '#55FF55',
+  RARE: '#55FFFF',
+  EPIC: '#AA00AA',
+  LEGENDARY: '#FFAA00',
+  MYTHIC: '#FF55FF',
+  DIVINE: '#55FFFF',
+  SPECIAL: '#FF5555',
+  VERY_SPECIAL: '#FF5555',
+};
+
+function getPetIcon(pet) {
+  if (!pet) return '/textures/minecraft/pets.png';
+  const typeKey = (pet.type || '').toUpperCase();
+  if (PET_TEXTURE_MAP[typeKey]) return PET_TEXTURE_MAP[typeKey];
+  const hash = getSkullHash(pet.skin || pet.skullTexture);
+  if (hash) return `https://mc-heads.net/head/${hash}/64`;
+  if (PET_MHF_MAP[typeKey]) return PET_MHF_MAP[typeKey];
+  if (pet.cleanName?.toLowerCase().includes('sheep')) return '/textures/minecraft/pets/sheep.png';
+  return '/textures/minecraft/pets.png';
+}
+
 export default function PlayerView({
   playerData,
   activeSubtab = 'menu',
@@ -847,9 +922,7 @@ export default function PlayerView({
 
     // Bottom Navigation Row (Row 5: slots 47, 48, 49, 50, 51)
     // Slot 47 (Row 5, Col 2): Active Pet (Sheep head or player pet)
-    const petIcon = activePet
-      ? (activePet.skullTexture ? `https://mc-heads.net/head/${getSkullHash(activePet.skullTexture)}/64` : (activePet.cleanName?.toLowerCase().includes('sheep') ? '/textures/minecraft/sheep_head.png' : '/textures/minecraft/pets.png'))
-      : '/textures/minecraft/sheep_head.png';
+    const petIcon = getPetIcon(activePet);
 
     slots[47] = {
       id: 'active_pet',
@@ -3263,7 +3336,7 @@ export default function PlayerView({
     slots[7] = {
       id: 'pet_score',
       name: 'Pet Score',
-      icon: '/textures/minecraft/gold_ingot.png',
+      icon: '/textures/minecraft/pets/pet_score.png',
       rawItem: {
         cleanName: 'Pet Score',
         formattedName: '<span style="color: #FFAA00; font-weight: bold">Pet Score</span>',
@@ -3293,40 +3366,43 @@ export default function PlayerView({
       37, 38, 39, 40, 41, 42, 43
     ];
 
+    const totalPetPages = Math.max(1, Math.ceil(pets.length / 28));
     const pagePets = pets.slice((petsPage - 1) * 28, petsPage * 28);
+
     petSlotsIndices.forEach((slotIdx, i) => {
       const pet = pagePets[i];
       if (pet) {
-        const hash = getSkullHash(pet.skin || pet.skullTexture);
-        const iconUrl = hash ? `https://mc-heads.net/head/${hash}/64` : '/textures/minecraft/pets.png';
+        const iconUrl = getPetIcon(pet);
+        const tierColor = PET_TIER_COLORS[pet.tier] || '#FFAA00';
+        const isSummoned = Boolean(pet.active);
+        const displayName = `[Lvl ${pet.level || 1}] ${pet.cleanName}`;
+
         const petLore = [
-          `<span style="color: #55FFFF">${pet.type || 'Combat'} Pet${pet.skin ? ', ' + pet.skin : ''}</span>`,
+          `<span style="color: #55FFFF">${pet.tier || 'LEGENDARY'} Pet${pet.skin ? ', ' + pet.skin.replace(/_/g, ' ') : ''}</span>`,
           '',
-          `<span style="color: #5555FF">Crit Damage: +${pet.critDamage || 69.75}%</span>`,
-          `<span style="color: #FFAA00">Attack Speed: +${pet.attackSpeed || 35}%</span>`,
+          isSummoned ? '<span style="color: #55FF55; font-weight: bold">✦ CURRENTLY SUMMONED ✦</span>' : '',
+          isSummoned ? '' : '',
+          pet.heldItem ? `<span style="color: #FFAA00">Held Item: </span><span style="color: #55FF55">${pet.heldItem}</span>` : '<span style="color: #555555">Held Item: None</span>',
+          `<span style="color: #55FF55">(${pet.candyUsed || 0}/10) Pet Candy Used</span>`,
           '',
-          '<span style="color: #FFAA00; font-weight: bold">Perks:</span>',
-          `<span style="color: #55FF55">Take 27.9% less damage from Ender mobs</span>`,
-          `<span style="color: #55FF55">Gain 1.465x Combat XP against Endermen</span>`,
+          (pet.level || 1) >= (pet.maxLevel || 100)
+            ? '<span style="color: #55FF55; font-weight: bold">MAX LEVEL</span>'
+            : `<span style="color: #AAAAAA">Progress to Level ${(pet.level || 1) + 1}: </span><span style="color: #FFAA00">12.6%</span>`,
           '',
-          pet.heldItem ? `<span style="color: #FFAA00">Held Item: </span><span style="color: #FF55FF">${pet.heldItem}</span>` : '',
-          '<span style="color: #55FF55">(4/10) Pet Candy Used</span>',
-          '',
-          `<span style="color: #AAAAAA">Progress to Level ${(pet.level || 93) + 1}: </span><span style="color: #FFAA00">12.6%</span>`,
-          '<span style="color: #55FF55">▬▬▬▬▬▬▬▬▬▬▬▬</span><span style="color: #FFFFFF">──────────────────────</span><span style="color: #FFAA00"> 150k/1.2M</span>',
-          '',
-          '<span style="color: #FFFF55">Left-click to summon!</span>',
+          isSummoned
+            ? '<span style="color: #FF5555">Click to despawn!</span>'
+            : '<span style="color: #FFFF55">Left-click to summon!</span>',
           '<span style="color: #FFFF55">Shift Left-click to favorite!</span>',
           '<span style="color: #FFFF55">Right-click to convert to item!</span>',
         ].filter(Boolean);
 
         slots[slotIdx] = {
           id: `pet_${i}`,
-          name: `[Lvl ${pet.level || 1}] ${pet.cleanName}`,
+          name: displayName,
           icon: iconUrl,
           rawItem: {
-            cleanName: `[Lvl ${pet.level || 1}] ${pet.cleanName}`,
-            formattedName: `<span style="color: #FF55FF; font-weight: bold">[Lvl ${pet.level || 1}] ${pet.cleanName} ✦</span>`,
+            cleanName: displayName,
+            formattedName: `<span style="color: ${tierColor}; font-weight: bold">${displayName}${isSummoned ? ' ✦' : ''}</span>`,
             loreHtml: petLore,
           },
         };
@@ -3335,68 +3411,133 @@ export default function PlayerView({
       }
     });
 
-    // Row 5
-    slots[46] = {
+    // Row 5: Exact mapping matching media_1790527488275.png
+    // Slot 45 & 46: Gray Glass Pane (already set)
+
+    // Slot 47: Diamond (col 2)
+    slots[47] = {
       id: 'hide_pets',
       name: 'Hide Pets',
       icon: '/textures/minecraft/diamond.png',
-      rawItem: { cleanName: 'Hide Pets', formattedName: '<span style="color: #55FFFF; font-weight: bold">Hide Pets</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Hide Pets',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Hide Pets</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Hide other players\' pets in public</span>',
+          '<span style="color: #AAAAAA">islands to reduce lag and clutter.</span>',
+          '',
+          '<span style="color: #55FF55">Currently: Showing all pets!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to toggle!</span>',
+        ],
+      },
     };
 
+    // Slot 48: Arrow (col 3) - Go Back on Page 1 / Previous Page on Page > 1
     if (petsPage > 1) {
-      slots[47] = {
+      slots[48] = {
         id: 'prev_pets',
         name: 'Previous Page',
         icon: '/textures/minecraft/arrow.png',
         action: 'prev_pets_page',
-        rawItem: { cleanName: 'Previous Page', formattedName: '<span style="color: #55FF55; font-weight: bold">Previous Page</span>', loreHtml: [] },
+        rawItem: {
+          cleanName: 'Previous Page',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Previous Page</span>',
+          loreHtml: [`<span style="color: #AAAAAA">To Page ${petsPage - 1}</span>`],
+        },
       };
     } else {
-      slots[47] = {
+      slots[48] = {
         id: 'back',
         name: 'Go Back',
         icon: '/textures/minecraft/arrow.png',
         targetScreen: 'menu',
-        rawItem: { cleanName: 'Go Back', formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>', loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'] },
+        rawItem: {
+          cleanName: 'Go Back',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+          loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+        },
       };
     }
 
-    slots[48] = {
+    // Slot 49: Barrier (col 4) - Close
+    slots[49] = {
       id: 'close',
       name: 'Close',
       icon: '/textures/minecraft/barrier.png',
       action: 'close',
-      rawItem: { cleanName: 'Close', formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
     };
 
-    slots[49] = {
+    // Slot 50: Oak Sign (col 5) - Sort Pets
+    slots[50] = {
       id: 'sort_pets',
       name: 'Sort Pets',
       icon: '/textures/minecraft/oak_sign.png',
-      rawItem: { cleanName: 'Sort Pets', formattedName: '<span style="color: #55FF55; font-weight: bold">Sort Pets</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Sort Pets',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Sort Pets</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Change the sorting order of your pets.</span>',
+          '',
+          '<span style="color: #55FF55">Currently: Favorite > Rarity > Level</span>',
+          '',
+          '<span style="color: #FFFF55">Click to change sort!</span>',
+        ],
+      },
     };
 
-    slots[50] = {
+    // Slot 51: Stone Button (col 6) - Filter Pets
+    slots[51] = {
       id: 'filter_pets',
       name: 'Filter Pets',
       icon: '/textures/minecraft/stone_button.png',
-      rawItem: { cleanName: 'Filter Pets', formattedName: '<span style="color: #55FF55; font-weight: bold">Filter Pets</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Filter Pets',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Filter Pets</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Filter which pets are displayed.</span>',
+          '',
+          '<span style="color: #55FF55">Currently: Show all pets</span>',
+          '',
+          '<span style="color: #FFFF55">Click to filter!</span>',
+        ],
+      },
     };
 
-    slots[51] = {
+    // Slot 52: Hopper (col 7) - Pet Settings
+    slots[52] = {
       id: 'pet_settings',
       name: 'Pet Settings',
       icon: '/textures/minecraft/hopper.png',
-      rawItem: { cleanName: 'Pet Settings', formattedName: '<span style="color: #55FF55; font-weight: bold">Pet Settings</span>', loreHtml: [] },
+      rawItem: {
+        cleanName: 'Pet Settings',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Pet Settings</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Configure visibility and auto-equip</span>',
+          '<span style="color: #AAAAAA">rules for your pets.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view settings!</span>',
+        ],
+      },
     };
 
-    if (pets.length > 28 && petsPage < 2) {
-      slots[52] = {
+    // Slot 53: Arrow (col 8) - Next Page (if more pages)
+    if (petsPage < totalPetPages) {
+      slots[53] = {
         id: 'next_pets',
         name: 'Next Page',
         icon: '/textures/minecraft/arrow.png',
         action: 'next_pets_page',
-        rawItem: { cleanName: 'Next Page', formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>', loreHtml: [] },
+        rawItem: {
+          cleanName: 'Next Page',
+          formattedName: '<span style="color: #55FF55; font-weight: bold">Next Page</span>',
+          loreHtml: [`<span style="color: #AAAAAA">To Page ${petsPage + 1}</span>`],
+        },
       };
     }
 
@@ -3813,7 +3954,8 @@ export default function PlayerView({
       return;
     }
     if (slot.action === 'next_pets_page') {
-      setPetsPage((p) => Math.min(2, p + 1));
+      const maxPages = Math.max(1, Math.ceil(pets.length / 28));
+      setPetsPage((p) => Math.min(maxPages, p + 1));
       return;
     }
     if (slot.action === 'prev_wardrobe_page') {
@@ -3828,6 +3970,7 @@ export default function PlayerView({
       setStorageKey(slot.storageTab);
     }
     if (slot.targetScreen) {
+      if (slot.targetScreen === 'pets') setPetsPage(1);
       setScreen(slot.targetScreen);
     }
   };
@@ -5277,7 +5420,8 @@ export default function PlayerView({
   }
 
   if (screen === 'pets') {
-    return renderChestView(`(${petsPage}/2) Pets`, petsMenuSlots);
+    const totalPetPages = Math.max(1, Math.ceil(pets.length / 28));
+    return renderChestView(`(${petsPage}/${totalPetPages}) Pets`, petsMenuSlots);
   }
 
   if (screen === 'wardrobe') {
