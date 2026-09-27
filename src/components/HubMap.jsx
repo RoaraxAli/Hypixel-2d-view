@@ -12,7 +12,6 @@ const HUB_PINS = [
   { id: 'garden', name: 'The Garden', left: '21.0%', top: '88.0%' },
   { id: 'museum', name: 'Museum', left: '33.5%', top: '26.5%' },
   { id: 'dungeons', name: 'Dungeons & Slayers', left: '67.0%', top: '6.5%' },
-  { id: 'news', name: 'Update Board', left: '49.5%', top: '34.0%' },
 ];
 
 export default function HubMap({ onOpenDestination, onShowUserPrompt }) {
