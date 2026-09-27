@@ -9,7 +9,7 @@ import {
 } from '@/lib/bazaarConstants';
 import { getItemTexture } from '@/lib/itemTextures';
 
-export default function BazaarView({ bazaarData, playerData }) {
+export default function BazaarView({ bazaarData, playerData, onClose }) {
   const [category, setCategory] = useState('farming');
   const [subGroup, setSubGroup] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -205,6 +205,13 @@ export default function BazaarView({ bazaarData, playerData }) {
               >
                 <span className="minecraft-font text-lg font-bold leading-none">$</span>
               </button>
+              <button
+                onClick={onClose}
+                className="mc-close-button"
+                title="Close [ESC]"
+              >
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
             </div>
           </div>
 
@@ -339,20 +346,20 @@ export default function BazaarView({ bazaarData, playerData }) {
       <div className="text-center">
         <button
           onClick={() => setShowFlips(!showFlips)}
-          className="px-3.5 py-1.5 rounded-lg bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-amber-400 text-xs font-bold transition"
+          className="mc-stone-button text-base px-3 py-1"
         >
           {showFlips ? 'Hide' : 'Show'} Top Arbitrage Flips
         </button>
       </div>
 
       {showFlips && (
-        <div className="glass-panel rounded-2xl p-4 border border-[#30363d] space-y-3 max-w-xl mx-auto">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-              Top Arbitrage Margin Opportunities:
+        <div className="mc-inset-box rounded p-3 space-y-2 max-w-xl mx-auto">
+          <div className="flex items-center justify-between border-b border-[#444444] pb-1">
+            <span className="minecraft-font text-base text-yellow-400 font-bold uppercase">
+              Top Arbitrage Margins:
             </span>
-            <button onClick={() => setShowFlips(false)} className="text-xs text-gray-400 hover:text-white">
-              Close
+            <button onClick={() => setShowFlips(false)} className="minecraft-font text-sm text-gray-400 hover:text-white">
+              [Close]
             </button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -360,9 +367,9 @@ export default function BazaarView({ bazaarData, playerData }) {
               <div
                 key={prod.id}
                 onClick={() => setSelectedProduct(prod)}
-                className="p-2.5 rounded-xl bg-[#090c10] border border-[#21262d] hover:border-amber-400/50 cursor-pointer space-y-1 transition"
+                className="p-2 rounded bg-[#2b2b2b] border border-[#444444] hover:border-yellow-400 cursor-pointer space-y-1 transition"
               >
-                <h5 className="text-xs font-bold text-white truncate">{prod.name}</h5>
+                <h5 className="minecraft-font text-sm font-bold text-white truncate">{prod.name}</h5>
                 <div className="text-[11px] font-mono">
                   <span className="text-emerald-400 font-bold block">+{prod.marginPercent}%</span>
                   <span className="text-gray-400 text-[10px]">{(prod.weeklyVolume || 0).toLocaleString()} vol</span>
@@ -373,70 +380,72 @@ export default function BazaarView({ bazaarData, playerData }) {
         </div>
       )}
 
-      {/* Product Order Book Modal */}
+      {/* Product Order Book - Styled as Authentic Minecraft Chest Window */}
       {selectedProduct && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#161b22] border-2 border-[#30363d] rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 space-y-5 shadow-2xl relative">
-            <button
-              onClick={() => setSelectedProduct(null)}
-              className="absolute top-4 right-4 px-2 py-1 rounded bg-[#090c10] border border-[#30363d] text-gray-400 hover:text-white text-xs font-mono"
-            >
-              Close
-            </button>
-
-            <div className="space-y-1">
-              <h3 className="text-2xl font-black text-amber-400">{selectedProduct.name}</h3>
-              <p className="text-xs font-mono text-gray-400">{selectedProduct.id}</p>
+        <div className="fixed inset-0 z-50 bg-black/65 backdrop-blur-[2px] flex items-center justify-center p-3 select-none">
+          <div className="mc-chest-window w-full max-w-2xl max-h-[92vh] overflow-y-auto p-4 space-y-4">
+            <div className="mc-chest-header pb-2 border-b-2 border-[#555555] w-full flex items-center justify-between">
+              <div className="space-y-0.5">
+                <span className="mc-chest-title text-2xl font-bold">{selectedProduct.name}</span>
+                <span className="minecraft-font text-sm text-gray-600 font-bold block">{selectedProduct.id}</span>
+              </div>
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="mc-close-button"
+                title="Close"
+              >
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3 rounded-xl bg-[#090c10] border border-[#21262d]">
-                <span className="text-[11px] text-gray-400 block">Buy Price (Instant)</span>
-                <span className="text-sm font-black text-emerald-400 font-mono">
+            <div className="mc-inset-box p-3 rounded w-full grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="p-2 rounded bg-[#2b2b2b] border border-[#444444]">
+                <span className="minecraft-font text-xs text-gray-400 block">Buy Price (Instant)</span>
+                <span className="minecraft-font text-base font-bold text-emerald-400">
                   {selectedProduct.buyPrice ? `${selectedProduct.buyPrice.toLocaleString()} coins` : 'N/A'}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#090c10] border border-[#21262d]">
-                <span className="text-[11px] text-gray-400 block">Sell Price (Instant)</span>
-                <span className="text-sm font-black text-red-400 font-mono">
+              <div className="p-2 rounded bg-[#2b2b2b] border border-[#444444]">
+                <span className="minecraft-font text-xs text-gray-400 block">Sell Price (Instant)</span>
+                <span className="minecraft-font text-base font-bold text-red-400">
                   {selectedProduct.sellPrice ? `${selectedProduct.sellPrice.toLocaleString()} coins` : 'N/A'}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#090c10] border border-[#21262d]">
-                <span className="text-[11px] text-gray-400 block">Spread Margin</span>
-                <span className="text-sm font-black text-amber-400 font-mono">
+              <div className="p-2 rounded bg-[#2b2b2b] border border-[#444444]">
+                <span className="minecraft-font text-xs text-gray-400 block">Spread Margin</span>
+                <span className="minecraft-font text-base font-bold text-yellow-400">
                   {selectedProduct.marginPercent}%
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#090c10] border border-[#21262d]">
-                <span className="text-[11px] text-gray-400 block">Weekly Volume</span>
-                <span className="text-sm font-black text-cyan-400 font-mono">
+              <div className="p-2 rounded bg-[#2b2b2b] border border-[#444444]">
+                <span className="minecraft-font text-xs text-gray-400 block">Weekly Volume</span>
+                <span className="minecraft-font text-base font-bold text-cyan-400">
                   {(selectedProduct.weeklyVolume || 0).toLocaleString()}
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-[#090c10] border border-[#21262d] space-y-2">
-                <h4 className="text-xs font-bold text-emerald-400 uppercase">Top Buy Orders</h4>
-                <p className="text-xs text-gray-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+              <div className="mc-inset-box p-3 rounded space-y-1">
+                <span className="minecraft-font text-base font-bold text-emerald-400 uppercase">Top Buy Orders</span>
+                <p className="minecraft-font text-sm text-gray-300">
                   {selectedProduct.topBuyOrder
                     ? `${selectedProduct.topBuyOrder.amount}x @ ${selectedProduct.topBuyOrder.pricePerUnit} coins`
                     : 'No active buy orders'}
                 </p>
-                <span className="text-[11px] text-gray-500 font-mono block">
+                <span className="minecraft-font text-xs text-gray-400 block">
                   Total Orders: {(selectedProduct.buyOrders || 0).toLocaleString()}
                 </span>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#090c10] border border-[#21262d] space-y-2">
-                <h4 className="text-xs font-bold text-red-400 uppercase">Top Sell Offers</h4>
-                <p className="text-xs text-gray-300">
+              <div className="mc-inset-box p-3 rounded space-y-1">
+                <span className="minecraft-font text-base font-bold text-red-400 uppercase">Top Sell Offers</span>
+                <p className="minecraft-font text-sm text-gray-300">
                   {selectedProduct.topSellOffer
                     ? `${selectedProduct.topSellOffer.amount}x @ ${selectedProduct.topSellOffer.pricePerUnit} coins`
                     : 'No active sell offers'}
                 </p>
-                <span className="text-[11px] text-gray-500 font-mono block">
+                <span className="minecraft-font text-xs text-gray-400 block">
                   Total Offers: {(selectedProduct.sellOrders || 0).toLocaleString()}
                 </span>
               </div>

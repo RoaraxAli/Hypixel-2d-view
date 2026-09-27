@@ -13,9 +13,9 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
   if (!playerData) {
     return (
-      <div className="text-center p-12 glass-panel rounded-2xl border border-[#30363d] space-y-3">
-        <h3 className="text-lg font-bold text-white">No Player Profile Loaded</h3>
-        <p className="text-xs text-gray-400">Search for a Minecraft player using the search bar above.</p>
+      <div className="text-center p-8 mc-inset-box rounded space-y-3">
+        <h3 className="minecraft-font text-lg font-bold text-white">No Player Profile Loaded</h3>
+        <p className="minecraft-font text-xs text-gray-400">Search for a Minecraft player using the search bar above.</p>
       </div>
     );
   }
@@ -39,9 +39,9 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
   else if (storageKey === 'personalVault') storageItems = inventories.personalVault || [];
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-4">
       {/* Player Header Card */}
-      <div className="glass-panel rounded-2xl p-6 border border-[#30363d] relative overflow-hidden">
+      <div className="mc-inset-box rounded p-4 relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-5">
             <div className="relative">
@@ -102,12 +102,12 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
           {/* Profile Selector & Switch User */}
           <div className="flex flex-col gap-2 min-w-[200px]">
             <div className="flex items-center justify-between gap-2">
-              <label className="text-xs font-semibold text-gray-400 flex items-center gap-1.5">
+              <label className="minecraft-font text-base text-gray-400 flex items-center gap-1.5">
                 Select Profile:
               </label>
               <button
                 onClick={onSwitchUser}
-                className="px-2.5 py-1 rounded bg-[#090c10] hover:bg-[#21262d] border border-[#30363d] text-gray-300 hover:text-amber-400 text-xs font-semibold transition"
+                className="mc-stone-button text-sm px-2.5 py-0.5"
               >
                 Switch IGN
               </button>
@@ -119,11 +119,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
                   <button
                     key={p.profileId}
                     onClick={() => onSelectProfile(p.profileId)}
-                    className={`px-2.5 py-1 rounded text-xs font-semibold transition ${
-                      isSelected
-                        ? 'bg-amber-500 text-black shadow-md shadow-amber-500/20'
-                        : 'bg-[#161b22] text-gray-400 hover:text-white hover:bg-[#21262d] border border-[#30363d]'
-                    }`}
+                    className={`mc-stone-button text-sm px-2.5 py-0.5 ${isSelected ? 'active font-bold' : ''}`}
                   >
                     {p.cuteName}
                     {p.gameMode !== 'standard' && (
@@ -138,7 +134,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
         {/* Privacy Alert Banner */}
         {restrictedList.length > 0 && (
-          <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-start gap-2.5">
+          <div className="mt-4 p-3 rounded bg-amber-500/10 border-2 border-amber-500/30 text-amber-300 text-xs flex items-start gap-2.5">
             <div>
               <span className="font-bold">Player API Restrictions Detected:</span>
               <p className="mt-0.5 text-amber-200/80">
@@ -149,27 +145,25 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
         )}
       </div>
 
-      {/* Subtab Navigation Buttons */}
-      <div className="border-b border-[#30363d] flex items-center gap-2 overflow-x-auto scrollbar-none pb-2 text-xs font-semibold">
+      {/* Subtab Navigation Buttons - In Minecraft Way */}
+      <div className="border-b-2 border-[#555555] flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-2">
         {[
           { key: 'inventory', label: 'Gear & Inventory' },
-          { key: 'skills', label: 'Skills (1-60)' },
+          { key: 'skills', label: 'Skills' },
           { key: 'slayers', label: 'Slayers' },
           { key: 'dungeons', label: 'Dungeons' },
-          { key: 'mining', label: 'Mining & HotM' },
+          { key: 'mining', label: 'Mining' },
           { key: 'pets', label: 'Pets' },
-          { key: 'rift', label: 'The Rift' },
-          { key: 'garden', label: 'The Garden' },
-          { key: 'economy', label: 'Economy & Bank' },
-          { key: 'misc', label: 'Misc Stats' },
+          { key: 'rift', label: 'Rift' },
+          { key: 'garden', label: 'Garden' },
+          { key: 'economy', label: 'Economy' },
+          { key: 'misc', label: 'Misc' },
         ].map(tab => (
           <button
             key={tab.key}
             onClick={() => setSubtab(tab.key)}
-            className={`px-3 py-1.5 rounded-lg transition ${
-              subtab === tab.key
-                ? 'bg-amber-500 text-black font-bold'
-                : 'text-gray-400 hover:text-white hover:bg-[#161b22]'
+            className={`mc-stone-button whitespace-nowrap text-base px-3 py-1 ${
+              subtab === tab.key ? 'active font-bold' : ''
             }`}
           >
             {tab.label}
@@ -179,9 +173,9 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 1: INVENTORY */}
       {subtab === 'inventory' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-4">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="mc-inset-box rounded p-4 space-y-3">
               <h3 className="text-sm font-bold text-gray-200 uppercase tracking-wider">
                 Equipped Armor &amp; Equipment
               </h3>
@@ -205,7 +199,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
               </div>
             </div>
 
-            <div className="lg:col-span-2 glass-panel rounded-xl p-5 border border-[#30363d] space-y-4">
+            <div className="lg:col-span-2 mc-inset-box rounded p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-gray-200 uppercase tracking-wider">
                   Main Inventory (36 Slots)
@@ -228,7 +222,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
             </div>
           </div>
 
-          <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-4">
+          <div className="mc-inset-box rounded p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-[#21262d] pb-3 flex-wrap gap-2">
               <h3 className="text-sm font-bold text-gray-200 uppercase tracking-wider">
                 Extended Storage &amp; Bags
@@ -245,10 +239,8 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
                   <button
                     key={st.key}
                     onClick={() => setStorageKey(st.key)}
-                    className={`px-2.5 py-1 rounded transition ${
-                      storageKey === st.key
-                        ? 'bg-[#21262d] text-white font-bold'
-                        : 'bg-[#161b22] text-gray-400 hover:text-white'
+                    className={`mc-stone-button text-xs px-2.5 py-0.5 ${
+                      storageKey === st.key ? 'active font-bold' : ''
                     }`}
                   >
                     {st.label}
@@ -302,7 +294,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
             {(skills.skills || []).map(skill => {
               const isMax = skill.level >= skill.maxLevel;
               return (
-                <div key={skill.id} className="glass-panel rounded-xl p-4 border border-[#30363d] space-y-3">
+                <div key={skill.id} className="mc-inset-box rounded p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <span className="text-2xl">{skill.icon}</span>
@@ -344,7 +336,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
             {(slayers.slayers || []).map(boss => {
               const isMax = boss.level >= boss.maxLevel;
               return (
-                <div key={boss.id} className="glass-panel rounded-xl p-4 border border-[#30363d] space-y-3">
+                <div key={boss.id} className="mc-inset-box rounded p-3 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <span className="text-2xl">{boss.icon}</span>
@@ -399,8 +391,8 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 4: DUNGEONS */}
       {subtab === 'dungeons' && (
-        <div className="space-y-6">
-          <div className="glass-panel rounded-2xl p-6 border border-[#30363d] space-y-4">
+        <div className="space-y-4">
+          <div className="mc-inset-box rounded p-4 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">The Catacombs</span>
@@ -432,7 +424,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
             </div>
           </div>
 
-          <div className="glass-panel rounded-2xl p-6 border border-[#30363d] space-y-4">
+          <div className="mc-inset-box rounded p-4 space-y-3">
             <h4 className="text-sm font-bold text-gray-200 uppercase tracking-wider">Dungeon Classes</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {(dungeons.classes || []).map(cls => (
@@ -450,8 +442,8 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mc-inset-box rounded p-3 space-y-2">
               <h4 className="text-sm font-bold text-gray-200 uppercase tracking-wider">The Catacombs Floors (F1 - F7)</h4>
               <div className="grid grid-cols-4 gap-2 text-center font-mono">
                 {Object.entries(dungeons.floorCompletions || {}).map(([floor, count]) => (
@@ -463,7 +455,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
               </div>
             </div>
 
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-3">
+            <div className="mc-inset-box rounded p-3 space-y-2">
               <h4 className="text-sm font-bold text-gray-200 uppercase tracking-wider">Master Mode (M1 - M7)</h4>
               <div className="grid grid-cols-4 gap-2 text-center font-mono">
                 {Object.entries(dungeons.masterCompletions || {}).map(([floor, count]) => (
@@ -480,8 +472,8 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 5: MINING */}
       {subtab === 'mining' && (
-        <div className="space-y-6">
-          <div className="glass-panel rounded-2xl p-6 border border-[#30363d] space-y-4">
+        <div className="space-y-4">
+          <div className="mc-inset-box rounded p-4 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">Mining Progression</span>
@@ -504,18 +496,18 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs font-bold text-emerald-400 uppercase">Mithril Powder</span>
               <h4 className="text-xl font-black text-white font-mono">{(mining?.powders?.mithril?.current || 0).toLocaleString()}</h4>
               <span className="text-[11px] text-gray-400 block font-mono">Total: {(mining?.powders?.mithril?.total || 0).toLocaleString()}</span>
             </div>
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-2">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs font-bold text-pink-400 uppercase">Gemstone Powder</span>
               <h4 className="text-xl font-black text-white font-mono">{(mining?.powders?.gemstone?.current || 0).toLocaleString()}</h4>
               <span className="text-[11px] text-gray-400 block font-mono">Total: {(mining?.powders?.gemstone?.total || 0).toLocaleString()}</span>
             </div>
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-2">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs font-bold text-cyan-400 uppercase">Glacite Powder</span>
               <h4 className="text-xl font-black text-white font-mono">{(mining?.powders?.glacite?.current || 0).toLocaleString()}</h4>
               <span className="text-[11px] text-gray-400 block font-mono">Total: {(mining?.powders?.glacite?.total || 0).toLocaleString()}</span>
@@ -532,9 +524,9 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
               Pet Collection (<span>{pets.length}</span> Pets)
             </h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {pets.map((pet, idx) => (
-              <div key={idx} className={`glass-panel rounded-xl p-4 border ${pet.active ? 'border-amber-400/60 shadow-lg shadow-amber-400/10' : 'border-[#30363d]'} space-y-2 relative overflow-hidden`}>
+              <div key={idx} className={`mc-inset-box rounded p-3 border ${pet.active ? 'border-yellow-400' : 'border-[#373737]'} space-y-2 relative overflow-hidden`}>
                 {pet.active && (
                   <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-black bg-amber-500 text-black">
                     ACTIVE
@@ -558,13 +550,13 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 7: RIFT */}
       {subtab === 'rift' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-1">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs uppercase font-bold text-purple-400">Enigma Souls</span>
               <h3 className="text-2xl font-black text-white font-mono">{rift.enigmaSouls || 0} / 42</h3>
             </div>
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-1">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs uppercase font-bold text-amber-400">Secured Timecharms</span>
               <h3 className="text-2xl font-black text-white font-mono">{(rift.timecharms || []).length} / 8</h3>
             </div>
@@ -574,8 +566,8 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 8: GARDEN */}
       {subtab === 'garden' && (
-        <div className="space-y-6">
-          <div className="glass-panel rounded-2xl p-6 border border-[#30363d] space-y-4">
+        <div className="space-y-4">
+          <div className="mc-inset-box rounded p-4 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <span className="text-xs uppercase font-bold text-gray-400 tracking-wider">The Farming Garden</span>
@@ -598,19 +590,19 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 9: ECONOMY */}
       {subtab === 'economy' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-2">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs font-bold text-amber-400 uppercase">Coin Purse</span>
               <h3 className="text-2xl font-black text-white font-mono">{economy.formattedPurse || 0}</h3>
             </div>
-            <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-2">
+            <div className="mc-inset-box rounded p-3 space-y-1">
               <span className="text-xs font-bold text-blue-400 uppercase">Bank Balance</span>
               <h3 className="text-2xl font-black text-white font-mono">{economy.formattedBank || 0}</h3>
             </div>
           </div>
 
-          <div className="glass-panel rounded-2xl border border-[#30363d] overflow-hidden space-y-3 p-5">
+          <div className="mc-inset-box rounded overflow-hidden space-y-3 p-4">
             <h4 className="text-sm font-bold text-gray-200 uppercase tracking-wider">Recent Co-op Bank Transactions</h4>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
@@ -622,7 +614,7 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
                     <th className="p-2.5">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#21262d]">
+                <tbody className="divide-y border-[#21262d]">
                   {(economy.transactions || []).map((tx, idx) => (
                     <tr key={idx} className="hover:bg-[#161b22]">
                       <td className={`p-2.5 font-bold ${tx.action === 'DEPOSIT' ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -642,16 +634,16 @@ export default function PlayerView({ playerData, activeSubtab = 'inventory', onS
 
       {/* TAB 10: MISC */}
       {subtab === 'misc' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="mc-inset-box rounded p-3 space-y-1">
             <span className="text-xs uppercase font-bold text-gray-400">Total Deaths</span>
             <h3 className="text-2xl font-black text-red-400 font-mono">{(misc.deaths || 0).toLocaleString()}</h3>
           </div>
-          <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-1">
+          <div className="mc-inset-box rounded p-3 space-y-1">
             <span className="text-xs uppercase font-bold text-gray-400">Total Mob Kills</span>
             <h3 className="text-2xl font-black text-emerald-400 font-mono">{(misc.kills || 0).toLocaleString()}</h3>
           </div>
-          <div className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-1">
+          <div className="mc-inset-box rounded p-3 space-y-1">
             <span className="text-xs uppercase font-bold text-gray-400">Fairy Souls Collected</span>
             <h3 className="text-2xl font-black text-pink-400 font-mono">{(misc.fairySouls || 0).toLocaleString()}</h3>
           </div>

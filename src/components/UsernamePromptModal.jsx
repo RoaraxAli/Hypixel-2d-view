@@ -15,46 +15,76 @@ export default function UsernamePromptModal({ isOpen, onClose, onSubmitUsername 
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="skyblock-window p-8 border-2 border-amber-500/50 text-center max-w-lg w-full space-y-6 shadow-2xl">
-        <div className="space-y-2">
-          <h2 className="text-2xl font-black text-white">Welcome to Hypixel SkyBlock</h2>
-          <p className="text-xs text-gray-400 max-w-sm mx-auto">
-            Enter your Minecraft username (IGN) or UUID to view your live SkyBlock profile and hub village.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
-          <div className="relative">
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your Minecraft username (IGN)..."
-              className="w-full px-4 py-3 bg-[#090c10] border-2 border-[#30363d] focus:border-amber-400 rounded-xl text-white placeholder-gray-500 font-semibold text-sm transition outline-none"
-              autoFocus
-            />
-          </div>
-
-          <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                className="rounded accent-amber-500"
-              />
-              <span>Remember my username on this device</span>
-            </label>
+    <div
+      className="fixed inset-0 z-50 bg-black/65 backdrop-blur-[2px] flex items-center justify-center p-3 select-none"
+      onClick={onClose}
+    >
+      <div
+        className="mc-chest-window max-w-md w-full p-4 space-y-4"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="mc-chest-header pb-2 border-b-2 border-[#555555] w-full flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="mc-chest-title text-2xl font-bold">Hypixel SkyBlock</span>
           </div>
 
           <button
-            type="submit"
-            className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 text-black font-extrabold rounded-xl text-sm transition shadow-lg shadow-amber-500/20"
+            onClick={onClose}
+            className="mc-close-button"
+            title="Close [ESC]"
           >
-            Enter SkyBlock Hub
+            <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
           </button>
-        </form>
+        </div>
+
+        {/* Content in Minecraft Inset Box */}
+        <div className="mc-inset-box p-4 rounded w-full space-y-4">
+          <div className="space-y-1">
+            <span className="minecraft-font text-xl text-yellow-400 font-bold block">
+              Player Identification
+            </span>
+            <p className="minecraft-font text-base text-gray-300">
+              Enter your Minecraft IGN (in-game name) or UUID to load your live SkyBlock profile:
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter player IGN..."
+                className="mc-search-box text-xl"
+                autoFocus
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  className="rounded accent-amber-500 cursor-pointer"
+                />
+                <span className="minecraft-font text-base text-gray-300">
+                  Save IGN on this device
+                </span>
+              </label>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                className="mc-stone-button text-xl px-5 py-1.5"
+              >
+                <span>▶ Enter SkyBlock Hub</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

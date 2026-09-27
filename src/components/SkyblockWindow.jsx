@@ -58,52 +58,47 @@ export const DEST_META = {
 export default function SkyblockWindow({ isOpen, destination, onClose, children }) {
   if (!isOpen) return null;
 
-  const isMinecraftGui = ['bazaar', 'auctions', 'economy', 'bank'].includes(destination);
+  const isCustomChestView = ['bazaar', 'auctions', 'economy', 'bank'].includes(destination);
   const meta = DEST_META[destination] || DEST_META.player;
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 ${
-        isMinecraftGui ? 'bazaar-mode bg-black/65 backdrop-blur-[2px]' : 'bg-black/80 backdrop-blur-md'
-      }`}
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/65 backdrop-blur-[2px] select-none"
       onClick={onClose}
     >
-      <div
-        className={`skyblock-window ${
-          isMinecraftGui
-            ? 'bazaar-mode w-auto max-w-fit h-auto max-h-[98vh] p-0'
-            : 'w-full max-w-6xl h-full max-h-[92vh] overflow-hidden flex flex-col relative'
-        }`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Title Bar (hidden in Minecraft GUI mode) */}
-        {!isMinecraftGui && (
-          <div className="p-4 sm:px-6 border-b border-[#30363d] bg-[#090c10] flex items-center justify-between">
-            <div>
-              <h2 className="text-lg sm:text-xl font-black text-white tracking-wide">
-                {meta.title}
-              </h2>
-              <p className="text-xs text-gray-400">{meta.subtitle}</p>
-            </div>
+      <div onClick={(e) => e.stopPropagation()} className="max-h-[96vh] flex items-center justify-center">
+        {isCustomChestView ? (
+          children
+        ) : (
+          <div className="mc-chest-wrapper">
+            <div className="mc-chest-window w-full max-w-5xl max-h-[92vh] flex flex-col p-4">
+              {/* Authentic Minecraft Header with Title and Red Close Button */}
+              <div className="mc-chest-header pb-2 border-b-2 border-[#555555] w-full flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="mc-chest-title text-2xl font-bold">{meta.title}</span>
+                  <span className="minecraft-font text-sm text-gray-700 hidden sm:inline font-bold">
+                    - {meta.subtitle}
+                  </span>
+                </div>
 
-            <button
-              onClick={onClose}
-              className="px-3.5 py-1.5 rounded-xl bg-[#161b22] hover:bg-red-500/20 hover:text-red-400 border border-[#30363d] text-gray-300 font-mono text-xs font-bold transition flex items-center gap-1.5"
-            >
-              <span>Close</span>
-              <span className="px-1.5 py-0.5 rounded bg-black/40 text-[10px] text-gray-400">ESC</span>
-            </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={onClose}
+                    className="mc-close-button"
+                    title="Close [ESC]"
+                  >
+                    <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Scrollable Content inside Minecraft Inset Box */}
+              <div className="mc-inset-box p-3 sm:p-4 rounded mt-3 w-full flex-1 overflow-y-auto max-h-[76vh]">
+                {children}
+              </div>
+            </div>
           </div>
         )}
-
-        {/* Body Content */}
-        <div
-          className={`flex-1 ${
-            isMinecraftGui ? 'p-0 overflow-visible' : 'overflow-y-auto p-4 sm:p-6 space-y-6'
-          }`}
-        >
-          {children}
-        </div>
       </div>
     </div>
   );

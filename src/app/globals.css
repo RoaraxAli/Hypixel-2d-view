@@ -419,3 +419,80 @@ code, .font-mono {
   border-bottom: 2px solid #ffffff;
   border-right: 2px solid #ffffff;
 }
+
+/* Authentic Minecraft Red Close Button with Barrier Icon */
+.mc-close-button {
+  background-color: #aa0000;
+  border-top: 2px solid #ff5555;
+  border-left: 2px solid #ff5555;
+  border-bottom: 2px solid #550000;
+  border-right: 2px solid #550000;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  transition: background-color 0.1s ease;
+}
+
+.mc-close-button:hover {
+  background-color: #d11a1a;
+}
+
+.mc-close-button:active {
+  border-top: 2px solid #550000;
+  border-left: 2px solid #550000;
+  border-bottom: 2px solid #ff5555;
+  border-right: 2px solid #ff5555;
+}
+
+/* Authentic Minecraft Stone Button for In-Game Navigations */
+.mc-stone-button {
+  background-color: #8b8b8b;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #373737;
+  border-right: 2px solid #373737;
+  color: #e0e0e0;
+  font-family: 'VT323', monospace;
+  font-size: 19px;
+  padding: 3px 10px;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  text-shadow: 1px 1px 0px #000000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.mc-stone-button:hover {
+  background-color: #a0a0a0;
+  color: #ffffff;
+}
+
+.mc-stone-button:active,
+.mc-stone-button.active {
+  background-color: #636363;
+  border-top: 2px solid #373737;
+  border-left: 2px solid #373737;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  color: #ffff55;
+}
+
+/* Dark Inset Box for Minecraft GUI Stats & Scrollable Lists */
+.mc-inset-box {
+  background-color: #1a1a1a;
+  border-top: 3px solid #111111;
+  border-left: 3px solid #111111;
+  border-bottom: 3px solid #444444;
+  border-right: 3px solid #444444;
+  color: #e0e0e0;
+  box-sizing: border-box;
+}

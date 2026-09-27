@@ -226,14 +226,15 @@ export default function NPCSceneView({ scene, onOpenMenu, onBackToMap }) {
         </svg>
       </div>
 
-      {/* Clean Top Bar: Back to Map button [ESC] */}
+      {/* Clean Top Bar: Back to Map button [ESC] in Minecraft stone button style */}
       <div className="absolute top-4 left-4 z-40">
         <button
           onClick={onBackToMap}
-          className="px-3.5 py-1.5 rounded-xl bg-black/80 hover:bg-black/95 border border-white/20 hover:border-amber-400/60 text-white font-mono text-xs font-bold transition flex items-center gap-2 backdrop-blur-md shadow-lg"
+          className="mc-stone-button text-base px-3.5 py-1.5 flex items-center gap-2"
+          title="Return to Hub Map [ESC]"
         >
           <span>◀ Back to Hub Map</span>
-          <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-gray-300">ESC</span>
+          <span className="text-yellow-300 font-bold">[ESC]</span>
         </button>
       </div>
     </div>

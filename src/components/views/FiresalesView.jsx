@@ -23,17 +23,17 @@ export default function FiresalesView() {
   }, []);
 
   if (loading && sales.length === 0) {
-    return <div className="text-center py-12 text-gray-400 font-mono text-xs">Checking Fire Sales...</div>;
+    return <div className="text-center py-10 minecraft-font text-xs text-gray-400">Checking Fire Sales...</div>;
   }
 
   if (sales.length === 0) {
     return (
-      <div className="glass-panel rounded-2xl p-8 border border-[#30363d] text-center space-y-3">
-        <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center font-bold text-xs font-mono mx-auto">
+      <div className="mc-inset-box rounded p-8 text-center space-y-3">
+        <div className="w-10 h-10 rounded bg-red-900/40 border border-red-500/60 text-red-400 flex items-center justify-center font-bold text-xs minecraft-font mx-auto">
           SALES
         </div>
-        <h3 className="text-lg font-black text-white">No Fire Sales Currently Active</h3>
-        <p className="text-xs text-gray-400 max-w-md mx-auto">
+        <h3 className="minecraft-font text-base font-bold text-white">No Fire Sales Currently Active</h3>
+        <p className="minecraft-font text-xs text-gray-400 max-w-md mx-auto">
           Hypixel schedules limited-edition cosmetic fire sales periodically. Check back soon or monitor forum announcements!
         </p>
       </div>
@@ -41,13 +41,13 @@ export default function FiresalesView() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       {sales.map((s, idx) => (
-        <div key={idx} className="glass-panel rounded-xl p-5 border border-[#30363d] space-y-3 font-mono">
-          <h4 className="font-bold text-sm text-white">{s.item_id}</h4>
+        <div key={idx} className="mc-inset-box rounded p-3 space-y-2 minecraft-font">
+          <h4 className="font-bold text-sm text-yellow-400">{s.item_id}</h4>
           <div className="flex justify-between text-xs">
             <span className="text-gray-400">Price:</span>
-            <span className="text-amber-400 font-bold">{s.price} Gems</span>
+            <span className="text-yellow-300 font-bold">{s.price} Gems</span>
           </div>
           <div className="flex justify-between text-xs">
             <span className="text-gray-400">Sold:</span>

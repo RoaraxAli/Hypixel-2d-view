@@ -444,6 +444,13 @@ export default function AuctionsView({ playerData, initialScreen = 'main', onClo
             >
               <span className="minecraft-font text-lg font-bold leading-none">$</span>
             </button>
+            <button
+              onClick={onClose}
+              className="mc-close-button"
+              title="Close [ESC]"
+            >
+              <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+            </button>
           </div>
         </div>
 

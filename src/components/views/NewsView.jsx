@@ -23,33 +23,33 @@ export default function NewsView() {
   }, []);
 
   if (loading && !data) {
-    return <div className="text-center py-12 text-gray-400 font-mono text-xs">Fetching SkyBlock patch notes...</div>;
+    return <div className="text-center py-10 minecraft-font text-xs text-gray-400">Fetching SkyBlock patch notes...</div>;
   }
 
   const items = data?.items || [];
 
   return (
     <div className="space-y-4">
-      <div className="glass-panel rounded-2xl p-6 border border-[#30363d] space-y-4">
-        <h2 className="text-xl font-black text-white flex items-center gap-2">
+      <div className="mc-inset-box p-4 rounded space-y-3">
+        <h2 className="minecraft-font text-lg font-bold text-white flex items-center gap-2">
           SkyBlock Update Threads &amp; Patch Notes
         </h2>
-        <div className="space-y-3 pt-2">
+        <div className="space-y-2.5 pt-1">
           {items.map((item, idx) => (
             <a
               key={idx}
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 rounded-xl bg-[#090c10] border border-[#21262d] hover:border-blue-400/50 flex items-center justify-between transition group block"
+              className="p-3 rounded bg-[#2b2b2b] border border-[#444444] hover:border-yellow-400 flex items-center justify-between transition group block"
             >
               <div>
-                <h4 className="font-bold text-sm text-white group-hover:text-blue-400 transition">
+                <h4 className="minecraft-font font-bold text-sm text-white group-hover:text-yellow-400 transition">
                   {item.title}
                 </h4>
-                <span className="text-xs text-gray-500 font-mono">{item.text}</span>
+                <span className="minecraft-font text-xs text-gray-400">{item.text}</span>
               </div>
-              <span className="text-xs text-blue-400 flex items-center gap-1 font-semibold">
+              <span className="minecraft-font text-xs text-cyan-400 flex items-center gap-1 font-bold">
                 Read Thread ↗
               </span>
             </a>

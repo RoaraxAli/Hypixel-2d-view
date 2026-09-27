@@ -73,12 +73,12 @@ export default function MuseumView({ playerData, onSwitchUser }) {
 
   if (!playerData || !profileId) {
     return (
-      <div className="text-center p-12 glass-panel rounded-2xl border border-[#30363d] space-y-3">
-        <h3 className="text-base font-bold text-white">No Player Profile Selected</h3>
-        <p className="text-xs text-gray-400">Search for a Minecraft username or select a profile to view their Royal Museum collection.</p>
+      <div className="text-center p-8 mc-inset-box rounded space-y-3">
+        <h3 className="minecraft-font text-lg font-bold text-white">No Player Profile Selected</h3>
+        <p className="minecraft-font text-sm text-gray-400">Search for a Minecraft username or select a profile to view their Royal Museum collection.</p>
         <button
           onClick={onSwitchUser}
-          className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-lg transition"
+          className="mc-stone-button text-base px-4 py-1"
         >
           Lookup Player
         </button>
@@ -87,41 +87,41 @@ export default function MuseumView({ playerData, onSwitchUser }) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="glass-panel rounded-2xl p-6 border border-[#30363d] space-y-5">
+    <div className="space-y-4">
+      <div className="mc-inset-box p-4 rounded space-y-3">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="text-xs uppercase font-bold text-amber-400 tracking-wider">Royal SkyBlock Institution</span>
-            <h2 className="text-xl font-black text-white mt-1">The Royal Museum</h2>
-            <p className="text-xs text-gray-400 mt-1">
+            <span className="minecraft-font text-xs uppercase font-bold text-yellow-400 tracking-wider">Royal SkyBlock Institution</span>
+            <h2 className="minecraft-font text-xl font-black text-white mt-1">The Royal Museum</h2>
+            <p className="minecraft-font text-xs text-gray-400 mt-1">
               Curated collection of donated weapons, armor sets, rarities, and special items
             </p>
           </div>
 
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="px-4 py-2.5 rounded-xl bg-[#090c10] border border-[#21262d]">
-              <span className="text-[11px] text-gray-400 block">Appraised Museum Value</span>
-              <span className="text-base font-black text-amber-400 font-mono">
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="px-3 py-1.5 rounded bg-[#2b2b2b] border border-[#444444]">
+              <span className="minecraft-font text-xs text-gray-400 block">Appraised Museum Value</span>
+              <span className="minecraft-font text-base font-bold text-yellow-400">
                 {museumData ? `${(museumData.value || 0).toLocaleString()} Coins` : '0 Coins'}
               </span>
             </div>
-            <div className="px-4 py-2.5 rounded-xl bg-[#090c10] border border-[#21262d]">
-              <span className="text-[11px] text-gray-400 block">Donated Items</span>
-              <span className="text-base font-black text-cyan-400 font-mono">
+            <div className="px-3 py-1.5 rounded bg-[#2b2b2b] border border-[#444444]">
+              <span className="minecraft-font text-xs text-gray-400 block">Donated Items</span>
+              <span className="minecraft-font text-base font-bold text-cyan-400">
                 {museumData ? (museumData.totalItemsCount || 0).toLocaleString() : '0'}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="text-xs text-emerald-400 flex items-center gap-1.5 pt-2 border-t border-[#21262d]">
+        <div className="minecraft-font text-xs text-emerald-400 flex items-center gap-1.5 pt-2 border-t border-[#373737]">
           <span>Official appraisal by Madame Eleanor Q. Goldsworth</span>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="glass-panel p-4 rounded-xl border border-[#30363d] flex flex-wrap gap-3 items-center justify-between">
-        <div className="flex items-center gap-2 text-xs font-semibold">
+      <div className="mc-inset-box p-3 rounded flex flex-wrap gap-2 items-center justify-between">
+        <div className="flex items-center gap-1.5">
           {[
             { key: 'all', label: 'All Items' },
             { key: 'weaponsArmor', label: 'Weapons & Armor' },
@@ -130,10 +130,8 @@ export default function MuseumView({ playerData, onSwitchUser }) {
             <button
               key={c.key}
               onClick={() => setCategory(c.key)}
-              className={`px-3 py-1.5 rounded-lg font-bold border transition ${
-                category === c.key
-                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                  : 'bg-[#161b22] text-gray-400 border-[#30363d] hover:text-white'
+              className={`mc-stone-button text-sm px-3 py-0.5 ${
+                category === c.key ? 'active font-bold' : ''
               }`}
             >
               {c.label}
@@ -146,13 +144,13 @@ export default function MuseumView({ playerData, onSwitchUser }) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search donated items by name..."
-            className="flex-1 px-3 py-1.5 bg-[#090c10] border border-[#30363d] rounded-lg text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400"
+            placeholder="Search items..."
+            className="mc-search-box text-sm flex-1"
           />
           <select
             value={tierFilter}
             onChange={(e) => setTierFilter(e.target.value)}
-            className="bg-[#090c10] px-3 py-1.5 rounded-lg border border-[#30363d] text-xs text-white"
+            className="bg-[#121212] px-2.5 py-1 border border-[#373737] rounded minecraft-font text-xs text-white focus:outline-none"
           >
             <option value="all">All Rarities</option>
             <option value="SPECIAL">Special</option>
@@ -170,20 +168,19 @@ export default function MuseumView({ playerData, onSwitchUser }) {
 
       {/* Grid */}
       {loading ? (
-        <div className="text-center py-12 text-gray-400 font-mono text-xs">
+        <div className="text-center py-10 minecraft-font text-xs text-gray-400">
           Accessing Royal Museum archives...
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="col-span-full text-center p-12 glass-panel rounded-xl border border-[#30363d] space-y-2">
-          <h4 className="text-sm font-bold text-white">No Matching Donated Items</h4>
-          <p className="text-xs text-gray-400">Try adjusting your search query or rarity filter.</p>
+        <div className="col-span-full text-center p-8 mc-inset-box rounded space-y-1">
+          <h4 className="minecraft-font text-sm font-bold text-white">No Matching Donated Items</h4>
+          <p className="minecraft-font text-xs text-gray-400">Try adjusting your search query or rarity filter.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filteredItems.map((entry, idx) => {
             const item = entry.item;
             const rarityColor = item.rarityColor || '#FFFFFF';
-            const dataAttr = encodeURIComponent(JSON.stringify(item));
             const donatedDate = entry.donatedTime
               ? new Date(entry.donatedTime).toLocaleDateString(undefined, {
                   year: 'numeric',
@@ -195,36 +192,36 @@ export default function MuseumView({ playerData, onSwitchUser }) {
             return (
               <div
                 key={idx}
-                className="glass-panel rounded-xl p-4 border border-[#30363d] hover:border-amber-400/50 transition flex flex-col justify-between space-y-3"
+                className="mc-inset-box p-3 rounded flex flex-col justify-between space-y-2 hover:border-[#8b8b8b] transition"
                 style={{ borderLeft: `3px solid ${rarityColor}` }}
               >
-                <div className="flex items-start gap-3">
-                  <ItemSlot item={item} customClass="w-10 h-10 shrink-0" />
+                <div className="flex items-start gap-2.5">
+                  <ItemSlot item={item} customClass="w-9 h-9 shrink-0" />
 
                   <div className="flex-1 min-w-0">
                     <h4
-                      className="font-bold text-sm truncate"
+                      className="minecraft-font text-sm truncate font-bold"
                       style={{ color: rarityColor }}
                       dangerouslySetInnerHTML={{ __html: item.formattedName || item.cleanName }}
                     />
-                    <div className="flex items-center gap-2 mt-0.5">
+                    <div className="flex items-center gap-1.5 mt-0.5">
                       <span
-                        className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-black/40"
+                        className="minecraft-font text-[10px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-black/50"
                         style={{ color: rarityColor }}
                       >
                         {item.rarity || 'COMMON'}
                       </span>
                       {item.starsDisplay && (
-                        <span className="text-[11px] font-bold text-amber-400">{item.starsDisplay}</span>
+                        <span className="minecraft-font text-[11px] font-bold text-yellow-400">{item.starsDisplay}</span>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#21262d] flex items-center justify-between text-[11px] text-gray-400 font-mono">
+                <div className="pt-1.5 border-t border-[#373737] flex items-center justify-between text-[11px] text-gray-400 minecraft-font">
                   <span className="truncate text-gray-500">{entry.category}</span>
                   {entry.borrowing && (
-                    <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold text-[10px]">
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-yellow-300 font-bold text-[10px]">
                       Borrowing
                     </span>
                   )}

@@ -27,35 +27,35 @@ export default function EndedAuctionsView() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="glass-panel rounded-2xl p-6 border border-[#30363d] flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="mc-inset-box p-3 rounded flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-black text-white flex items-center gap-2">
+          <h2 className="minecraft-font text-lg font-bold text-white flex items-center gap-2">
             Recently Ended Auctions (Last 60 Seconds)
           </h2>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="minecraft-font text-xs text-gray-400 mt-0.5">
             Real-time completed auction transactions and sold prices
           </p>
         </div>
         <button
           onClick={fetchEndedAuctions}
           disabled={loading}
-          className="px-3 py-1.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 disabled:opacity-50 rounded-lg text-xs font-bold transition flex items-center gap-1.5"
+          className="mc-stone-button text-sm px-3 py-1 flex items-center gap-1.5"
         >
-          {loading ? 'Refreshing...' : 'Refresh Stream'}
+          {loading ? 'Refreshing...' : '↻ Refresh Stream'}
         </button>
       </div>
 
       {loading && auctions.length === 0 ? (
-        <div className="text-center py-12 text-gray-400 font-mono text-xs">
+        <div className="text-center py-10 minecraft-font text-xs text-gray-400">
           Loading ended auctions stream...
         </div>
       ) : auctions.length === 0 ? (
-        <div className="text-center py-12 text-gray-400 font-mono text-xs">
+        <div className="text-center py-10 mc-inset-box rounded minecraft-font text-xs text-gray-400">
           No recently ended auctions recorded in the last 60 seconds.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {auctions.map((auc) => {
             const item = auc.item;
             const dataAttr = item ? encodeURIComponent(JSON.stringify(item)) : null;
@@ -63,28 +63,28 @@ export default function EndedAuctionsView() {
             return (
               <div
                 key={auc.auctionId}
-                className="glass-panel rounded-xl p-4 border border-[#30363d] space-y-3 hover:border-amber-400/50 transition cursor-pointer"
+                className="mc-inset-box p-3 rounded space-y-2 hover:border-[#8b8b8b] transition cursor-pointer"
                 data-item={dataAttr}
               >
-                <div className="flex items-start gap-3">
-                  {item && <ItemSlot item={item} customClass="w-10 h-10 shrink-0" />}
+                <div className="flex items-start gap-2.5">
+                  {item && <ItemSlot item={item} customClass="w-9 h-9 shrink-0" />}
                   <div className="min-w-0 flex-1">
                     <h4
-                      className="font-bold text-sm truncate"
+                      className="minecraft-font font-bold text-sm truncate"
                       dangerouslySetInnerHTML={{
                         __html: item?.formattedName || item?.cleanName || 'Sold Item'
                       }}
                     />
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-black/40 text-gray-300">
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="minecraft-font text-[10px] font-bold uppercase tracking-wider px-1 py-0.5 rounded bg-black/50 text-gray-300">
                         {item?.rarity || 'COMMON'}
                       </span>
                       {auc.bin ? (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        <span className="minecraft-font text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-yellow-300 border border-amber-500/30">
                           BIN SNIPE
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                        <span className="minecraft-font text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
                           AUCTION WON
                         </span>
                       )}
@@ -92,12 +92,12 @@ export default function EndedAuctionsView() {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#21262d] flex items-center justify-between text-xs">
+                <div className="pt-1.5 border-t border-[#373737] flex items-center justify-between text-xs minecraft-font">
                   <div>
-                    <span className="text-[10px] text-gray-500 block uppercase font-mono">Final Sale Price</span>
-                    <span className="text-amber-400 font-black font-mono">{auc.formattedPrice}</span>
+                    <span className="text-[10px] text-gray-500 block uppercase">Final Sale Price</span>
+                    <span className="text-yellow-400 font-bold">{auc.formattedPrice}</span>
                   </div>
-                  <div className="text-right text-[11px] font-mono text-gray-400">
+                  <div className="text-right text-[11px] text-gray-400">
                     <span>{new Date(auc.timestamp).toLocaleTimeString()}</span>
                   </div>
                 </div>

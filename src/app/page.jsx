@@ -228,6 +228,7 @@ export default function HomePage() {
           <BazaarView
             bazaarData={bazaarData}
             playerData={playerData}
+            onClose={() => setActiveDestination(null)}
           />
         )}
 
