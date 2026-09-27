@@ -1949,6 +1949,400 @@ export default function PlayerView({
     return slots;
   }, []);
 
+  // Build the authentic 54-slot Calendar and Events container GUI matching in-game screenshot:
+  const calendarMenuSlots = useMemo(() => {
+    const slots = Array.from({ length: 54 }, () => ({
+      type: 'glass',
+      name: ' ',
+      icon: '/textures/minecraft/gray_stained_glass_pane.png',
+      rawItem: { cleanName: ' ', rawName: ' ', loreHtml: [] },
+    }));
+
+    // Row 1:
+    // Slot 10 (Row 1, Col 1): Snowball (Season of Jerry)
+    slots[10] = {
+      id: 'season_of_jerry_1',
+      name: 'Season of Jerry',
+      icon: '/textures/minecraft/snowball.png',
+      rawItem: {
+        cleanName: 'Season of Jerry',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Season of Jerry</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">0d 14h 22m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">The Jerrys are hard at work trying</span>',
+          '<span style="color: #AAAAAA">to craft enough Gifts for all of</span>',
+          '<span style="color: #AAAAAA">SkyBlock, but an army of enemies are</span>',
+          '<span style="color: #AAAAAA">on the attack! Help protect Jerry\'s</span>',
+          '<span style="color: #AAAAAA">Workshop so that everyone can go</span>',
+          '<span style="color: #AAAAAA">home with Gifts!</span>',
+        ],
+      },
+    };
+
+    // Slot 11 (Row 1, Col 2): New Year Cake (New Year Celebration)
+    slots[11] = {
+      id: 'new_year_1',
+      name: 'New Year Celebration',
+      icon: '/textures/minecraft/new_year_cake.png',
+      rawItem: {
+        cleanName: 'New Year Celebration',
+        formattedName: '<span style="color: #FF55FF; font-weight: bold">New Year Celebration</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">1d 02h 15m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">To celebrate the SkyBlock New Year,</span>',
+          '<span style="color: #AAAAAA">the Baker is giving out free Cake!</span>',
+        ],
+      },
+    };
+
+    // Slot 12 (Row 1, Col 3): Skull (Traveling Zoo)
+    slots[12] = {
+      id: 'traveling_zoo_1',
+      name: 'Traveling Zoo',
+      icon: '/textures/minecraft/oringo_head.png',
+      rawItem: {
+        cleanName: 'Traveling Zoo',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Traveling Zoo</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">1d 18h 40m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Oringo the Traveling Zookeeper is</span>',
+          '<span style="color: #AAAAAA">visiting SkyBlock with pets to trade!</span>',
+        ],
+      },
+    };
+
+    // Slot 13 (Row 1, Col 4): Jukebox (Election Booth Opens)
+    slots[13] = {
+      id: 'election_booth_1',
+      name: 'Election Booth Opens',
+      icon: '/textures/minecraft/jukebox.png',
+      rawItem: {
+        cleanName: 'Election Booth Opens',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Election Booth Opens</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">2d 04h 30m</span>',
+          '',
+          '<span style="color: #AAAAAA">The Mayor election booth opens in</span>',
+          '<span style="color: #AAAAAA">the community center!</span>',
+        ],
+      },
+    };
+
+    // Slot 14 (Row 1, Col 5): Farmer Head (Jacob's Farming Contest)
+    slots[14] = {
+      id: 'farming_contest_1',
+      name: "Jacob's Farming Contest",
+      icon: '/textures/minecraft/farmer_head.png',
+      rawItem: {
+        cleanName: "Jacob's Farming Contest",
+        formattedName: "<span style=\"color: #FFAA00; font-weight: bold\">Jacob's Farming Contest</span>",
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">0d 00h 42m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">20m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Compete with other farmers to collect</span>',
+          '<span style="color: #AAAAAA">the most crops and win medals!</span>',
+          '<span style="color: #FFFF55">Crops: Wheat, Carrot, Potato</span>',
+        ],
+      },
+    };
+
+    // Slot 15 (Row 1, Col 6): Jukebox (Election Over!)
+    slots[15] = {
+      id: 'election_over_1',
+      name: 'Election Over!',
+      icon: '/textures/minecraft/jukebox.png',
+      rawItem: {
+        cleanName: 'Election Over!',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Election Over!</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">3d 08h 00m</span>',
+          '',
+          '<span style="color: #AAAAAA">The Mayor is selected until the next</span>',
+          '<span style="color: #AAAAAA">election ends!</span>',
+        ],
+      },
+    };
+
+    // Slot 16 (Row 1, Col 7): Golden Hoe (Jacob's Farming Contest)
+    slots[16] = {
+      id: 'farming_contest_2',
+      name: "Jacob's Farming Contest",
+      icon: '/textures/minecraft/golden_hoe.png',
+      rawItem: {
+        cleanName: "Jacob's Farming Contest",
+        formattedName: "<span style=\"color: #FFAA00; font-weight: bold\">Jacob's Farming Contest</span>",
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">0d 01h 42m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">20m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Compete with other farmers to collect</span>',
+          '<span style="color: #AAAAAA">the most crops and win medals!</span>',
+          '<span style="color: #FFFF55">Crops: Sugar Cane, Nether Wart, Cocoa</span>',
+        ],
+      },
+    };
+
+    // Row 2:
+    // Slot 19 (Row 2, Col 1): Jack o' Lantern (Spooky Festival)
+    slots[19] = {
+      id: 'spooky_festival',
+      name: 'Spooky Festival',
+      icon: '/textures/minecraft/jack_o_lantern.png',
+      rawItem: {
+        cleanName: 'Spooky Festival',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Spooky Festival</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">3d 16h 50m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Autumn is in full swing and the air is</span>',
+          '<span style="color: #AAAAAA">full of fright. Mob drops have a</span>',
+          '<span style="color: #AAAAAA">chance to contain Candy, which can</span>',
+          '<span style="color: #AAAAAA">be traded with the Fear Mongerer</span>',
+          '<span style="color: #AAAAAA">for rare items!</span>',
+        ],
+      },
+    };
+
+    // Slot 20 (Row 2, Col 2): Farmer Head (Jacob's Farming Contest)
+    slots[20] = {
+      id: 'farming_contest_3',
+      name: "Jacob's Farming Contest",
+      icon: '/textures/minecraft/farmer_head.png',
+      rawItem: {
+        cleanName: "Jacob's Farming Contest",
+        formattedName: "<span style=\"color: #FFAA00; font-weight: bold\">Jacob's Farming Contest</span>",
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">0d 02h 42m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">20m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Compete with other farmers to collect</span>',
+          '<span style="color: #AAAAAA">the most crops and win medals!</span>',
+          '<span style="color: #FFFF55">Crops: Melon, Pumpkin, Cactus</span>',
+        ],
+      },
+    };
+
+    // Slot 21 (Row 2, Col 3): Snowball (Season of Jerry)
+    slots[21] = {
+      id: 'season_of_jerry_2',
+      name: 'Season of Jerry',
+      icon: '/textures/minecraft/snowball.png',
+      rawItem: {
+        cleanName: 'Season of Jerry',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Season of Jerry</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">5d 14h 22m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">The Jerrys are hard at work trying</span>',
+          '<span style="color: #AAAAAA">to craft enough Gifts for all of</span>',
+          '<span style="color: #AAAAAA">SkyBlock, but an army of enemies are</span>',
+          '<span style="color: #AAAAAA">on the attack! Help protect Jerry\'s</span>',
+          '<span style="color: #AAAAAA">Workshop so that everyone can go</span>',
+          '<span style="color: #AAAAAA">home with Gifts!</span>',
+        ],
+      },
+    };
+
+    // Slot 22 (Row 2, Col 4): New Year Cake (New Year Celebration)
+    slots[22] = {
+      id: 'new_year_2',
+      name: 'New Year Celebration',
+      icon: '/textures/minecraft/new_year_cake.png',
+      rawItem: {
+        cleanName: 'New Year Celebration',
+        formattedName: '<span style="color: #FF55FF; font-weight: bold">New Year Celebration</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">6d 02h 15m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">To celebrate the SkyBlock New Year,</span>',
+          '<span style="color: #AAAAAA">the Baker is giving out free Cake!</span>',
+        ],
+      },
+    };
+
+    // Slot 23 (Row 2, Col 5): Skull (Traveling Zoo)
+    slots[23] = {
+      id: 'traveling_zoo_2',
+      name: 'Traveling Zoo',
+      icon: '/textures/minecraft/oringo_head.png',
+      rawItem: {
+        cleanName: 'Traveling Zoo',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Traveling Zoo</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">6d 18h 40m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">01h 00m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Oringo the Traveling Zookeeper is</span>',
+          '<span style="color: #AAAAAA">visiting SkyBlock with pets to trade!</span>',
+        ],
+      },
+    };
+
+    // Slot 24 (Row 2, Col 6): Jukebox (Election Booth Opens)
+    slots[24] = {
+      id: 'election_booth_2',
+      name: 'Election Booth Opens',
+      icon: '/textures/minecraft/jukebox.png',
+      rawItem: {
+        cleanName: 'Election Booth Opens',
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Election Booth Opens</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">7d 04h 30m</span>',
+          '',
+          '<span style="color: #AAAAAA">The Mayor election booth opens in</span>',
+          '<span style="color: #AAAAAA">the community center!</span>',
+        ],
+      },
+    };
+
+    // Slot 25 (Row 2, Col 7): Farmer Head (Jacob's Farming Contest)
+    slots[25] = {
+      id: 'farming_contest_4',
+      name: "Jacob's Farming Contest",
+      icon: '/textures/minecraft/farmer_head.png',
+      rawItem: {
+        cleanName: "Jacob's Farming Contest",
+        formattedName: "<span style=\"color: #FFAA00; font-weight: bold\">Jacob's Farming Contest</span>",
+        loreHtml: [
+          '<span style="color: #AAAAAA">Starts in: </span><span style="color: #FFFF55">0d 03h 42m</span>',
+          '<span style="color: #AAAAAA">Event lasts for </span><span style="color: #FFFF55">20m 00s</span><span style="color: #AAAAAA">!</span>',
+          '',
+          '<span style="color: #AAAAAA">Compete with other farmers to collect</span>',
+          '<span style="color: #AAAAAA">the most crops and win medals!</span>',
+          '<span style="color: #FFFF55">Crops: Mushroom, Nether Wart, Wheat</span>',
+        ],
+      },
+    };
+
+    // Row 5:
+    // Slot 45 (Row 5, Col 0): Gold Block (Event Rewards)
+    slots[45] = {
+      id: 'event_rewards',
+      name: 'Event Rewards',
+      icon: '/textures/minecraft/gold_block.png',
+      rawItem: {
+        cleanName: 'Event Rewards',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Event Rewards</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">View and claim rewards obtained</span>',
+          '<span style="color: #AAAAAA">through participating in Events!</span>',
+          '',
+          '<span style="color: #555555; font-style: italic">You have no rewards! Place</span>',
+          '<span style="color: #555555; font-style: italic">atop Event Leaderboards to</span>',
+          '<span style="color: #555555; font-style: italic">obtain cool rewards!</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 46 (Row 5, Col 1): Mayor Head (Mayor Diana)
+    slots[46] = {
+      id: 'mayor_diana',
+      name: 'Mayor Diana',
+      icon: '/textures/minecraft/mayor_head.png',
+      rawItem: {
+        cleanName: 'Mayor Diana',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Mayor Diana</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Current elected Mayor of SkyBlock!</span>',
+          '',
+          '<span style="color: #FFFF55; font-weight: bold">Active Perks:</span>',
+          '<span style="color: #55FF55">● Mythological Ritual</span>',
+          '<span style="color: #AAAAAA">  Mayor Diana sells the Griffin Pet,</span>',
+          '<span style="color: #AAAAAA">  which lets you find mythological</span>',
+          '<span style="color: #AAAAAA">  creatures and burrows!</span>',
+          '<span style="color: #55FF55">● Pet Exp Buff</span>',
+          '<span style="color: #AAAAAA">  Gain 35% more Pet XP!</span>',
+          '',
+          '<span style="color: #555555">Next election begins soon.</span>',
+        ],
+      },
+    };
+
+    // Slot 48 (Row 5, Col 3): Arrow (Go Back)
+    slots[48] = {
+      id: 'go_back',
+      name: 'Go Back',
+      icon: '/textures/minecraft/arrow.png',
+      action: 'menu',
+      targetScreen: 'menu',
+      rawItem: {
+        cleanName: 'Go Back',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Go Back</span>',
+        loreHtml: ['<span style="color: #AAAAAA">To SkyBlock Menu</span>'],
+      },
+    };
+
+    // Slot 49 (Row 5, Col 4): Barrier (Close)
+    slots[49] = {
+      id: 'close',
+      name: 'Close',
+      icon: '/textures/minecraft/barrier.png',
+      action: 'close',
+      rawItem: {
+        cleanName: 'Close',
+        formattedName: '<span style="color: #FF5555; font-weight: bold">Close</span>',
+        loreHtml: [],
+      },
+    };
+
+    // Slot 50 (Row 5, Col 5): Clock (Calendar)
+    slots[50] = {
+      id: 'calendar_clock',
+      name: 'Calendar',
+      icon: '/textures/minecraft/clock.png',
+      rawItem: {
+        cleanName: 'Calendar',
+        formattedName: '<span style="color: #55FF55; font-weight: bold">Calendar</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Opens the full SkyBlock Calendar.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view!</span>',
+        ],
+      },
+    };
+
+    // Slot 51 (Row 5, Col 6): Chocolate Factory
+    slots[51] = {
+      id: 'chocolate_factory',
+      name: 'Chocolate Factory',
+      icon: '/textures/minecraft/chocolate_factory.png',
+      rawItem: {
+        cleanName: 'Chocolate Factory',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Chocolate Factory</span>',
+        loreHtml: [
+          '<span style="color: #55FF55">Hoppity the Rabbit </span><span style="color: #AAAAAA">needs help finding</span>',
+          '<span style="color: #AAAAAA">all of his chocolate friends during</span>',
+          '<span style="color: #AAAAAA">the </span><span style="color: #55FF55">Spring </span><span style="color: #AAAAAA">season.</span>',
+          '',
+          '<span style="color: #AAAAAA">Meanwhile, he has granted you</span>',
+          '<span style="color: #AAAAAA">access to his </span><span style="color: #FFAA00">Chocolate Factory </span><span style="color: #AAAAAA">all</span>',
+          '<span style="color: #AAAAAA">year round!</span>',
+          '',
+          '<span style="color: #555555; font-style: italic">In the future, everything is </span><span style="color: #FFFFFF">chrome</span>',
+          '<span style="color: #555555; font-style: italic">and everything is </span><span style="color: #55FF55">automated</span><span style="color: #555555; font-style: italic">. For this</span>',
+          '<span style="color: #555555; font-style: italic">little old factory, that future is </span><span style="color: #FF55FF">now</span><span style="color: #555555; font-style: italic">!</span>',
+          '<span style="color: #555555; font-style: italic">This is what that guy was singing</span>',
+          '<span style="color: #555555; font-style: italic">about in that </span><span style="color: #AA00AA">musical</span><span style="color: #555555; font-style: italic">.</span>',
+        ],
+      },
+    };
+
+    return slots;
+  }, []);
+
+
   const handleSlotClick = (slot) => {
     if (!slot || slot.type === 'glass') return;
     if (slot.action === 'close') {
@@ -2904,6 +3298,160 @@ export default function PlayerView({
   }
 
   // -------------------------------------------------------------
+  // VIEW: CALENDAR AND EVENTS (Matches in-game GUI 100%)
+  // -------------------------------------------------------------
+  if (screen === 'calendar') {
+    return (
+      <div className="mc-chest-wrapper">
+        <div className="mc-chest-window">
+          {/* Header */}
+          <div className="mc-chest-header">
+            <span className="mc-chest-title text-2xl font-bold">Calendar and Events</span>
+            {onClose && (
+              <button onClick={onClose} className="mc-close-button" title="Close [ESC]">
+                <img src="/textures/minecraft/barrier.png" alt="Close" className="w-4 h-4 pointer-events-none" />
+              </button>
+            )}
+          </div>
+
+          {/* 54-Slot Chest Grid */}
+          <div className="mc-chest-grid">
+            {calendarMenuSlots.map((slot, idx) => {
+              const dataAttr = slot?.rawItem && slot.rawItem.rawName !== ' '
+                ? encodeURIComponent(JSON.stringify(slot.rawItem))
+                : null;
+              const isGlass = slot?.type === 'glass';
+
+              return (
+                <div
+                  key={idx}
+                  onClick={() => handleSlotClick(slot)}
+                  className={`mc-slot-cell ${isGlass ? 'glass-border' : 'cursor-pointer hover:brightness-110'}`}
+                  data-item={dataAttr}
+                >
+                  {slot?.icon && (
+                    <img
+                      src={slot.icon}
+                      alt={slot.name || ''}
+                      className="w-7 h-7 object-contain pointer-events-none select-none rounded-[2px]"
+                      style={{ imageRendering: 'pixelated' }}
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Inventory Header */}
+          <div className="mc-inventory-header">
+            <span className="mc-chest-title text-xl">Inventory</span>
+            <span className="minecraft-font text-base text-gray-600 font-bold">
+              {player.username || ''}
+            </span>
+          </div>
+
+          {/* 3x9 Main Player Inventory */}
+          <div className="mc-inventory-grid">
+            {Array.from({ length: 27 }).map((_, idx) => {
+              const item = mainItems[idx];
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? getItemTexture(item) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div key={idx} className="mc-slot-cell" data-item={dataAttr}>
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 1x9 Hotbar */}
+          <div className="mc-hotbar-grid">
+            {Array.from({ length: 9 }).map((_, idx) => {
+              // Slot 8 (the 9th slot): Permanent SkyBlock Menu Nether Star
+              let item = hotbarItems[idx];
+              let isMenuStar = false;
+              if (idx === 8 || !item || item.empty) {
+                if (idx === 8) {
+                  isMenuStar = true;
+                  item = {
+                    cleanName: 'SkyBlock Menu',
+                    formattedName: '<span style="color: #55FF55; font-weight: bold">SkyBlock Menu (Right Click)</span>',
+                    icon: '/textures/minecraft/nether_star.png',
+                    loreHtml: [
+                      '<span style="color: #AAAAAA">Click to view your SkyBlock Menu!</span>'
+                    ]
+                  };
+                }
+              }
+
+              const dataAttr = item && !item.empty ? encodeURIComponent(JSON.stringify(item)) : null;
+              const tex = item && !item.empty ? (item.icon || getItemTexture(item)) : null;
+              const isEnch = item && (item.starsCount > 0 || item.recombobulated || (item.enchants && Object.keys(item.enchants).length > 0));
+
+              return (
+                <div
+                  key={idx}
+                  className={`mc-slot-cell ${isMenuStar ? 'cursor-pointer hover:brightness-110' : ''}`}
+                  data-item={dataAttr}
+                  onClick={isMenuStar ? () => setScreen('menu') : undefined}
+                >
+                  {item && !item.empty && (
+                    <>
+                      {tex ? (
+                        <img
+                          src={tex}
+                          alt={item.cleanName || ''}
+                          className={`w-7 h-7 object-contain pointer-events-none select-none ${isEnch ? 'mc-enchanted' : ''}`}
+                          style={{ imageRendering: 'pixelated' }}
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span
+                          className="text-[10px] font-bold truncate select-none pointer-events-none px-0.5"
+                          style={{ color: item.rarityColor || '#fff' }}
+                        >
+                          {item.cleanName?.slice(0, 4)}
+                        </span>
+                      )}
+                      {item.count && item.count > 1 && (
+                        <span className="mc-slot-count text-[11px]">{item.count}</span>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // SUB-SCREEN WRAPPER
   // -------------------------------------------------------------
   const renderScreenHeader = (title) => (
@@ -3380,38 +3928,6 @@ export default function PlayerView({
         )}
 
 
-        {/* SUB-SCREEN: CALENDAR & EVENTS */}
-        {screen === 'calendar' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Calendar and Events')}
-            <div className="mc-inset-box rounded p-3 flex justify-between items-center">
-              <div>
-                <span className="text-xs text-gray-400 block">Current SkyBlock Date</span>
-                <h4 className="text-base font-black text-white">Year 360, Late Autumn (Day 24)</h4>
-              </div>
-              <span className="text-xs text-amber-400 font-mono font-bold">1:40 PM (Daytime)</span>
-            </div>
-            <div className="space-y-2">
-              {[
-                { name: 'Spooky Festival', time: 'Starts in 4h 12m', icon: '/textures/minecraft/pumpkin.png', desc: 'Trick or Treat candies, Fear Mongerer shop, and Spooky pies.' },
-                { name: 'Season of Jerry', time: 'Starts in 1d 8h', icon: '/textures/minecraft/ice.png', desc: 'Jerry\'s Workshop mountain defense, gifts, and Red Gift boxes.' },
-                { name: 'Mining Fiesta', time: 'Starts in 2d 16h', icon: '/textures/minecraft/diamond_pickaxe.png', desc: '2x Mining XP and Refined Minerals dropping from all ores.' },
-                { name: 'Dark Auction', time: 'Starts in 32m', icon: '/textures/minecraft/gold_ingot.png', desc: 'Sirius secret underground auction with exclusive items.' },
-              ].map(ev => (
-                <div key={ev.name} className="mc-inset-box rounded p-3 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <img src={ev.icon} alt="" className="w-7 h-7 object-contain" />
-                    <div>
-                      <h4 className="font-bold text-sm text-white">{ev.name}</h4>
-                      <p className="text-xs text-gray-400">{ev.desc}</p>
-                    </div>
-                  </div>
-                  <span className="text-xs text-emerald-400 font-mono font-bold whitespace-nowrap">{ev.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
