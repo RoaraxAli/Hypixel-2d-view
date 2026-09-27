@@ -33,7 +33,7 @@ export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPr
       const H = containerRef.current.clientHeight;
       if (!W || !H) return;
 
-      const imgRatio = 2048 / 1152;
+      const imgRatio = 2730 / 1536;
       const winRatio = W / H;
 
       let renderW, renderH, offsetL, offsetT;
@@ -75,7 +75,7 @@ export default function HubMap({ onOpenDestination, onSearchPlayer, onShowUserPr
       <div ref={containerRef} className="relative w-full h-full overflow-hidden flex items-center justify-center">
         <div style={wrapperStyle} className="overflow-hidden">
           <img
-            src="/weennzgg5xngrdj9k0tj.jpeg"
+            src="/hub_map.jpg"
             alt="Hypixel SkyBlock Hub"
             className="w-full h-full object-cover pointer-events-none select-none filter contrast-105 brightness-95"
           />
