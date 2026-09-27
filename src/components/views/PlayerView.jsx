@@ -4445,12 +4445,17 @@ export default function PlayerView({
       icon: '/textures/minecraft/diamond.png',
       rawItem: {
         cleanName: 'Cookie Buff Status',
-        formattedName: '<span style="color: #55FFFF; font-weight: bold">Cookie Buff: Active</span>',
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Booster Cookie</span>',
         loreHtml: [
-          '<span style="color: #55FF55">Active Duration: 30 days</span>',
-          '<span style="color: #FFAA00">+25% Skill EXP</span>',
-          '<span style="color: #55FFFF">+15 Magic Find</span>',
-          '<span style="color: #AAAAAA">Keep coins on death!</span>',
+          '<span style="color: #55FF55">Cookie Buff: Active</span>',
+          '<span style="color: #AAAAAA">Duration: </span><span style="color: #FFFF55">30 days</span>',
+          '',
+          '<span style="color: #FFAA00">Buff Benefits:</span>',
+          '<span style="color: #AAAAAA">▶ </span><span style="color: #FFAA00">+25% Skill EXP</span>',
+          '<span style="color: #AAAAAA">▶ </span><span style="color: #55FFFF">+15 Magic Find</span>',
+          '<span style="color: #AAAAAA">▶ </span><span style="color: #FFAA00">Keep coins and effects on death</span>',
+          '<span style="color: #AAAAAA">▶ </span><span style="color: #55FF55">Access to /ah and /bazaar anywhere</span>',
+          '<span style="color: #AAAAAA">▶ </span><span style="color: #55FFFF">Earn Bits while playing!</span>',
         ],
       },
     };
@@ -4461,8 +4466,14 @@ export default function PlayerView({
       icon: '/textures/minecraft/cookie.png',
       rawItem: {
         cleanName: 'Eat Booster Cookie',
-        formattedName: '<span style="color: #FFAA00; font-weight: bold">Booster Cookie</span>',
-        loreHtml: ['<span style="color: #FFFF55">Click to consume for 4 days of Buff!</span>'],
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Consume Booster Cookie</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Consuming a Booster Cookie grants</span>',
+          '<span style="color: #AAAAAA">4 days of Cookie Buff and unlocks</span>',
+          '<span style="color: #AAAAAA">Bits to earn over time.</span>',
+          '',
+          '<span style="color: #FFFF55">Click to consume!</span>',
+        ],
       },
     };
 
@@ -4472,8 +4483,16 @@ export default function PlayerView({
       icon: '/textures/minecraft/gold_helmet.png',
       rawItem: {
         cleanName: 'Available Bits',
-        formattedName: '<span style="color: #55FFFF; font-weight: bold">Bits Available: 4,800</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Spend bits at the Community Shop!</span>'],
+        formattedName: '<span style="color: #55FFFF; font-weight: bold">Bits</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Bits are a currency earned passively</span>',
+          '<span style="color: #AAAAAA">while your Booster Cookie is active.</span>',
+          '',
+          '<span style="color: #AAAAAA">Available Bits: </span><span style="color: #55FFFF">4,800</span>',
+          '<span style="color: #AAAAAA">Multiplier: </span><span style="color: #55FF55">1.2x</span>',
+          '',
+          '<span style="color: #FFFF55">Spend at Elizabeth in Community Shop!</span>',
+        ],
       },
     };
 
@@ -4481,10 +4500,18 @@ export default function PlayerView({
       id: 'remote_ec',
       name: 'Remote Ender Chest',
       icon: '/textures/minecraft/ender_chest.png',
+      targetScreen: 'storage',
+      storageTab: 'enderChest',
       rawItem: {
         cleanName: 'Remote Ender Chest',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Ender Chest</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Open your Ender Chest anywhere.</span>', '', '<span style="color: #55FF55">Buff Active</span>'],
+        loreHtml: [
+          '<span style="color: #AAAAAA">Open your Ender Chest from anywhere</span>',
+          '<span style="color: #AAAAAA">across SkyBlock!</span>',
+          '',
+          '<span style="color: #55FF55">Cookie Buff Active</span>',
+          '<span style="color: #FFFF55">Click to open!</span>',
+        ],
       },
     };
 
@@ -4495,7 +4522,11 @@ export default function PlayerView({
       rawItem: {
         cleanName: 'Remote Enchanting Table',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Enchanting Table</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Access enchanting powers anywhere.</span>', '', '<span style="color: #55FF55">Buff Active</span>'],
+        loreHtml: [
+          '<span style="color: #AAAAAA">Access enchanting powers from anywhere.</span>',
+          '',
+          '<span style="color: #55FF55">Cookie Buff Active</span>',
+        ],
       },
     };
 
@@ -4506,7 +4537,11 @@ export default function PlayerView({
       rawItem: {
         cleanName: 'Remote Anvil',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Remote Anvil</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Repair and combine items on the go.</span>', '', '<span style="color: #55FF55">Buff Active</span>'],
+        loreHtml: [
+          '<span style="color: #AAAAAA">Repair and combine items on the go.</span>',
+          '',
+          '<span style="color: #55FF55">Cookie Buff Active</span>',
+        ],
       },
     };
 
@@ -4516,7 +4551,7 @@ export default function PlayerView({
       icon: '/textures/minecraft/booster_potion.png',
       rawItem: {
         cleanName: 'Active God Potion',
-        formattedName: '<span style="color: #FF55FF; font-weight: bold">Active God Potion</span>',
+        formattedName: '<span style="color: #FF55FF; font-weight: bold">God Potion Effects</span>',
         loreHtml: [
           '<span style="color: #AAAAAA">Potion effects are frozen and</span>',
           '<span style="color: #AAAAAA">will not expire during Cookie Buff!</span>',
@@ -4532,8 +4567,13 @@ export default function PlayerView({
       icon: '/textures/minecraft/gold_horse_armor.png',
       rawItem: {
         cleanName: 'Mounts & Pets',
-        formattedName: '<span style="color: #FFAA00; font-weight: bold">Mounts & Pets</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Keep pet and mount buffs active.</span>'],
+        formattedName: '<span style="color: #FFAA00; font-weight: bold">Active Pet & Mounts</span>',
+        loreHtml: [
+          '<span style="color: #AAAAAA">Keep pet leveling bonuses and mount</span>',
+          '<span style="color: #AAAAAA">buffs preserved everywhere.</span>',
+          '',
+          '<span style="color: #55FF55">Active</span>',
+        ],
       },
     };
 
@@ -4548,7 +4588,7 @@ export default function PlayerView({
           '<span style="color: #AAAAAA">Spend your earned bits with</span>',
           '<span style="color: #AAAAAA">Elizabeth at the Community Center.</span>',
           '',
-          '<span style="color: #FFFF55">Click to browse!</span>',
+          '<span style="color: #FFFF55">Click to browse bits shop!</span>',
         ],
       },
     };
@@ -4584,7 +4624,14 @@ export default function PlayerView({
       rawItem: {
         cleanName: 'Buy Booster Cookie',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Buy Booster Cookie</span>',
-        loreHtml: ['<span style="color: #AAAAAA">Cost: </span><span style="color: #FFAA00">12,500,000 coins</span>'],
+        loreHtml: [
+          '<span style="color: #AAAAAA">Buy a Booster Cookie from the</span>',
+          '<span style="color: #AAAAAA">Bazaar or Community Shop.</span>',
+          '',
+          '<span style="color: #AAAAAA">Bazaar Price: </span><span style="color: #FFAA00">12,500,000 coins</span>',
+          '',
+          '<span style="color: #FFFF55">Click to view Bazaar!</span>',
+        ],
       },
     };
 
