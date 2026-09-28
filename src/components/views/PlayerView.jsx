@@ -459,7 +459,6 @@ export default function PlayerView({
       id: 'crafting',
       name: 'Crafting Table',
       icon: '/textures/minecraft/crafting.png',
-      targetScreen: 'crafting',
       rawItem: {
         cleanName: 'Crafting Table',
         formattedName: '<span style="color: #55FF55; font-weight: bold">Crafting Table</span>',
@@ -467,8 +466,6 @@ export default function PlayerView({
           '<span style="color: #AAAAAA">Opens the crafting grid.</span>',
           '',
           '<span style="color: #555555">Also accessible via /craft</span>',
-          '',
-          '<span style="color: #FFFF55">Click to open!</span>',
         ],
       },
     };
@@ -4639,7 +4636,7 @@ export default function PlayerView({
   }, []);
 
   const handleSlotClick = (slot) => {
-    if (!slot || slot.type === 'glass') return;
+    if (!slot || slot.type === 'glass' || slot.id === 'crafting') return;
     if (slot.action === 'close') {
       if (onClose) onClose();
       return;
@@ -6218,68 +6215,6 @@ export default function PlayerView({
                   )}
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* SUB-SCREEN: CRAFTING TABLE */}
-        {screen === 'crafting' && (
-          <div className="space-y-4">
-            {renderScreenHeader('Crafting Table')}
-            <div className="mc-inset-box rounded p-4 text-center">
-              <span className="text-xs text-gray-300 block mb-3">Quick Craft Recipes</span>
-              <div className="flex flex-wrap gap-2 justify-center mb-6">
-                {[
-                  { id: 'super_compactor', name: 'Super Compactor 3000', icon: '/textures/minecraft/dropper.png' },
-                  { id: 'aspect_of_the_end', name: 'Aspect of the End', icon: '/textures/minecraft/diamond_sword.png' },
-                  { id: 'enchanted_diamond', name: 'Enchanted Diamond Block', icon: '/textures/minecraft/diamond_block.png' },
-                  { id: 'recombobulator', name: 'Recombobulator 3000', icon: '/textures/minecraft/nether_star.png' },
-                ].map(rec => (
-                  <button
-                    key={rec.id}
-                    onClick={() => setCraftingRecipe(rec.id)}
-                    className={`mc-stone-button text-xs px-3 py-1 flex items-center gap-1.5 ${craftingRecipe === rec.id ? 'active font-bold' : ''}`}
-                  >
-                    <img src={rec.icon} alt="" className="w-4 h-4 object-contain" />
-                    {rec.name}
-                  </button>
-                ))}
-              </div>
-
-              {/* 3x3 Crafting Grid + Result */}
-              <div className="flex items-center justify-center gap-6 my-4">
-                <div className="grid grid-cols-3 gap-1 p-2 bg-[#4a4a4a] rounded border-2 border-[#373737]">
-                  {Array.from({ length: 9 }).map((_, idx) => (
-                    <div key={idx} className="mc-slot-cell">
-                      {craftingRecipe === 'super_compactor' && (idx === 4 ? (
-                        <img src="/textures/minecraft/redstone_torch.png" alt="" className="w-7 h-7" />
-                      ) : (
-                        <img src="/textures/minecraft/cobblestone.png" alt="" className="w-7 h-7" />
-                      ))}
-                      {craftingRecipe === 'aspect_of_the_end' && (idx === 7 ? (
-                        <img src="/textures/minecraft/diamond.png" alt="" className="w-7 h-7" />
-                      ) : [1, 4].includes(idx) ? (
-                        <img src="/textures/minecraft/ender_pearl.png" alt="" className="w-7 h-7" />
-                      ) : null)}
-                      {craftingRecipe === 'enchanted_diamond' && (
-                        <img src="/textures/minecraft/diamond.png" alt="" className="w-7 h-7" />
-                      )}
-                      {craftingRecipe === 'recombobulator' && (
-                        <img src="/textures/minecraft/obsidian.png" alt="" className="w-7 h-7" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <span className="text-3xl text-gray-500 font-bold">➜</span>
-                <div className="p-2 bg-[#4a4a4a] rounded border-2 border-[#373737]">
-                  <div className="mc-slot-cell w-12 h-12">
-                    {craftingRecipe === 'super_compactor' && <img src="/textures/minecraft/dropper.png" alt="" className="w-8 h-8" />}
-                    {craftingRecipe === 'aspect_of_the_end' && <img src="/textures/minecraft/diamond_sword.png" alt="" className="w-8 h-8" />}
-                    {craftingRecipe === 'enchanted_diamond' && <img src="/textures/minecraft/diamond_block.png" alt="" className="w-8 h-8" />}
-                    {craftingRecipe === 'recombobulator' && <img src="/textures/minecraft/nether_star.png" alt="" className="w-8 h-8" />}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         )}
